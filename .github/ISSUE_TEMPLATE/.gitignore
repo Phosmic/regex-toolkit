@@ -1,0 +1,9 @@
+# Ignore everything
+*
+
+# Except
+!bug_report.yaml
+!feature_request.yaml
+!question.md
+
+!.gitignore

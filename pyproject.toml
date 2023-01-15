@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "regex_toolkit"
+description = "Effortlessly craft efficient RE and RE2 expressions with user-friendly tools."
+readme = "README.md"
+requires-python = ">=3.9,<4"
+license = {text = "GPL-3.0-or-later"}
+keywords = ["re", "re2", "expression", "regex", "pattern", "tool", "toolkit"]
+authors = [
+    {name = "Nicholas Londowski", email = "nick@phosmic.com"},
+    {name = "Francis Salerno", email = "frank@phosmic.com"},
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Utilities",
+    "Topic :: Text Processing",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = []
+dynamic = ["version"]
+
+[tool.setuptools]
+packages = ["regex_toolkit"]
+package-dir = {"" = "src"}
+
+[tool.setuptools.dynamic]
+version = {attr = "regex_toolkit.__version__"}
+
+[project.urls]
+Homepage = "https://pypi.org/project/regex-toolkit/"
+Repository = "https://github.com/Phosmic/regex-toolkit"
+Issues = "https://github.com/Phosmic/regex-toolkit/issues"

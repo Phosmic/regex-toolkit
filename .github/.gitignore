@@ -1,0 +1,8 @@
+# Ignore everything
+*
+
+# Except
+!ISSUE_TEMPLATE/
+!ISSUE_TEMPLATE/*
+
+!.gitignore

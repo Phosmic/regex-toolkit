@@ -1,0 +1,57 @@
+name: Bug report
+description: Are you experiencing a problem? Create a report to help us improve!
+labels: "bug"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Self Check
+        - Try searching existing GitHub Issues (open or closed) for similar issues.
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: Describe the bug
+      description: A clear description of what the bug is.
+      placeholder: e.g. I see an AssertionError when trying to ...
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: How to reproduce
+      description: |
+        How to reproduce the problem.
+      placeholder: e.g. I can reproduce this issue by...
+  - type: textarea
+    validations:
+      required: true
+    attributes:
+      label: Expected behavior
+      description: A brief description of what should happen.
+  - type: textarea
+    attributes:
+      label: Screenshots and recordings
+      description: |
+        If applicable, add screenshots or videos to help explain your problem. (Videos should be as short as possible! Avoid watermarks too.)
+  - type: input
+    validations:
+      required: true
+    attributes:
+      label: OS / Distro
+      description: Include the version too, please!
+      placeholder: e.g. Windows 10, Ubuntu 20.04, macOS 10.15...
+  - type: input
+    validations:
+      required: true
+    attributes:
+      label: Output from `regex_toolkit.__version__`
+  - type: textarea
+    validations:
+      required: false
+    attributes:
+      label: Backtrace
+      description: What is the error regex_toolkit gives you, if any?
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here.

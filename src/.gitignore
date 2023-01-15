@@ -1,0 +1,8 @@
+# Ignore everything
+*
+
+# Except
+!regex_toolkit/
+!regex_toolkit/*
+
+!.gitignore

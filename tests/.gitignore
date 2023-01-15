@@ -1,0 +1,7 @@
+# Ignore everything
+*
+
+# Except
+!test_functions.py
+
+!.gitignore

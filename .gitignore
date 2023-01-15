@@ -1,0 +1,22 @@
+# Ignore everything
+*
+
+# Except
+!setup.py
+!pyproject.toml
+
+!tests/
+!tests/*
+
+!src/
+!src/*
+
+!LICENSE
+!README.md
+!.gitignore
+
+!.git/
+!.git/*
+
+!.github/
+!.github/*
