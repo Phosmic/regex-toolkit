@@ -4,6 +4,7 @@
 # Except
 !setup.py
 !pyproject.toml
+!Makefile
 
 !tests/
 !tests/*

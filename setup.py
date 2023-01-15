@@ -30,7 +30,15 @@ elif sys.argv[-1] == "publish":
     # Build and publish
     status = os.system("python3 -m build")
     if status == 0:
-        status = os.system("twine upload dist/regex-toolkit-*.tar.gz dist/regex-toolkit-*.whl")
+        status = os.system(
+            " ".join(
+                [
+                    "twine upload",
+                    os.path.join(here, "dist", "regex_toolkit-*.tar.gz"),
+                    os.path.join(here, "dist", "regex_toolkit-*.whl"),
+                ]
+            )
+        )
     sys.exit(status)
 elif sys.argv[-1] == "test":
     # Test
