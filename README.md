@@ -25,7 +25,7 @@ You should have received a copy of the GNU General Public License along with thi
 Most stable version from [**PyPi**](https://pypi.org/project/regex-toolkit/):
 
 ```bash
-pip install regex-toolkit
+python3 -m pip install regex-toolkit
 ```
 
 Development version from [**GitHub**](https://github.com/Phosmic/regex-toolkit):
@@ -33,7 +33,7 @@ Development version from [**GitHub**](https://github.com/Phosmic/regex-toolkit):
 ```bash
 git clone git+https://github.com/Phosmic/regex-toolkit.git
 cd regex-toolkit
-pip install .
+python3 -m pip install .
 ```
 
 ## Usage

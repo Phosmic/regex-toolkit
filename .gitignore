@@ -6,11 +6,11 @@
 !pyproject.toml
 !Makefile
 
-!tests/
-!tests/*
-
 !src/
 !src/*
+
+!tests/
+!tests/*
 
 !LICENSE
 !README.md
