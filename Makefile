@@ -1,11 +1,13 @@
+PYTHON=python3
+
 install:
-    python3 -m pip install .
+	${PYTHON} -m pip install .
 
 test:
-    python3 setup.py test
+	${PYTHON} setup.py test
 
 build:
-    python3 setup.py build
+	${PYTHON} setup.py build
 
 publish:
-    python3 setup.py publish
+	${PYTHON} setup.py publish
