@@ -26,7 +26,7 @@ classifiers = [
   "Topic :: Software Development :: Libraries",
   "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dependencies = ["google-re2>=0.2.20210901", "lxml>=4.6.3"]
+dependencies = []
 dynamic = ["version"]
 
 [project.urls]

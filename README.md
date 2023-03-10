@@ -1,10 +1,12 @@
 # Regex-Toolkit
 
-[Regex-Toolkit](https://github.com/Phosmic/regex-toolkit): Effortlessly craft efficient [RE](https://docs.python.org/3/library/re.html) and [RE2](https://github.com/google/re2) expressions with user-friendly tools.
+[Regex-Toolkit](https://github.com/Phosmic/regex-toolkit) Effortlessly craft efficient [RE](https://docs.python.org/3/library/re.html) and [RE2](https://github.com/google/re2) expressions with user-friendly tools.
+
+---
 
 ## Requirements:
 
-**Regex-Toolkit** requires Python 3.9 or higher, is platform independent, and has no outside dependencies.
+**Regex-Toolkit** requires Python 3.10 or higher, is platform independent, and has no outside dependencies.
 
 ## Issue reporting
 
@@ -20,9 +22,18 @@ You should have received a copy of the GNU General Public License along with thi
 
 ---
 
+[Requirements](#requirements)
+[Installing](#installing)
+[Usage](#usage)
+[Library](#library)
+
 ## Installing
 
 Most stable version from [**PyPi**](https://pypi.org/project/regex-toolkit/):
+
+[![PyPI](https://img.shields.io/pypi/v/regex-toolkit?style=flat-square)](https://pypi.org/project/regex-toolkit/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/regex-toolkit?style=flat-square)](https://pypi.org/project/regex-toolkit/)
+[![PyPI - License](https://img.shields.io/pypi/l/regex-toolkit?style=flat-square)](https://pypi.org/project/regex-toolkit/)
 
 ```bash
 python3 -m pip install regex-toolkit
@@ -30,11 +41,19 @@ python3 -m pip install regex-toolkit
 
 Development version from [**GitHub**](https://github.com/Phosmic/regex-toolkit):
 
+
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/Phosmic/regex-toolkit/ubuntu.yml?style=flat-square)
+![Codecov](https://img.shields.io/codecov/c/github/Phosmic/regex-toolkit/master?flag=unittests&style=flat-square&token=XMJZIW8ZL3)
+![GitHub](https://img.shields.io/github/license/Phosmic/regex-toolkit?style=flat-square)
+
+
 ```bash
 git clone git+https://github.com/Phosmic/regex-toolkit.git
 cd regex-toolkit
-python3 -m pip install .
+python3 -m pip install -e .
 ```
+
+---
 
 ## Usage
 
@@ -47,455 +66,552 @@ import re2
 ```
 
 ```python
-# Can import directly if desired
-import regex_toolkit as rtk
+import regex_toolkit
 ```
 
 ---
 
 ## Library
 
-### iter_sort_by_len
+<a id="regex_toolkit.base"></a>
 
-Function to iterate strings sorted by length.
+# `regex_toolkit.base`
 
-| Function Signature                                |
-| :------------------------------------------------ |
-| iter_sort_by_len(package_name, \*, reverse=False) |
+<a id="regex_toolkit.base.iter_sort_by_len"></a>
 
-| Parameters                 |                                                 |
-| :------------------------- | :---------------------------------------------- |
-| **texts**_(Iterable[str])_ | Strings to sort.                                |
-| **reverse**_(int)_         | Sort in descending order (longest to shortest). |
-
-Example (ascending shortest to longest):
+#### `iter_sort_by_len`
 
 ```python
-words = ["longest", "short", "longer"]
-for word in rtk.iter_sort_by_len(words):
-    print(word)
+def iter_sort_by_len(texts: Iterable[str],
+                     *,
+                     reverse: bool = False) -> Iterable[str]
 ```
 
-Output:
+Iterate strings sorted by length.
 
-```text
-short
-longer
-longest
-```
+**Arguments**:
 
-Example reversed (descending longest to shortest):
+- `texts` _Iterable[str]_ - Strings to sort.
+- `reverse` _bool, optional_ - Sort in descending order (longest to shortest). Defaults to False.
+
+**Yields**:
+
+- _str_ - Strings sorted by length.
+
+<a id="regex_toolkit.base.sort_by_len"></a>
+
+#### `sort_by_len`
 
 ```python
-words = ["longest", "short", "longer"]
-for word in rtk.iter_sort_by_len(words, reverse=True):
-    print(word)
+def sort_by_len(texts: Iterable[str],
+                *,
+                reverse: bool = False) -> tuple[str, ...]
 ```
 
-Output:
+Sort strings by length.
 
-```text
-longest
-longer
-short
-```
+**Arguments**:
 
-### sort_by_len
+- `texts` _Iterable[str]_ - Strings to sort.
+- `reverse` _bool, optional_ - Sort in descending order (longest to shortest). Defaults to False.
 
-Function to get a tuple of strings sorted by length.
+**Returns**:
 
-| Function Signature                           |
-| :------------------------------------------- |
-| sort_by_len(package_name, \*, reverse=False) |
+- _tuple[str]_ - Strings sorted by length.
 
-| Parameters                 |                                                 |
-| :------------------------- | :---------------------------------------------- |
-| **texts**_(Iterable[str])_ | Strings to sort.                                |
-| **reverse**_(int)_         | Sort in descending order (longest to shortest). |
+<a id="regex_toolkit.base.ord_to_codepoint"></a>
 
-Example (ascending shortest to longest):
+#### `ord_to_codepoint`
 
 ```python
-rtk.sort_by_len(["longest", "short", "longer"])
+def ord_to_codepoint(ordinal: int) -> str
 ```
 
-Result:
+Character codepoint from character ordinal.
+
+**Arguments**:
+
+- `ordinal` _int_ - Character ordinal.
+
+**Returns**:
+
+- _str_ - Character codepoint.
+
+<a id="regex_toolkit.base.codepoint_to_ord"></a>
+
+#### `codepoint_to_ord`
 
 ```python
-('short', 'longer', 'longest')
+def codepoint_to_ord(codepoint: str) -> int
 ```
 
-Example reversed (descending longest to shortest):
+Character ordinal from character codepoint.
+
+**Arguments**:
+
+- `codepoint` _str_ - Character codepoint.
+
+**Returns**:
+
+- _int_ - Character ordinal.
+
+<a id="regex_toolkit.base.char_to_codepoint"></a>
+
+#### `char_to_codepoint`
 
 ```python
-rtk.sort_by_len(["longest", "short", "longer"], reverse=True)
+def char_to_codepoint(char: str) -> str
 ```
 
-Result:
+Character codepoint from character.
+
+**Arguments**:
+
+- `char` _str_ - Character.
+
+**Returns**:
+
+- _str_ - Character codepoint.
+
+<a id="regex_toolkit.base.char_as_exp"></a>
+
+#### `char_as_exp`
 
 ```python
-('longest', 'longer', 'short')
+def char_as_exp(char: str) -> str
 ```
 
-### ord_to_codepoint
+Create a RE regex expression that exactly matches a character.
 
-Function to get a character codepoint from a character ordinal.
+Escape to avoid reserved character classes (i.e. \\s, \\S, \\d, \\D, \\1, etc.).
 
-| Function Signature        |
-| :------------------------ |
-| ord_to_codepoint(ordinal) |
+**Arguments**:
 
-| Parameters         |                    |
-| :----------------- | :----------------- |
-| **ordinal**_(int)_ | Character ordinal. |
+- `char` _str_ - Character to match.
 
-Example:
+**Returns**:
+
+- _str_ - RE expression that exactly matches the original character.
+
+<a id="regex_toolkit.base.char_as_exp2"></a>
+
+#### `char_as_exp2`
 
 ```python
-# ordinal: 127344
-ordinal = ord("🅰")
-rtk.ord_to_codepoint(ordinal)
+def char_as_exp2(char: str) -> str
 ```
 
-Result:
+Create a RE2 regex expression that exactly matches a character.
+
+**Arguments**:
+
+- `char` _str_ - Character to match.
+
+**Returns**:
+
+- _str_ - RE2 expression that exactly matches the original character.
+
+<a id="regex_toolkit.base.string_as_exp"></a>
+
+#### `string_as_exp`
 
 ```python
-'0001f170'
+def string_as_exp(text: str) -> str
 ```
 
-### codepoint_to_ord
+Create a RE regex expression that exactly matches a string.
 
-Function to get a character ordinal from a character codepoint.
+**Arguments**:
 
-| Function Signature          |
-| :-------------------------- |
-| codepoint_to_ord(codepoint) |
+- `text` _str_ - String to match.
 
-| Parameters           |                      |
-| :------------------- | :------------------- |
-| **codepoint**_(str)_ | Character codepoint. |
+**Returns**:
 
-Example:
+- _str_ - RE expression that exactly matches the original string.
+
+<a id="regex_toolkit.base.string_as_exp2"></a>
+
+#### `string_as_exp2`
 
 ```python
-# char: "🅰"
-codepoint = "0001f170"
-rtk.codepoint_to_ord(codepoint)
+def string_as_exp2(text: str) -> str
 ```
 
-Result:
+Create a RE2 regex expression that exactly matches a string.
+
+**Arguments**:
+
+- `text` _str_ - String to match.
+
+**Returns**:
+
+- _str_ - RE2 expression that exactly matches the original string.
+
+<a id="regex_toolkit.base.strings_as_exp"></a>
+
+#### `strings_as_exp`
 
 ```python
-127344
+def strings_as_exp(texts: Iterable[str]) -> str
 ```
 
-### char_to_codepoint
+Create a RE regex expression that exactly matches any one string.
 
-Function to get a character codepoint from a character.
+**Arguments**:
 
-| Function Signature      |
-| :---------------------- |
-| char_to_codepoint(char) |
+- `texts` _Iterable[str]_ - Strings to match.
 
-| Parameters      |            |
-| :-------------- | :--------- |
-| **char**_(str)_ | Character. |
+**Returns**:
 
-Example:
+- _str_ - RE expression that exactly matches any one of the original strings.
+
+<a id="regex_toolkit.base.strings_as_exp2"></a>
+
+#### `strings_as_exp2`
 
 ```python
-rtk.char_to_codepoint("🅰")
+def strings_as_exp2(texts: Iterable[str]) -> str
 ```
 
-Result:
+Create a RE2 regex expression that exactly matches any one string.
+
+**Arguments**:
+
+- `texts` _Iterable[str]_ - Strings to match.
+
+**Returns**:
+
+- _str_ - RE2 expression that exactly matches any one of the original strings.
+
+<a id="regex_toolkit.base.iter_char_range"></a>
+
+#### `iter_char_range`
 
 ```python
-'0001f170'
+def iter_char_range(first_codepoint: int,
+                    last_codepoint: int) -> Iterable[str]
 ```
 
-### char_as_exp
+Iterate all character within a range of codepoints (inclusive).
 
-Function to create a **RE** expression that exactly matches a character.
+**Arguments**:
 
-| Function Signature |
-| :----------------- |
-| char_as_exp(char)  |
+- `first_codepoint` _int_ - Starting (first) codepoint.
+- `last_codepoint` _int_ - Ending (last) codepoint.
 
-| Parameters      |                     |
-| :-------------- | :------------------ |
-| **char**_(str)_ | Character to match. |
+**Yields**:
 
-Example:
+- _str_ - Character from within a range of codepoints.
+
+<a id="regex_toolkit.base.char_range"></a>
+
+#### `char_range`
 
 ```python
-rtk.char_as_exp("🅰")
+def char_range(first_codepoint: int, last_codepoint: int) -> tuple[str, ...]
 ```
 
-Result:
+Tuple of all character within a range of codepoints (inclusive).
+
+**Arguments**:
+
+- `first_codepoint` _int_ - Starting (first) codepoint.
+- `last_codepoint` _int_ - Ending (last) codepoint.
+
+**Returns**:
+
+  tuple[str, ...]: Characters within a range of codepoints.
+
+<a id="regex_toolkit.base.mask_span"></a>
+
+#### `mask_span`
 
 ```python
-r'\🅰'
+def mask_span(text: str,
+              span: list[int] | tuple[int, int],
+              mask: str | None = None) -> str
 ```
 
-### char_as_exp2
+Slice and mask a string using a single span.
 
-Function to create a **RE** expression that exactly matches a character.
+**Arguments**:
 
-| Function Signature |
-| :----------------- |
-| char_as_exp2(char) |
+- `text` _str_ - String to slice.
+- `span` _list[int] | tuple[int, int]_ - Domain of index positions (start, end) to mask.
+- `mask` _str, optional_ - Mask to insert after slicing. Defaults to None.
 
-| Parameters      |                     |
-| :-------------- | :------------------ |
-| **char**_(str)_ | Character to match. |
+**Returns**:
 
-Example:
+- _str_ - String with span replaced with the mask text.
+
+<a id="regex_toolkit.base.mask_spans"></a>
+
+#### `mask_spans`
 
 ```python
-rtk.char_as_exp2("🅰")
+def mask_spans(text: str,
+               spans: Iterable[list[int] | tuple[int, int]],
+               masks: Iterable[str] | None = None) -> str
 ```
-
-Result:
-
-```python
-r'\x{0001f170}'
-```
-
-### string_as_exp
-
-Function to create a **RE** expression that exactly matches a string.
-
-| Function Signature  |
-| :------------------ |
-| string_as_exp(text) |
-
-| Parameters      |                  |
-| :-------------- | :--------------- |
-| **text**_(str)_ | String to match. |
-
-Example:
-
-```python
-rtk.string_as_exp("🅰🅱🅲")
-```
-
-Result:
-
-```python
-r'\🅰\🅱\🅲'
-```
-
-### string_as_exp2
-
-Function to create a **RE** expression that exactly matches a string.
-
-| Function Signature   |
-| :------------------- |
-| string_as_exp2(text) |
-
-| Parameters      |                  |
-| :-------------- | :--------------- |
-| **text**_(str)_ | String to match. |
-
-Example:
-
-```python
-rtk.string_as_exp2("🅰🅱🅲")
-```
-
-Result:
-
-```python
-r'\x{0001f170}\x{0001f171}\x{0001f172}'
-```
-
-### strings_as_exp
-
-Function to create a **RE** expression that exactly matches any one string.
-
-| Function Signature    |
-| :-------------------- |
-| strings_as_exp(texts) |
-
-| Parameters                 |                   |
-| :------------------------- | :---------------- |
-| **texts**_(Iterable[str])_ | Strings to match. |
-
-Example:
-
-```python
-rtk.strings_as_exp([
-    "bad.word",
-    "another-bad-word",
-])
-```
-
-Result:
-
-```python
-r'another\-bad\-word|bad\.word'
-```
-
-### strings_as_exp2
-
-Function to create a **RE** expression that exactly matches any one string.
-
-| Function Signature     |
-| :--------------------- |
-| strings_as_exp2(texts) |
-
-| Parameters                 |                   |
-| :------------------------- | :---------------- |
-| **texts**_(Iterable[str])_ | Strings to match. |
-
-Example:
-
-```python
-rtk.strings_as_exp2([
-    "bad.word",
-    "another-bad-word",
-])
-```
-
-Result:
-
-```python
-r'another\-bad\-word|bad\.word'
-```
-
-### iter_char_range
-
-Function to iterate all characters within a range of codepoints (inclusive).
-
-| Function                                           |
-| :------------------------------------------------- |
-| iter_char_range(first_codepoint, second_codepoint) |
-
-| Parameters                 |                             |
-| :------------------------- | :-------------------------- |
-| **first_codepoint**_(int)_ | Starting (first) codepoint. |
-| **last_codepoint**_(int)_  | Ending (last) codepoint.    |
-
-Example:
-
-```python
-for char in rtk.iter_char_range("a", "c"):
-    print(char)
-```
-
-Output:
-
-```text
-a
-b
-c
-```
-
-### char_range
-
-Function to get a tuple of all characters within a range of codepoints (inclusive).
-
-| Function                                      |
-| :-------------------------------------------- |
-| char_range(first_codepoint, second_codepoint) |
-
-| Parameters                 |                             |
-| :------------------------- | :-------------------------- |
-| **first_codepoint**_(int)_ | Starting (first) codepoint. |
-| **last_codepoint**_(int)_  | Ending (last) codepoint.    |
-
-Example:
-
-```python
-rtk.char_range("a", "c")
-```
-
-Result:
-
-```python
-('a', 'b', 'c')
-```
-
-### mask_span
-
-Slice and mask a string using a span.
-
-| Function Signature               |
-| :------------------------------- |
-| mask_span(text, span, mask=None) |
-
-| Parameters                               |                                                 |
-| :--------------------------------------- | :---------------------------------------------- |
-| **text**_(str)_                          | Text to slice.                                  |
-| **span**_(list[int] \| tuple[int, int])_ | Domain of index positions (start, end) to mask. |
-| **mask**_(str \| None)_                  | Mask to insert after slicing.                   |
-
-Example:
-
-```python
-rtk.mask_span(
-    "This is an example",
-    (8, 8),
-    mask="not ",
-)
-```
-
-Result:
-
-```python
-'This is not an example'
-```
-
-### mask_spans
 
 Slice and mask a string using multiple spans.
 
-| Function Signature                  |
-| :---------------------------------- |
-| mask_spans(text, spans, masks=None) |
+**Arguments**:
 
-| Parameters                                          |                                                            |
-| :-------------------------------------------------- | :--------------------------------------------------------- |
-| **text**_(str)_                                     | Text to slice.                                             |
-| **spans**_(Iterable[list[int] \| tuple[int, int]])_ | Domains of index positions (x1, x2) to mask from the text. |
-| **masks**_(Iterable[str] \| None)_                  | Masks to insert when slicing.                              |
+- `text` _str_ - String to slice.
+- `spans` _Iterable[list[int] | tuple[int, int]]_ - Domains of index positions (x1, x2) to mask from the text.
+- `masks` _Iterable[str], optional_ - Masks to insert when slicing. Defaults to None.
 
-Example:
+**Returns**:
+
+- _str_ - String with all spans replaced with the mask text.
+
+<a id="regex_toolkit.base.to_nfc"></a>
+
+#### `to_nfc`
 
 ```python
-rtk.mask_spans(
-    "This is an example",
-    spans=[
-        (9, 10),
-        (11, 18),
-    ],
-    masks=[
-        " good",
-        "sample",
-    ],
-)
+def to_nfc(text: str) -> str
 ```
 
-### to_utf8
+Normalize a Unicode string to NFC form C.
 
-Encode a unicode string to UTF-8 form.
+Form C favors the use of a fully combined character.
 
-| Function Signature |
-| :----------------- |
-| to_utf8(text)      |
+**Arguments**:
 
-| Parameters      |                 |
-| :-------------- | :-------------- |
-| **text**_(str)_ | Text to encode. |
+- `text` _str_ - String to normalize.
 
-### to_nfc
+**Returns**:
 
-[Normalize](https://docs.python.org/3/library/unicodedata.html#unicodedata.normalize) a Unicode string to NFC form C.
+- _str_ - Normalized string.
 
-| Function Signature |
-| :----------------- |
-| to_utf8(text)      |
+<a id="regex_toolkit.base_BAK_2022-11-18"></a>
 
-| Parameters      |                    |
-| :-------------- | :----------------- |
-| **text**_(str)_ | Text to normalize. |
+# `regex_toolkit.base_BAK_2022-11-18`
+
+<a id="regex_toolkit.base_BAK_2022-11-18.RegexToolkit"></a>
+
+## `RegexToolkit` Objects
+
+```python
+class RegexToolkit()
+```
+
+<a id="regex_toolkit.base_BAK_2022-11-18.RegexToolkit.char_as_exp"></a>
+
+#### `RegexToolkit.char_as_exp`
+
+```python
+@staticmethod
+def char_as_exp(char: str) -> str
+```
+
+Create a re Regex Expression that Exactly Matches a Character
+
+Expressions like \s, \S, \d, \D, \1, etc. are reserved.
+
+**Arguments**:
+
+- `char` _str_ - Character to match.
+
+**Returns**:
+
+- _str_ - re expression that exactly matches the original character.
+
+<a id="regex_toolkit.base_BAK_2022-11-18.RegexToolkit.char_as_exp2"></a>
+
+#### `RegexToolkit.char_as_exp2`
+
+```python
+@staticmethod
+def char_as_exp2(char: str) -> str
+```
+
+Create a re2 Regex Expression that Exactly Matches a Character
+
+**Arguments**:
+
+- `char` _str_ - Character to match.
+
+**Returns**:
+
+- _str_ - re2 expression that exactly matches the original character.
+
+<a id="regex_toolkit.base_BAK_2022-11-18.RegexToolkit.string_as_exp"></a>
+
+#### `RegexToolkit.string_as_exp`
+
+```python
+@staticmethod
+def string_as_exp(text: str) -> str
+```
+
+Create a re Regex Expression that Exactly Matches a String
+
+**Arguments**:
+
+- `text` _str_ - String to match.
+
+**Returns**:
+
+- _str_ - re expression that exactly matches the original string.
+
+<a id="regex_toolkit.base_BAK_2022-11-18.RegexToolkit.string_as_exp2"></a>
+
+#### `RegexToolkit.string_as_exp2`
+
+```python
+@staticmethod
+def string_as_exp2(text: str) -> str
+```
+
+Create a re2 Regex Expression that Exactly Matches a String
+
+**Arguments**:
+
+- `text` _str_ - String to match.
+
+**Returns**:
+
+- _str_ - re2 expression that exactly matches the original string.
+
+<a id="regex_toolkit.base_BAK_2022-11-18.RegexToolkit.strings_as_exp"></a>
+
+#### `RegexToolkit.strings_as_exp`
+
+```python
+@staticmethod
+def strings_as_exp(texts: Iterable[str]) -> str
+```
+
+re
+
+<a id="regex_toolkit.base_BAK_2022-11-18.RegexToolkit.strings_as_exp2"></a>
+
+#### `RegexToolkit.strings_as_exp2`
+
+```python
+@staticmethod
+def strings_as_exp2(texts: Iterable[str]) -> str
+```
+
+re2
+
+<a id="regex_toolkit.base_BAK_2022-11-18.RegexToolkit.iter_char_range"></a>
+
+#### `RegexToolkit.iter_char_range`
+
+```python
+@staticmethod
+def iter_char_range(first_codepoint: int,
+                    last_codepoint: int) -> Iterable[str]
+```
+
+Iterate All Characters within a Range of Codepoints (Inclusive)
+
+**Arguments**:
+
+- `first_codepoint` _int_ - Starting codepoint.
+- `last_codepoint` _int_ - Final codepoint.
+
+**Yields**:
+
+- _str_ - Character from within a range of codepoints.
+
+<a id="regex_toolkit.base_BAK_2022-11-18.RegexToolkit.char_range"></a>
+
+#### `RegexToolkit.char_range`
+
+```python
+@staticmethod
+def char_range(first_codepoint: int, last_codepoint: int) -> tuple[str, ...]
+```
+
+Tuple of All Characters within a Range of Codepoints (Inclusive)
+
+**Arguments**:
+
+- `first_codepoint` _int_ - Starting codepoint.
+- `last_codepoint` _int_ - Final codepoint.
+
+**Returns**:
+
+  tuple[str, ...]: Characters within a range of codepoints.
+
+<a id="regex_toolkit.base_BAK_2022-11-18.RegexToolkit.is_digit"></a>
+
+#### `RegexToolkit.is_digit`
+
+```python
+@staticmethod
+def is_digit(char: str) -> bool
+```
+
+Check if a Character is a Digit [0-9]
+
+**Arguments**:
+
+- `char` _str_ - Character to check.
+
+**Returns**:
+
+- _bool_ - True if the character is a digit.
+
+<a id="regex_toolkit.base_BAK_2022-11-18.RegexToolkit.mask_span"></a>
+
+#### `RegexToolkit.mask_span`
+
+```python
+@staticmethod
+def mask_span(text: str, span, mask: str | None = None) -> str
+```
+
+Slice and Mask Text using a Span
+
+<a id="regex_toolkit.base_BAK_2022-11-18.RegexToolkit.mask_spans"></a>
+
+#### `RegexToolkit.mask_spans`
+
+```python
+@staticmethod
+def mask_spans(text: str, spans: Iterable[Sequence[int]],
+               masks: Iterable[str]) -> str
+```
+
+Slice and Mask a String using Multiple Spans
+
+NOTE: Original values for spans and masks parameters will be modified!
+
+**Arguments**:
+
+- `text` _str_ - Text to slice.
+- `spans` _Spans_ - Domains of index positions to mask from the text.
+- `masks` _Masks, optional_ - Masks to insert when slicing. Defaults to None.
+
+**Returns**:
+
+- _str_ - Text with all spans replaced with the mask text.
+
+<a id="regex_toolkit.base_BAK_2022-11-18.RegexToolkit.to_utf8"></a>
+
+#### `RegexToolkit.to_utf8`
+
+```python
+@staticmethod
+def to_utf8(text: str) -> str
+```
+
+Force UTF-8 Text Encoding
+
+**Arguments**:
+
+- `text` _str_ - Text to encode.
+
+**Returns**:
+
+- _str_ - Encoded text.
+
+
+---
+

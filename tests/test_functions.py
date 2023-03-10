@@ -1,8 +1,8 @@
 import unittest
-import regex_toolkit
-
 from collections.abc import Iterable
 from itertools import product
+
+import regex_toolkit
 
 
 class TestStringMethods(unittest.TestCase):
@@ -131,27 +131,27 @@ class TestStringMethods(unittest.TestCase):
                 prev_len = len(text)
 
     def test_string_as_exp_safe_chars(self):
-        text = "".join(regex_toolkit._safe_chars)
+        text = "".join(regex_toolkit.constants.SAFE_CHARS)
         actual_exp = regex_toolkit.string_as_exp(text)
-        expected_exp = "".join(regex_toolkit._safe_chars)
+        expected_exp = "".join(regex_toolkit.constants.SAFE_CHARS)
         self.assertEqual(actual_exp, expected_exp)
 
     def test_string_as_exp2_escapable_chars(self):
-        text = "".join(regex_toolkit._escapable_chars)
+        text = "".join(regex_toolkit.constants.RE2_ESCAPABLE_CHARS)
         actual_exp = regex_toolkit.string_as_exp2(text)
-        expected_exp = "\\" + "\\".join(regex_toolkit._escapable_chars)
+        expected_exp = "\\" + "\\".join(regex_toolkit.constants.RE2_ESCAPABLE_CHARS)
         self.assertEqual(actual_exp, expected_exp)
 
     def test_string_as_exp_safe_chars(self):
-        text = "".join(regex_toolkit._safe_chars)
+        text = "".join(regex_toolkit.constants.SAFE_CHARS)
         actual_exp = regex_toolkit.string_as_exp(text)
-        expected_exp = "".join(regex_toolkit._safe_chars)
+        expected_exp = "".join(regex_toolkit.constants.SAFE_CHARS)
         self.assertEqual(actual_exp, expected_exp)
 
     def test_string_as_exp2_escapable_chars(self):
-        text = "".join(regex_toolkit._escapable_chars)
+        text = "".join(regex_toolkit.constants.RE2_ESCAPABLE_CHARS)
         actual_exp = regex_toolkit.string_as_exp2(text)
-        expected_exp = "\\" + "\\".join(regex_toolkit._escapable_chars)
+        expected_exp = "\\" + "\\".join(regex_toolkit.constants.RE2_ESCAPABLE_CHARS)
         self.assertEqual(actual_exp, expected_exp)
 
     def test_iter_char_range(self):

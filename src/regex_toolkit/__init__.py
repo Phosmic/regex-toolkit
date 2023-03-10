@@ -1,3 +1,40 @@
-from .base import *
+from .base import (
+    char_as_exp,
+    char_as_exp2,
+    char_range,
+    char_to_codepoint,
+    codepoint_to_ord,
+    iter_char_range,
+    iter_sort_by_len,
+    mask_span,
+    mask_spans,
+    ord_to_codepoint,
+    sort_by_len,
+    string_as_exp,
+    string_as_exp2,
+    strings_as_exp,
+    strings_as_exp2,
+    to_nfc,
+    to_utf8,
+)
 
+__all__ = [
+    "char_as_exp",
+    "char_as_exp2",
+    "char_range",
+    "char_to_codepoint",
+    "codepoint_to_ord",
+    "iter_char_range",
+    "iter_sort_by_len",
+    "mask_span",
+    "mask_spans",
+    "ord_to_codepoint",
+    "sort_by_len",
+    "string_as_exp",
+    "string_as_exp2",
+    "strings_as_exp",
+    "strings_as_exp2",
+    "to_nfc",
+    "to_utf8",
+]
 __version__ = "0.0.3"

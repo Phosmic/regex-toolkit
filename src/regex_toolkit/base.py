@@ -1,30 +1,26 @@
 __all__ = [
-    "iter_sort_by_len",
-    "sort_by_len",
-    "ord_to_codepoint",
-    "codepoint_to_ord",
-    "char_to_codepoint",
     "char_as_exp",
     "char_as_exp2",
+    "char_range",
+    "char_to_codepoint",
+    "codepoint_to_ord",
+    "iter_char_range",
+    "iter_sort_by_len",
+    "mask_span",
+    "mask_spans",
+    "ord_to_codepoint",
+    "sort_by_len",
     "string_as_exp",
     "string_as_exp2",
     "strings_as_exp",
     "strings_as_exp2",
-    "iter_char_range",
-    "mask_span",
-    "mask_spans",
-    "to_utf8",
     "to_nfc",
+    "to_utf8",
 ]
-import string
 import unicodedata
-
 from collections.abc import Iterable
 
-_ALPHA_CHARS: set[str] = set(string.ascii_letters)
-_DIGIT_CHARTS: set[str] = set(string.digits)
-_SAFE_CHARS: set[str] = _ALPHA_CHARS.union(_DIGIT_CHARTS).union(set(string.whitespace))
-_RE2_ESCAPABLE_CHARS: set[str] = set(string.punctuation)
+from regex_toolkit.constants import RE2_ESCAPABLE_CHARS, SAFE_CHARS
 
 
 def iter_sort_by_len(
@@ -32,7 +28,7 @@ def iter_sort_by_len(
     *,
     reverse: bool = False,
 ) -> Iterable[str]:
-    """Iterate Texts Sorted by Length
+    """Iterate strings sorted by length.
 
     Args:
         texts (Iterable[str]): Strings to sort.
@@ -50,7 +46,7 @@ def sort_by_len(
     *,
     reverse: bool = False,
 ) -> tuple[str, ...]:
-    """Strings Sorted by Length
+    """Sort strings by length.
 
     Args:
         texts (Iterable[str]): Strings to sort.
@@ -63,7 +59,7 @@ def sort_by_len(
 
 
 def ord_to_codepoint(ordinal: int) -> str:
-    """Character Codepoint from Character Ordinal
+    """Character codepoint from character ordinal.
 
     Args:
         ordinal (int): Character ordinal.
@@ -75,7 +71,7 @@ def ord_to_codepoint(ordinal: int) -> str:
 
 
 def codepoint_to_ord(codepoint: str) -> int:
-    """Character Ordinal from Character Codepoint
+    """Character ordinal from character codepoint.
 
     Args:
         codepoint (str): Character codepoint.
@@ -87,7 +83,7 @@ def codepoint_to_ord(codepoint: str) -> int:
 
 
 def char_to_codepoint(char: str) -> str:
-    """Character Codepoint from Character
+    """Character codepoint from character.
 
     Args:
         char (str): Character.
@@ -99,9 +95,9 @@ def char_to_codepoint(char: str) -> str:
 
 
 def char_as_exp(char: str) -> str:
-    """Create a RE Regex Expression that Exactly Matches a Character
+    """Create a RE regex expression that exactly matches a character.
 
-    Escape to avoid reserved character classes (i.e. \s, \S, \d, \D, \1, etc.).
+    Escape to avoid reserved character classes (i.e. \\s, \\S, \\d, \\D, \\1, etc.).
 
     Args:
         char (str): Character to match.
@@ -109,7 +105,7 @@ def char_as_exp(char: str) -> str:
     Returns:
         str: RE expression that exactly matches the original character.
     """
-    if char in _SAFE_CHARS:
+    if char in SAFE_CHARS:
         # Safe as-is
         return char
     else:
@@ -118,7 +114,7 @@ def char_as_exp(char: str) -> str:
 
 
 def char_as_exp2(char: str) -> str:
-    """Create a RE2 Regex Expression that Exactly Matches a Character
+    """Create a RE2 regex expression that exactly matches a character.
 
     Args:
         char (str): Character to match.
@@ -126,10 +122,10 @@ def char_as_exp2(char: str) -> str:
     Returns:
         str: RE2 expression that exactly matches the original character.
     """
-    if char in _SAFE_CHARS:
+    if char in SAFE_CHARS:
         # Safe as-is
         return char
-    elif char in _RE2_ESCAPABLE_CHARS:
+    elif char in RE2_ESCAPABLE_CHARS:
         # Safe to escape with backslash
         return f"\\{char}"
     else:
@@ -138,7 +134,7 @@ def char_as_exp2(char: str) -> str:
 
 
 def string_as_exp(text: str) -> str:
-    """Create a RE Regex Expression that Exactly Matches a String
+    """Create a RE regex expression that exactly matches a string.
 
     Args:
         text (str): String to match.
@@ -150,7 +146,7 @@ def string_as_exp(text: str) -> str:
 
 
 def string_as_exp2(text: str) -> str:
-    """Create a RE2 Regex Expression that Exactly Matches a String
+    """Create a RE2 regex expression that exactly matches a string.
 
     Args:
         text (str): String to match.
@@ -162,7 +158,7 @@ def string_as_exp2(text: str) -> str:
 
 
 def strings_as_exp(texts: Iterable[str]) -> str:
-    """Create a RE Regex expression that Exactly Matches Any One String
+    """Create a RE regex expression that exactly matches any one string.
 
     Args:
         texts (Iterable[str]): Strings to match.
@@ -179,7 +175,7 @@ def strings_as_exp(texts: Iterable[str]) -> str:
 
 
 def strings_as_exp2(texts: Iterable[str]) -> str:
-    """Create a RE2 Regex expression that Exactly Matches Any One String
+    """Create a RE2 regex expression that exactly matches any one string.
 
     Args:
         texts (Iterable[str]): Strings to match.
@@ -196,7 +192,7 @@ def strings_as_exp2(texts: Iterable[str]) -> str:
 
 
 def iter_char_range(first_codepoint: int, last_codepoint: int) -> Iterable[str]:
-    """Iterate All Characters within a Range of Codepoints (Inclusive)
+    """Iterate all character within a range of codepoints (inclusive).
 
     Args:
         first_codepoint (int): Starting (first) codepoint.
@@ -210,7 +206,7 @@ def iter_char_range(first_codepoint: int, last_codepoint: int) -> Iterable[str]:
 
 
 def char_range(first_codepoint: int, last_codepoint: int) -> tuple[str, ...]:
-    """Tuple of All Characters within a Range of Codepoints (Inclusive)
+    """Tuple of all character within a range of codepoints (inclusive).
 
     Args:
         first_codepoint (int): Starting (first) codepoint.
@@ -227,15 +223,15 @@ def mask_span(
     span: list[int] | tuple[int, int],
     mask: str | None = None,
 ) -> str:
-    """Slice and Mask a String using a Span
+    """Slice and mask a string using a single span.
 
     Args:
-        text (str): Text to slice.
+        text (str): String to slice.
         span (list[int] | tuple[int, int]): Domain of index positions (start, end) to mask.
         mask (str, optional): Mask to insert after slicing. Defaults to None.
 
     Returns:
-        str: Text with span replaced with the mask text.
+        str: String with span replaced with the mask text.
     """
     if not 0 <= span[0] <= span[1] <= len(text):
         raise ValueError(f"Invalid index positions for start and end: {span}")
@@ -252,15 +248,15 @@ def mask_spans(
     spans: Iterable[list[int] | tuple[int, int]],
     masks: Iterable[str] | None = None,
 ) -> str:
-    """Slice and Mask a String using Multiple Spans
+    """Slice and mask a string using multiple spans.
 
     Args:
-        text (str): Text to slice.
+        text (str): String to slice.
         spans (Iterable[list[int] | tuple[int, int]]): Domains of index positions (x1, x2) to mask from the text.
         masks (Iterable[str], optional): Masks to insert when slicing. Defaults to None.
 
     Returns:
-        str: Text with all spans replaced with the mask text.
+        str: String with all spans replaced with the mask text.
     """
     if masks is None:
         # No masks
@@ -279,7 +275,7 @@ def to_utf8(text):
 
 
 def to_nfc(text: str) -> str:
-    """Normalize a Unicode String to NFC Form C
+    """Normalize a Unicode string to NFC form C.
 
     Form C favors the use of a fully combined character.
 

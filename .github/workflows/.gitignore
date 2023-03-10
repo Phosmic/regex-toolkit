@@ -2,8 +2,8 @@
 *
 
 # Except
-!__init__.py
-!base.py
-!constants.py
+!stale-pr.yml
+!ubuntu.yml
+windows-macos.yml
 
 !.gitignore

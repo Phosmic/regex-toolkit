@@ -2,8 +2,6 @@
 *
 
 # Except
-!__init__.py
-!base.py
-!constants.py
+!action.yml
 
 !.gitignore

@@ -1,6 +1,6 @@
 name: Feature Request
 description: Want a feature? Ask; we don't bite!
-labels: 'enhancement'
+labels: ["enhancement"]
 body:
   - type: markdown
     attributes:
