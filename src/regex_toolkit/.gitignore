@@ -5,5 +5,7 @@
 !__init__.py
 !base.py
 !constants.py
+!enums.py
+!utils.py
 
 !.gitignore

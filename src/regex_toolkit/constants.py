@@ -3,19 +3,16 @@
 This module contains constant values used throughout the project.
 """
 
-import string
 from typing import Final
 
 __all__ = [
-    "ALPHA_CHARS",
-    "DIGIT_CHARTS",
     "SAFE_CHARS",
-    "RE2_ESCAPABLE_CHARS",
+    "ESCAPE_CHARS",
 ]
 
-ALPHA_CHARS: Final[set[str]] = set(string.ascii_letters)
-DIGIT_CHARTS: Final[set[str]] = set(string.digits)
-SAFE_CHARS: Final[set[str]] = ALPHA_CHARS.union(DIGIT_CHARTS).union(
-    set(string.whitespace)
+SAFE_CHARS: Final[frozenset[str]] = frozenset(
+    map(chr, b"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 )
-RE2_ESCAPABLE_CHARS: Final[set[str]] = set(string.punctuation)
+ESCAPE_CHARS: Final[frozenset[str]] = frozenset(
+    map(chr, b"()[]{}?*+-|^$\\.&~# \t\n\r\v\f")
+)
