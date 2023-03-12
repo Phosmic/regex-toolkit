@@ -2,6 +2,7 @@
 *
 
 # Except
-!test_functions.py
+!test_base.py
+!test_utils.py
 
 !.gitignore

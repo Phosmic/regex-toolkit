@@ -5,7 +5,7 @@ __all__ = [
 ]
 from collections.abc import Iterable
 
-from regex_toolkit.constants import ESCAPE_CHARS, SAFE_CHARS
+from regex_toolkit.constants import ALWAYS_ESCAPED, ALWAYS_SAFE
 from regex_toolkit.enums import RegexFlavor
 from regex_toolkit.utils import char_to_cpoint, iter_sort_by_len
 
@@ -36,7 +36,7 @@ def escape(char: str, flavor: int = 1) -> str:
 
 
 def _escape(char: str) -> str:
-    if char in SAFE_CHARS:
+    if char in ALWAYS_SAFE:
         # Safe as-is
         return char
     else:
@@ -45,10 +45,10 @@ def _escape(char: str) -> str:
 
 
 def _escape2(char: str) -> str:
-    if char in SAFE_CHARS:
+    if char in ALWAYS_SAFE:
         # Safe as-is
         return char
-    elif char in ESCAPE_CHARS:
+    elif char in ALWAYS_ESCAPED:
         # Safe to escape with backslash
         return f"\\{char}"
     else:

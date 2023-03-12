@@ -6,13 +6,16 @@ This module contains constant values used throughout the project.
 from typing import Final
 
 __all__ = [
-    "SAFE_CHARS",
-    "ESCAPE_CHARS",
+    "ALWAYS_SAFE",
+    "ALWAYS_ESCAPED",
+    "ASCIILETTERS",
+    "DIGITS",
 ]
-
-SAFE_CHARS: Final[frozenset[str]] = frozenset(
-    map(chr, b"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+DIGITS: Final[frozenset[str]] = frozenset("0123456789")
+ASCIILETTERS: Final[frozenset[str]] = frozenset(
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 )
-ESCAPE_CHARS: Final[frozenset[str]] = frozenset(
+ALWAYS_SAFE: Final[frozenset[str]] = frozenset() | DIGITS | ASCIILETTERS
+ALWAYS_ESCAPED: Final[frozenset[str]] = frozenset(
     map(chr, b"()[]{}?*+-|^$\\.&~# \t\n\r\v\f")
 )
