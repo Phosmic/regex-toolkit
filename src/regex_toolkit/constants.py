@@ -15,7 +15,7 @@ DIGITS: Final[frozenset[str]] = frozenset("0123456789")
 ASCIILETTERS: Final[frozenset[str]] = frozenset(
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 )
-ALWAYS_SAFE: Final[frozenset[str]] = frozenset() | DIGITS | ASCIILETTERS
+ALWAYS_SAFE: Final[frozenset[str]] = DIGITS | ASCIILETTERS
 ALWAYS_ESCAPED: Final[frozenset[str]] = frozenset(
     map(chr, b"()[]{}?*+-|^$\\.&~# \t\n\r\v\f")
 )

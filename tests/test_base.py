@@ -252,7 +252,8 @@ class StringsAsExpressionRE(unittest.TestCase):
                 # Ensure the expression compiles and matches each of the strings.
                 pattern = self._re_compile(actual_exp)
                 for text in texts:
-                    self.assertTrue(pattern.match(text))
+                    with self.subTest("match pattern", text=text):
+                        self.assertTrue(pattern.match(text))
 
     def test_escapable_of_variable_length(self):
         # Unique combinations of `ALWAYS_ESCAPED` using various lengths.
@@ -265,7 +266,8 @@ class StringsAsExpressionRE(unittest.TestCase):
                 # Ensure the expression compiles and matches each of the strings.
                 pattern = self._re_compile(actual_exp)
                 for text in texts:
-                    self.assertTrue(pattern.match(text))
+                    with self.subTest("match pattern", text=text):
+                        self.assertTrue(pattern.match(text))
 
     def test_reserved_of_variable_length(self):
         # Unique combinations of reserved expressions using various lengths.
@@ -290,7 +292,8 @@ class StringsAsExpressionRE(unittest.TestCase):
                 # Ensure the expression compiles and matches each of the strings.
                 pattern = self._re_compile(actual_exp)
                 for text in texts:
-                    self.assertTrue(pattern.match(text))
+                    with self.subTest("match pattern", text=text):
+                        self.assertTrue(pattern.match(text))
 
     def test_unsafe_of_variable_length(self):
         # TODO: Include text/chars such as punctuation, etc.
@@ -304,7 +307,8 @@ class StringsAsExpressionRE(unittest.TestCase):
                 # Ensure the expression compiles and matches each of the strings.
                 pattern = self._re_compile(actual_exp)
                 for text in texts:
-                    self.assertTrue(pattern.match(text))
+                    with self.subTest("match pattern", text=text):
+                        self.assertTrue(pattern.match(text))
 
 
 ######################
@@ -344,7 +348,8 @@ class StringsAsExpressionRE2(unittest.TestCase):
                 # Ensure the expression compiles and matches each of the strings.
                 pattern = self._re_compile(actual_exp)
                 for text in texts:
-                    self.assertTrue(pattern.match(text))
+                    with self.subTest("match pattern", text=text):
+                        self.assertTrue(pattern.match(text))
 
     def test_escapable_of_variable_length(self):
         # Unique combinations of ALWAYS_ESCAPED using various lengths.
@@ -357,7 +362,8 @@ class StringsAsExpressionRE2(unittest.TestCase):
                 # Ensure the expression compiles and matches each of the strings.
                 pattern = self._re_compile(actual_exp)
                 for text in texts:
-                    self.assertTrue(pattern.match(text))
+                    with self.subTest("match pattern", text=text):
+                        self.assertTrue(pattern.match(text))
 
     def test_reserved_of_variable_length(self):
         # Unique combinations of reserved expressions using various lengths.
@@ -382,7 +388,8 @@ class StringsAsExpressionRE2(unittest.TestCase):
                 # Ensure the expression compiles and matches each of the strings.
                 pattern = self._re_compile(actual_exp)
                 for text in texts:
-                    self.assertTrue(pattern.match(text))
+                    with self.subTest("match pattern", text=text):
+                        self.assertTrue(pattern.match(text))
 
     def test_unsafe_of_variable_length(self):
         # TODO: Include text/chars such as punctuation, etc.
@@ -439,7 +446,8 @@ class StringsAsExpressionRE2(unittest.TestCase):
                 # Ensure the expression compiles and matches each of the strings.
                 pattern = self._re_compile(actual_exp)
                 for text in texts:
-                    self.assertTrue(pattern.match(text))
+                    with self.subTest("match pattern", text=text):
+                        self.assertTrue(pattern.match(text))
 
 
 ##############################3        # Exact matches that equate to reserved spaces
