@@ -1,0 +1,11 @@
+# Ignore everything
+*
+
+# Except
+!render_readme.py
+!config.json
+
+!templates/
+!templates/*
+
+!.gitignore

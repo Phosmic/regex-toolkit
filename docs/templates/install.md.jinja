@@ -1,0 +1,27 @@
+Most stable version from [**PyPi**](https://pypi.org/project/{{ pypi.name }}/):
+
+[![PyPI](https://img.shields.io/pypi/v/{{ pypi.name }}?style=flat-square)](https://pypi.org/project/{{ pypi.name }}/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/{{ pypi.name }}?style=flat-square)](https://pypi.org/project/{{ pypi.name }}/)
+[![PyPI - License](https://img.shields.io/pypi/l/{{ pypi.name }}?style=flat-square)](https://pypi.org/project/{{ pypi.name }}/)
+
+```bash
+python3 -m pip install {{ pypi.name }}
+```
+
+Development version from [**GitHub**](https://github.com/{{ repo.owner }}/{{ repo.name }}):
+
+{% if repo.badge_style %}
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/{{ repo.owner }}/{{ repo.name }}/{{ repo.actions_template }}?style={{ repo.badge_style }})
+![Codecov](https://img.shields.io/codecov/c/github/{{ repo.owner }}/{{ repo.name }}/{{ repo.primary_branch }}?flag=unittests&style={{ repo.badge_style }}&token=XMJZIW8ZL3)
+![GitHub](https://img.shields.io/github/license/{{ repo.owner }}/{{ repo.name }}?style={{ repo.badge_style }})
+{% else %}
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/{{ repo.owner }}/{{ repo.name }}/{{ repo.actions_template }})](https://github.com/{{ repo.owner }}/{{ repo.name }})
+[![Codecov](https://img.shields.io/codecov/c/github/{{ repo.owner }}/{{ repo.name }}/{{ repo.primary_branch }}?flag=unittests&token=XMJZIW8ZL3)](https://github.com/{{ repo.owner }}/{{ repo.name }})
+[![GitHub](https://img.shields.io/github/license/{{ repo.owner }}/{{ repo.name }})](https://github.com/{{ repo.owner }}/{{ repo.name }})
+{% endif %}
+
+```bash
+git clone git+https://github.com/{{ repo.owner }}/{{ repo.name }}.git
+cd {{ repo.name }}
+python3 -m pip install -e .
+```

@@ -1,0 +1,12 @@
+# Ignore everything
+*
+
+# Except
+!build_regex_toolkit/
+!build_regex_toolkit/*
+!run-tests/
+!run-tests/*
+!setup-conda/
+!setup-conda/*
+
+!.gitignore

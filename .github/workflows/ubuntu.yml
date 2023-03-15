@@ -1,0 +1,54 @@
+name: Ubuntu
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+    paths-ignore: ["docs/**"]
+
+env:
+  REGEX_TOOLKIT_CI: 1
+
+permissions:
+  contents: read
+
+jobs:
+  pytest:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash -el {0}
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        env_file: [actions-310.yml, actions-311.yml]
+      fail-fast: false
+    # name: ${{ matrix.name || matrix.env_file }}
+    name: ${{ matrix.env_file }}
+    env:
+      ENV_FILE: ci/deps/${{ matrix.env_file }}
+      IS_PYPY: ${{ contains(matrix.env_file, 'pypy') }}
+    concurrency:
+      # https://github.community/t/concurrecy-not-work-for-push/183068/7
+      group: ${{ github.event_name == 'push' && github.run_number || github.ref }}-${{ matrix.env_file }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Conda
+        uses: ./.github/actions/setup-conda
+        with:
+          environment-file: ${{ env.ENV_FILE }}
+
+      - name: Build Regex-Toolkit
+        uses: ./.github/actions/build_regex_toolkit
+
+      - name: Test
+        uses: ./.github/actions/run-tests
+        # with:
+        #   codecov-token: ${{ secrets.CODECOV_TOKEN }}

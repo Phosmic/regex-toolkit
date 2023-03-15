@@ -1,6 +1,6 @@
 name: Bug report
 description: Are you experiencing a problem? Create a report to help us improve!
-labels: "bug"
+labels: ["bug"]
 body:
   - type: markdown
     attributes:

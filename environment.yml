@@ -1,0 +1,20 @@
+# Local development dependencies including docs building, website upload, ASV benchmark
+name: regex_toolkit
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+
+  # test dependencies
+  - pytest>=7.0.0
+  - pytest-cov
+  - pytest-xdist>=2.2.0
+  # - pytest-asyncio>=0.17
+  - coverage
+
+  # Code checks
+  - black=22.10.0
+  - flake8=6.0.0
+  - isort>=5.2.1
+  - mypy=1.0
