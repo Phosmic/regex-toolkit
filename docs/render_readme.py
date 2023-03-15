@@ -1,8 +1,9 @@
-# import argparse
+import argparse
 import json
 import logging
 import os
 import re
+from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
 from pydoc_markdown import PydocMarkdown
@@ -104,9 +105,19 @@ def render_library_contents(
         file.write(rendered_contents)
 
 
-def main() -> None:  # config_file: str, template_file: str, output_file: str, replace: bool) -> None:
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-c",
+        "--config",
+        type=Path,
+        default="config.json",
+        help="Path to the config file.",
+    )
+    args = parser.parse_args()
+
     # Load the config
-    with open("config.json", mode="r", encoding="utf-8") as file:
+    with open(args.config, mode="r", encoding="utf-8") as file:
         config = json.loads(file.read())
 
     # Generate the library documentation
@@ -123,10 +134,10 @@ def main() -> None:  # config_file: str, template_file: str, output_file: str, r
     environment = Environment(loader=loader, auto_reload=False)
     template = environment.get_template(config["main_template"])
     rendered = template.render(**config["template_data"])
+
     with open(config["output_file"], mode="w", encoding="utf-8") as file:
         file.write(rendered)
 
 
 if __name__ == "__main__":
-    # TODO: Implement argparse here
     main()

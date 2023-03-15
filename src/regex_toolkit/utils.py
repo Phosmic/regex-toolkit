@@ -52,14 +52,16 @@ def sort_by_len(
 
 
 def ord_to_cpoint(ordinal: int) -> str:
-    """Character codepoint from character ordinal.
+    """Character ordinal to character codepoint.
+
+    The codepoint is always 8 characters long (zero-padded).
 
     Example:
 
-        ```python
-        # Output: '00000061'
-        ord_to_cpoint(97)
-        ```
+    ```python
+    # Output: '00000061'
+    ord_to_cpoint(97)
+    ```
 
     Args:
         ordinal (int): Character ordinal.
@@ -71,7 +73,7 @@ def ord_to_cpoint(ordinal: int) -> str:
 
 
 def cpoint_to_ord(cpoint: str) -> int:
-    """Character ordinal from character codepoint.
+    """Character codepoint to character ordinal.
 
     Args:
         cpoint (str): Character codepoint.
@@ -83,14 +85,14 @@ def cpoint_to_ord(cpoint: str) -> int:
 
 
 def char_to_cpoint(char: str) -> str:
-    """Character codepoint from character.
+    """Character to character codepoint.
 
     Example:
 
-        ```python
-        # Output: '00000061'
-        char_to_cpoint("a")
-        ```
+    ```python
+    # Output: '00000061'
+    char_to_cpoint("a")
+    ```
 
     Args:
         char (str): Character.
@@ -120,21 +122,21 @@ def to_nfc(text: str) -> str:
 
 
 def iter_char_range(first_cpoint: int, last_cpoint: int) -> Generator[str, None, None]:
-    """Iterate all character within a range of codepoints (inclusive).
+    """Iterate all characters within a range of codepoints (inclusive).
 
     Args:
         first_cpoint (int): Starting (first) codepoint.
         last_cpoint (int): Ending (last) codepoint.
 
     Yields:
-        str: Character from within a range of codepoints.
+        str: Characters within a range of codepoints.
     """
     for i in range(ord(first_cpoint), ord(last_cpoint) + 1):
         yield chr(i)
 
 
 def char_range(first_cpoint: int, last_cpoint: int) -> tuple[str, ...]:
-    """Tuple of all character within a range of codepoints (inclusive).
+    """Tuple of all characters within a range of codepoints (inclusive).
 
     Args:
         first_cpoint (int): Starting (first) codepoint.
@@ -185,7 +187,7 @@ def mask_spans(
 
     Args:
         text (str): String to slice.
-        spans (Iterable[list[int] | tuple[int, int]]): Domains of index positions (x1, x2) to mask from the text.
+        spans (Iterable[list[int] | tuple[int, int]]): Domains of index positions (x1, x2) to mask within the text.
         masks (Iterable[str], optional): Masks to insert when slicing. Defaults to None.
 
     Returns:

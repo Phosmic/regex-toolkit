@@ -127,14 +127,16 @@ Sort strings by length.
 def ord_to_cpoint(ordinal: int) -> str
 ```
 
-Character codepoint from character ordinal.
+Character ordinal to character codepoint.
+
+The codepoint is always 8 characters long (zero-padded).
 
 **Example**:
 
-  ```python
-  # Output: '00000061'
-  ord_to_cpoint(97)
-  ```
+```python
+# Output: '00000061'
+ord_to_cpoint(97)
+```
 
 **Arguments**:
 
@@ -152,7 +154,7 @@ Character codepoint from character ordinal.
 def cpoint_to_ord(cpoint: str) -> int
 ```
 
-Character ordinal from character codepoint.
+Character codepoint to character ordinal.
 
 **Arguments**:
 
@@ -170,14 +172,14 @@ Character ordinal from character codepoint.
 def char_to_cpoint(char: str) -> str
 ```
 
-Character codepoint from character.
+Character to character codepoint.
 
 **Example**:
 
-  ```python
-  # Output: '00000061'
-  char_to_cpoint("a")
-  ```
+```python
+# Output: '00000061'
+char_to_cpoint("a")
+```
 
 **Arguments**:
 
@@ -216,7 +218,7 @@ def iter_char_range(first_cpoint: int,
                     last_cpoint: int) -> Generator[str, None, None]
 ```
 
-Iterate all character within a range of codepoints (inclusive).
+Iterate all characters within a range of codepoints (inclusive).
 
 **Arguments**:
 
@@ -225,7 +227,7 @@ Iterate all character within a range of codepoints (inclusive).
 
 **Yields**:
 
-- _str_ - Character from within a range of codepoints.
+- _str_ - Characters within a range of codepoints.
 
 <a id="regex_toolkit.utils.char_range"></a>
 
@@ -235,7 +237,7 @@ Iterate all character within a range of codepoints (inclusive).
 def char_range(first_cpoint: int, last_cpoint: int) -> tuple[str, ...]
 ```
 
-Tuple of all character within a range of codepoints (inclusive).
+Tuple of all characters within a range of codepoints (inclusive).
 
 **Arguments**:
 
@@ -289,7 +291,7 @@ Todo: Add support for overlapping (and unordered?) spans.
 **Arguments**:
 
 - `text` _str_ - String to slice.
-- `spans` _Iterable[list[int] | tuple[int, int]]_ - Domains of index positions (x1, x2) to mask from the text.
+- `spans` _Iterable[list[int] | tuple[int, int]]_ - Domains of index positions (x1, x2) to mask within the text.
 - `masks` _Iterable[str], optional_ - Masks to insert when slicing. Defaults to None.
 
 **Returns**:
