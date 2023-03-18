@@ -117,7 +117,7 @@ Sort strings by length.
 
 **Returns**:
 
-  tuple[str, ...]: Strings sorted by length.
+- _tuple[str, ...]_ - Strings sorted by length.
 
 <a id="regex_toolkit.utils.ord_to_cpoint"></a>
 
@@ -246,7 +246,7 @@ Tuple of all characters within a range of codepoints (inclusive).
 
 **Returns**:
 
-  tuple[str, ...]: Characters within a range of codepoints.
+- _tuple[str, ...]_ - Characters within a range of codepoints.
 
 <a id="regex_toolkit.utils.mask_span"></a>
 

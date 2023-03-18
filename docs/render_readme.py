@@ -83,13 +83,13 @@ def render_library_contents(
     # NOTE: Any types containing a "_" will be excluded from this fix
     # Fix some missing highlighting in the "**Returns**" and "**Yields**" sections
     rendered_contents = re.sub(
-        r"\*\*(Returns|Yields)\*\*:\n\n  ([a-zA-Z0-9, \|\[\]]+): ",
+        r"\*\*(Returns|Yields)\*\*:\n\n  ([a-zA-Z0-9,. \|\[\]]+): ",
         r"**\1**:\n\n- `\2` - ",
         rendered_contents,
     )
-    # Change the Returns and Yields code blocks to italics
+    # Change the returns and yields code blocks to italics
     rendered_contents = re.sub(
-        r"\*\*(Returns|Yields)\*\*:\n\n- `([a-zA-Z0-9, \|\[\]]+)` - ",
+        r"\*\*(Returns|Yields)\*\*:\n\n- `([a-zA-Z0-9,. \|\[\]]+)` - ",
         r"**\1**:\n\n- _\2_ - ",
         rendered_contents,
     )
