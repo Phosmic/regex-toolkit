@@ -162,17 +162,12 @@ def mask_span(
 
     Returns:
         str: String with span replaced with the mask text.
-
-    Raises:
-        ValueError: Invalid index positions for start and end.
     """
-    if not 0 <= span[0] <= span[1] <= len(text):
-        raise ValueError(f"Invalid index positions for start and end: {span}")
     if mask is None:
         # No mask
         return text[: span[0]] + text[span[1] :]
     else:
-        # Use mask
+        # Has mask
         return text[: span[0]] + mask + text[span[1] :]
 
 
@@ -192,19 +187,13 @@ def mask_spans(
 
     Returns:
         str: String with all spans replaced with the mask text.
-
-    Raises:
-        ValueError: Invalid index positions for start and end.
     """
-    try:
-        if masks is None:
-            # No masks
-            for span in reversed(spans):
-                text = mask_span(text, span, mask=None)
-        else:
-            # Has mask
-            for span, mask in zip(reversed(spans), reversed(masks)):
-                text = mask_span(text, span, mask=mask)
-    except ValueError as err:
-        raise err
+    if masks is None:
+        # No masks
+        for span in reversed(spans):
+            text = mask_span(text, span, mask=None)
+    else:
+        # Has masks
+        for span, mask in zip(reversed(spans), reversed(masks)):
+            text = mask_span(text, span, mask=mask)
     return text
