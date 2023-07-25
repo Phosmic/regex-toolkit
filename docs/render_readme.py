@@ -14,7 +14,7 @@ from pydoc_markdown.contrib.processors.smart import GoogleProcessor
 from pydoc_markdown.contrib.renderers.markdown import MarkdownRenderer
 from pydoc_markdown.interfaces import Context
 
-logger = logging.getLogger(__name__)
+logger: logging.Logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
@@ -111,13 +111,14 @@ def main() -> None:
         "-c",
         "--config",
         type=Path,
-        default="config.json",
+        default=Path("docs/config.json"),
         help="Path to the config file.",
     )
     args = parser.parse_args()
+    config_file_path: Path = args.config
 
     # Load the config
-    with open(args.config, mode="r", encoding="utf-8") as file:
+    with open(config_file_path.resolve(), mode="r", encoding="utf-8") as file:
         config = json.loads(file.read())
 
     # Generate the library documentation
@@ -130,12 +131,15 @@ def main() -> None:
 
     # Render the markdown readme
     # TODO: Move this to a separate function?
-    loader = FileSystemLoader(config["templates_dir"])
+    templates_dir_path = Path(config["templates_dir"])
+    loader = FileSystemLoader(templates_dir_path.resolve())
+
     environment = Environment(loader=loader, auto_reload=False)
     template = environment.get_template(config["main_template"])
     rendered = template.render(**config["template_data"])
 
-    with open(config["output_file"], mode="w", encoding="utf-8") as file:
+    output_file_path = Path(config["output_file"])
+    with open(output_file_path.resolve(), mode="w", encoding="utf-8") as file:
         file.write(rendered)
 
 

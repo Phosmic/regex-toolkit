@@ -1,4 +1,5 @@
 PYTHON=python3
+APP_NAME=regex-toolkit
 
 install:
 	${PYTHON} -m pip install .
@@ -7,14 +8,20 @@ install-dev:
 	${PYTHON} -m pip install -e .
 
 test:
+	@echo 'Running tests'
 	${PYTHON} -m pytest tests
+	@echo 'Done'
 
 lint:
+	@echo 'Linting code'
 	${PYTHON} -m pylint src
+	@echo 'Done'
 
 format:
+	@echo 'Formatting code'
 	${PYTHON} -m isort src tests docs/render_readme.py
 	${PYTHON} -m black src tests docs/render_readme.py
+	@echo 'Done'
 
 build:
 	@echo 'Building package'
@@ -25,12 +32,12 @@ publish:
 	@echo 'Building package'
 	${PYTHON} -m build
 	@echo 'Uploading package'
-	${PYTHON} -m twine upload dist/yogger-*.tar.gz dist/yogger-*.whl
+	${PYTHON} -m twine upload dist/${PYTHON}-*.tar.gz dist/${PYTHON}-*.whl
 	@echo 'Done'
 
 readme:
 	@echo 'Generating README.md'
-	@cd docs && ${PYTHON} render_readme.py
+	${PYTHON} docs/render_readme.py
 	@echo 'Copying README.md'
-	@cp ./docs/README.md ./README.md
+	cp ./docs/README.md ./README.md
 	@echo 'Done'

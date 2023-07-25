@@ -29,3 +29,5 @@ runs:
         flags: unittests
         name: regex_toolkit
         fail_ci_if_error: false
+      # env:
+      #   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

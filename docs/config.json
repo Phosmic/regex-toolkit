@@ -1,21 +1,25 @@
 {
-    "packages_dir": "../src",
+    "packages_dir": "./src",
     "packages": ["regex_toolkit"],
-    "output_file": "README.md",
+    "output_file": "./README.md",
     "main_template": "main.md.jinja",
-    "templates_dir": "./templates",
+    "templates_dir": "./docs/templates",
     "rendered_filename": "rendered_libs.md",
     "template_data": {
         "pypi": {
             "name": "regex-toolkit",
             "full_name": "Regex-Toolkit"
         },
+        "codecov": {
+            "branch": "main",
+            "graphing_token": "NOT_YET_CONFIGURED"
+        },
         "repo": {
             "name": "regex-toolkit",
             "full_name": "Regex-Toolkit",
             "owner": "Phosmic",
             "badge_style": "flat-square",
-            "primary_branch": "master",
+            "primary_branch": "main",
             "actions_template": "ubuntu.yml"
         }
     }
