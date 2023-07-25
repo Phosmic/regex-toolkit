@@ -36,21 +36,21 @@ Most stable version from [**PyPi**](https://pypi.org/project/regex-toolkit/):
 [![PyPI - License](https://img.shields.io/pypi/l/regex-toolkit?style=flat-square)](https://pypi.org/project/regex-toolkit/)
 
 ```bash
-python3 -m pip install regex-toolkit
+$ python3 -m pip install regex-toolkit
 ```
 
 Development version from [**GitHub**](https://github.com/Phosmic/regex-toolkit):
 
 
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/Phosmic/regex-toolkit/ubuntu.yml?style=flat-square)
-![Codecov](https://img.shields.io/codecov/c/github/Phosmic/regex-toolkit/master?flag=unittests&style=flat-square&token=XMJZIW8ZL3)
+![Codecov](https://img.shields.io/codecov/c/github/Phosmic/regex-toolkit/main?flag=unittests&style=flat-square&token=NOT_YET_CONFIGURED)
 ![GitHub](https://img.shields.io/github/license/Phosmic/regex-toolkit?style=flat-square)
 
 
 ```bash
-git clone git+https://github.com/Phosmic/regex-toolkit.git
-cd regex-toolkit
-python3 -m pip install -e .
+$ git clone git+https://github.com/Phosmic/regex-toolkit.git
+$ cd regex-toolkit
+$ python3 -m pip install -e .
 ```
 
 ---
@@ -270,10 +270,6 @@ Slice and mask a string using a single span.
 
 - _str_ - String with span replaced with the mask text.
 
-**Raises**:
-
-- `ValueError` - Invalid index positions for start and end.
-
 <a id="regex_toolkit.utils.mask_spans"></a>
 
 #### `mask_spans`
@@ -297,10 +293,6 @@ Todo: Add support for overlapping (and unordered?) spans.
 **Returns**:
 
 - _str_ - String with all spans replaced with the mask text.
-
-**Raises**:
-
-- `ValueError` - Invalid index positions for start and end.
 
 <a id="regex_toolkit.base"></a>
 
