@@ -1,5 +1,5 @@
 PYTHON=python3
-APP_NAME=regex-toolkit
+APP_NAME=regex_toolkit
 
 install:
 	${PYTHON} -m pip install .
