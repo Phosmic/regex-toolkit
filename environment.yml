@@ -6,12 +6,16 @@ dependencies:
   - python=3.10
   - pip
 
-  # test dependencies
+  # Test dependencies
   - pytest>=7.0.0
   - pytest-cov
   - pytest-xdist>=2.2.0
   # - pytest-asyncio>=0.17
   - coverage
+
+  # Required dependencies
+  - pip:
+    - google-re2>=1.0
 
   # Code checks
   - black=22.10.0
