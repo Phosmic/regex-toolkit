@@ -2,8 +2,8 @@
 *
 
 # Except
-!test_base.py
-!test_enums.py
-!test_utils.py
+!stale-pr.yml
+!ubuntu.yml
+windows-macos.yml
 
 !.gitignore

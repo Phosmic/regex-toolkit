@@ -1,0 +1,33 @@
+name: Run tests and report results
+description: Run tests and report results
+# inputs:
+#   codecov-token:
+#     description: Codecov token for private repo.
+
+runs:
+  using: composite
+  steps:
+    - name: Test
+      run: ci/run_tests.sh
+      shell: bash -el {0}
+
+    - name: Publish Test Results
+      uses: actions/upload-artifact@v2
+      with:
+        name: Test results
+        path: test-data.xml
+
+    - name: Report Coverage
+      run: coverage report -m
+      shell: bash -el {0}
+
+    - name: Upload Coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        # token: ${{ inputs.codecov-token }}
+        files: ./coverage.xml
+        flags: unittests
+        name: regex_toolkit
+        fail_ci_if_error: false
+      # env:
+      #   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

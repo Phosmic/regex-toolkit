@@ -2,8 +2,6 @@
 *
 
 # Except
-!test_base.py
-!test_enums.py
-!test_utils.py
+!action.yml
 
 !.gitignore

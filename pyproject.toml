@@ -4,45 +4,152 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "regex_toolkit"
-description = "Effortlessly craft efficient RE and RE2 expressions with user-friendly tools."
+description = "Tools for creating RE and RE2 expressions"
 readme = "README.md"
-requires-python = ">=3.9,<4"
-license = {text = "GPL-3.0-or-later"}
-keywords = ["re", "re2", "expression", "regex", "pattern", "tool", "toolkit"]
-authors = [
-    {name = "Nicholas Londowski", email = "nick@phosmic.com"},
-    {name = "Francis Salerno", email = "frank@phosmic.com"},
-]
+requires-python = ">=3.10,<4"
+license = { file = 'LICENSE' }
+keywords = ["re", "re2", "regex", "expression", "pattern", "tool", "toolkit"]
+authors = [{ name = "The Phosmic Development Team", email = "dev@phosmic.com" }]
 classifiers = [
-    "Development Status :: 3 - Alpha",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
-    "Natural Language :: English",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: Implementation :: CPython",
-    "Programming Language :: Python :: Implementation :: PyPy",
-    "Topic :: Utilities",
-    "Topic :: Text Processing",
-    "Topic :: Software Development :: Libraries",
-    "Topic :: Software Development :: Libraries :: Python Modules",
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+  "Natural Language :: English",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Utilities",
+  "Topic :: Software Development",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dependencies = []
+dependencies = ["google-re2>=1.0"]
 dynamic = ["version"]
+
+[project.urls]
+homepage = "https://pypi.org/project/regex-toolkit/"
+repository = "https://github.com/Phosmic/regex-toolkit"
+issues = "https://github.com/Phosmic/regex-toolkit/issues"
 
 [tool.setuptools]
 packages = ["regex_toolkit"]
-package-dir = {"" = "src"}
+package-dir = { "" = "src" }
 
 [tool.setuptools.dynamic]
-version = {attr = "regex_toolkit.__version__"}
+version = { attr = "regex_toolkit.__version__" }
 
-[project.urls]
-Homepage = "https://pypi.org/project/regex-toolkit/"
-Repository = "https://github.com/Phosmic/regex-toolkit"
-Issues = "https://github.com/Phosmic/regex-toolkit/issues"
+[tool.coverage.run]
+branch = true
+source = ["src"]
+
+[tool.coverage.paths]
+source = [
+  "src",
+  # "*/site-packages"
+]
+
+[tool.coverage.report]
+ignore_errors = false
+show_missing = true
+omit = []
+exclude_lines = [
+  # Have to re-enable the standard pragma:
+  "pragma: no cover",
+  # Don't complain about missing debug-only code:
+  "def __repr__",
+  "if self.debug",
+  # Don't complain if tests don't hit defensive assertion code:
+  "raise AssertionError",
+  "raise NotImplementedError",
+  "AbstractMethodError",
+  # Don't complain if non-runnable code isn't run:
+  "if 0:",
+  "if False:",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.pylint.messages_control]
+max-line-length = 88
+disable = []
+
+[tool.black]
+target-version = ['py310', 'py311']
+exclude = '''
+(
+    asv_bench/env
+  | \.egg
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.nox
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | setup.py
+)
+'''
+
+[tool.mypy]
+python_version = "3.10"
+files = ["src"]
+show_error_codes = true
+pretty = true
+# strict = true
+allow_redefinition = true
+disallow_subclassing_any = false
+no_implicit_optional = true
+local_partial_types = true
+# no_implicit_reexport = true
+strict_equality = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+warn_unreachable = true
+
+[tool.isort]
+profile = "black"
+src_paths = ["src", "tests"]
+multi_line_output = 3
+atomic = false
+include_trailing_comma = true
+force_grid_wrap = 3
+use_parentheses = true
+balanced_wrapping = false
+ensure_newline_before_comments = true
+group_by_package = true
+remove_redundant_aliases = false
+combine_as_imports = false
+honor_case_in_force_sorted_sections = true
+combine_star = false
+star_first = true
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+# skip_glob = []
+
+
+[tool.pytest.ini_options]
+# NOTE: Have not decided on a minimum version yet
+minversion = "7.0"
+addopts = "--strict-config --strict-markers --capture=no --junitxml=test-data.xml"
+empty_parameter_set_mark = "fail_at_collect"
+# Must fail if any test is marked as xfail but passes
+xfail_strict = true
+testpaths = ["tests"]
+doctest_optionflags = [
+  # Ignores whitespace differences, useful for spanning multiple lines
+  "NORMALIZE_WHITESPACE",
+  # Ignores differences in exception messages
+  "IGNORE_EXCEPTION_DETAIL",
+  # Allows you to use ... in place of a value in an expected output string
+  "ELLIPSIS",
+]
+filterwarnings = []
+junit_family = "xunit2"
+markers = []
+# asyncio_mode = "strict"
