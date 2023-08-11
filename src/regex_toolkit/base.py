@@ -53,7 +53,7 @@ def _escape2(char: str) -> str:
         return f"\\{char}"
     else:
         # Otherwise escape using the codepoint
-        return "\\x{" + char_to_cpoint(char) + "}"
+        return "\\x{" + char_to_cpoint(char).removeprefix("0000") + "}"
 
 
 def string_as_exp(text: str, flavor: int = 1) -> str:

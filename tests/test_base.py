@@ -71,9 +71,26 @@ class TestEscapeRE2(unittest.TestCase):
                 pattern = self._re_compile(actual_exp)
                 self.assertTrue(pattern.match(char))
 
+    def test_trimmed(self):
+        expected_exp = "\\x{00b0}"
+        actual_exp = regex_toolkit.escape("°", self._flavor)
+        self.assertEqual(actual_exp, expected_exp)
+        # Ensure the expression compiles and matches the character.
+        pattern = self._re_compile(actual_exp)
+        self.assertTrue(pattern.match("°"))
+
+    def test_untrimmed(self):
+        expected_exp = "\\x{0001f170}"
+        actual_exp = regex_toolkit.escape("🅰", self._flavor)
+        self.assertEqual(actual_exp, expected_exp)
+        # Ensure the expression compiles and matches the character.
+        pattern = self._re_compile(actual_exp)
+        self.assertTrue(pattern.match("🅰"))
+
     def test_unknown(self):
         # TODO: Include additional characters to test.
-        # NOTE: Same as running: "\\x{" + format(ord("🌄"), "x").zfill(8) + "}"
+        # TODO: Cover chars that would be trimmed.
+        # NOTE: Same as running: "\\x{" + format(ord("🌄"), "x").zfill(8).removeprefix("0000") + "}"
         for char, expected_exp in (
             # Length 1
             ("🅰", r"\x{0001f170}"),
@@ -237,6 +254,8 @@ class TestStringAsExpressionRE2(unittest.TestCase):
         self.assertTrue(pattern.match(text))
 
     def test_unknown_joined_as_one(self):
+        # TODO: Include additional characters to test.
+        # TODO: Cover chars that would be trimmed.
         text = "🅰🅱🅾🅿🆎🆑🆒🆓🆔🆕🆖🆗🆘🆙🆚🇦🇧🇨🈁🈂🈚🈯🈲🈳🈴🈵🈶🈷🈸🈹🈺🉐🉑🌀🌁🌂🌃🌄🌅"
         expected_exp = r"".join(
             (
