@@ -121,31 +121,31 @@ def to_nfc(text: str) -> str:
     return unicodedata.normalize("NFC", text)
 
 
-def iter_char_range(first_cpoint: int, last_cpoint: int) -> Generator[str, None, None]:
-    """Iterate all characters within a range of codepoints (inclusive).
+def iter_char_range(first_char: str, last_char: str) -> Generator[str, None, None]:
+    """Iterate all characters within a range of characters (inclusive).
 
     Args:
-        first_cpoint (int): Starting (first) codepoint.
-        last_cpoint (int): Ending (last) codepoint.
+        first_char (str): Starting (first) character.
+        last_char (str): Ending (last) character.
 
     Yields:
-        str: Characters within a range of codepoints.
+        str: Characters within a range of characters.
     """
-    for i in range(ord(first_cpoint), ord(last_cpoint) + 1):
+    for i in range(ord(first_char), ord(last_char) + 1):
         yield chr(i)
 
 
-def char_range(first_cpoint: int, last_cpoint: int) -> tuple[str, ...]:
-    """Tuple of all characters within a range of codepoints (inclusive).
+def char_range(first_char: str, last_char: str) -> tuple[str, ...]:
+    """Tuple of all characters within a range of characters (inclusive).
 
     Args:
-        first_cpoint (int): Starting (first) codepoint.
-        last_cpoint (int): Ending (last) codepoint.
+        first_char (str): Starting (first) character.
+        last_char (str): Ending (last) character.
 
     Returns:
-        tuple[str, ...]: Characters within a range of codepoints.
+        tuple[str, ...]: Characters within a range of characters.
     """
-    return tuple(iter_char_range(first_cpoint, last_cpoint))
+    return tuple(iter_char_range(first_char, last_char))
 
 
 def mask_span(

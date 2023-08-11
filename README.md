@@ -214,39 +214,39 @@ Form C favors the use of a fully combined character.
 #### `iter_char_range`
 
 ```python
-def iter_char_range(first_cpoint: int,
-                    last_cpoint: int) -> Generator[str, None, None]
+def iter_char_range(first_char: str,
+                    last_char: str) -> Generator[str, None, None]
 ```
 
-Iterate all characters within a range of codepoints (inclusive).
+Iterate all characters within a range of characters (inclusive).
 
 **Arguments**:
 
-- `first_cpoint` _int_ - Starting (first) codepoint.
-- `last_cpoint` _int_ - Ending (last) codepoint.
+- `first_char` _str_ - Starting (first) character.
+- `last_char` _str_ - Ending (last) character.
 
 **Yields**:
 
-- _str_ - Characters within a range of codepoints.
+- _str_ - Characters within a range of characters.
 
 <a id="regex_toolkit.utils.char_range"></a>
 
 #### `char_range`
 
 ```python
-def char_range(first_cpoint: int, last_cpoint: int) -> tuple[str, ...]
+def char_range(first_char: str, last_char: str) -> tuple[str, ...]
 ```
 
-Tuple of all characters within a range of codepoints (inclusive).
+Tuple of all characters within a range of characters (inclusive).
 
 **Arguments**:
 
-- `first_cpoint` _int_ - Starting (first) codepoint.
-- `last_cpoint` _int_ - Ending (last) codepoint.
+- `first_char` _str_ - Starting (first) character.
+- `last_char` _str_ - Ending (last) character.
 
 **Returns**:
 
-- _tuple[str, ...]_ - Characters within a range of codepoints.
+- _tuple[str, ...]_ - Characters within a range of characters.
 
 <a id="regex_toolkit.utils.mask_span"></a>
 
