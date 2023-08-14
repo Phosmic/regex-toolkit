@@ -2,6 +2,7 @@ import re
 import unittest
 from itertools import product
 
+import pytest
 import re2
 
 import regex_toolkit
@@ -572,3 +573,30 @@ class StringsAsExpressionRE2(unittest.TestCase):
 ##############################3                )
 
 # TODO: Add tests for actually compiling the e.
+
+
+@pytest.mark.parametrize(
+    "chars, expected",
+    (
+        # 1 char does not make a range
+        (["a"], "a"),
+        # 2 chars should not make a range
+        (["a", "b"], "ab"),
+        # 3+ sequential chars make a range
+        (["a", "b", "c"], "a-c"),
+        # 3+ non-sequential chars should not make a range
+        (["a", "c", "e"], "ace"),
+        # 3+ sequential chars with extra out of range char
+        (["a", "b", "c", "z"], "a-cz"),
+        # Chars should always be ordered by ordinal
+        (["b", "a"], "ab"),
+        # Chars should always be ordered by ordinal
+        (["e", "c", "a"], "ace"),
+        # Chars should always be ordered by ordinal
+        (["z", "c", "b", "a"], "a-cz"),
+        # Duplicates should be removed
+        (["d", "a", "b", "c", "a"], "a-d"),
+    ),
+)
+def test_make_exp(chars, expected):
+    assert regex_toolkit.make_exp(chars) == expected

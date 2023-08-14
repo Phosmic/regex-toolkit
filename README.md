@@ -77,6 +77,25 @@ import regex_toolkit
 
 # `regex_toolkit.utils`
 
+<a id="regex_toolkit.utils.validate_regex_flavor"></a>
+
+#### `validate_regex_flavor`
+
+```python
+@lru_cache(maxsize=2)
+def validate_regex_flavor(flavor: int) -> None | NoReturn
+```
+
+Validate a regex flavor.
+
+**Arguments**:
+
+- `flavor` _int_ - Regex flavor (1 for RE, 2 for RE2).
+
+**Raises**:
+
+- `ValueError` - Invalid regex flavor.
+
 <a id="regex_toolkit.utils.iter_sort_by_len"></a>
 
 #### `iter_sort_by_len`
@@ -134,8 +153,8 @@ The codepoint is always 8 characters long (zero-padded).
 **Example**:
 
 ```python
-# Output: '00000061'
 ord_to_cpoint(97)
+# Output: '00000061'
 ```
 
 **Arguments**:
@@ -177,8 +196,8 @@ Character to character codepoint.
 **Example**:
 
 ```python
-# Output: '00000061'
 char_to_cpoint("a")
+# Output: '00000061'
 ```
 
 **Arguments**:
@@ -362,6 +381,36 @@ Create a regex expression that exactly matches any one string.
 **Returns**:
 
 - _str_ - Expression that exactly matches any one of the original strings.
+
+**Raises**:
+
+- `ValueError` - Invalid regex flavor.
+
+<a id="regex_toolkit.base.make_exp"></a>
+
+#### `make_exp`
+
+```python
+def make_exp(chars: Iterable[str], flavor: int = 1) -> str
+```
+
+Create a regex expression that exactly matches a list of characters.
+
+**Example**:
+
+```python
+exp = "[" + make_exp(["a", "b", "c", "z", "y", "x"]) + "]"
+# Output: '[a-cx-z]'
+```
+
+**Arguments**:
+
+- `chars` _Iterable[str]_ - Characters to match.
+- `flavor` _int, optional_ - Regex flavor (1 for RE, 2 for RE2). Defaults to 1.
+
+**Returns**:
+
+- _str_ - Expression that exactly matches the original characters.
 
 **Raises**:
 

@@ -1,7 +1,20 @@
 import unittest
 from collections.abc import Generator, Iterable
 
+import pytest
+
 import regex_toolkit
+
+
+@pytest.mark.parametrize("flavor", (1, 2))
+def test_validate_regex_flavor(flavor):
+    regex_toolkit.validate_regex_flavor(flavor)
+
+
+@pytest.mark.parametrize("flavor", (0, 3))
+def test_validate_regex_flavor_invalid(flavor):
+    with pytest.raises(ValueError, match=r"^Invalid regex flavor: \d+$"):
+        regex_toolkit.validate_regex_flavor(flavor)
 
 
 def is_sorted_by_len(texts: Iterable[str], reverse: bool = False) -> bool:

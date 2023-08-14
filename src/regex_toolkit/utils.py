@@ -1,7 +1,12 @@
 import unicodedata
 from collections.abc import Generator, Iterable
+from functools import lru_cache
+from typing import NoReturn
+
+from regex_toolkit.enums import RegexFlavor
 
 __all__ = [
+    "validate_regex_flavor",
     "iter_sort_by_len",
     "sort_by_len",
     "ord_to_cpoint",
@@ -14,6 +19,22 @@ __all__ = [
     "mask_span",
     "mask_spans",
 ]
+
+
+@lru_cache(maxsize=2)
+def validate_regex_flavor(flavor: int) -> None | NoReturn:
+    """Validate a regex flavor.
+
+    Args:
+        flavor (int): Regex flavor (1 for RE, 2 for RE2).
+
+    Raises:
+        ValueError: Invalid regex flavor.
+    """
+    try:
+        flavor = RegexFlavor(flavor)
+    except ValueError:
+        raise ValueError(f"Invalid regex flavor: {flavor}")
 
 
 def iter_sort_by_len(
@@ -59,8 +80,8 @@ def ord_to_cpoint(ordinal: int) -> str:
     Example:
 
     ```python
-    # Output: '00000061'
     ord_to_cpoint(97)
+    # Output: '00000061'
     ```
 
     Args:
@@ -90,8 +111,8 @@ def char_to_cpoint(char: str) -> str:
     Example:
 
     ```python
-    # Output: '00000061'
     char_to_cpoint("a")
+    # Output: '00000061'
     ```
 
     Args:
