@@ -133,6 +133,13 @@ def to_nfc(text: str) -> str:
 
     Form C favors the use of a fully combined character.
 
+    Example:
+
+    ```python
+    to_nfc("e\\u0301") == "é"
+    # Output: True
+    ```
+
     Args:
         text (str): String to normalize.
 
@@ -145,6 +152,16 @@ def to_nfc(text: str) -> str:
 def iter_char_range(first_char: str, last_char: str) -> Generator[str, None, None]:
     """Iterate all characters within a range of characters (inclusive).
 
+    Example:
+
+    ```python
+    char_range("a", "c")
+    # Output: ('a', 'b', 'c')
+
+    char_range("c", "a")
+    # Output: ('c', 'b', 'a')
+    ```
+
     Args:
         first_char (str): Starting (first) character.
         last_char (str): Ending (last) character.
@@ -152,12 +169,28 @@ def iter_char_range(first_char: str, last_char: str) -> Generator[str, None, Non
     Yields:
         str: Characters within a range of characters.
     """
-    for i in range(ord(first_char), ord(last_char) + 1):
-        yield chr(i)
+    first_ord = ord(first_char)
+    last_ord = ord(last_char)
+    if first_ord > last_ord:
+        ord_range = range(first_ord, last_ord - 1, -1)
+    else:
+        ord_range = range(first_ord, last_ord + 1)
+    for ordinal in ord_range:
+        yield chr(ordinal)
 
 
 def char_range(first_char: str, last_char: str) -> tuple[str, ...]:
     """Tuple of all characters within a range of characters (inclusive).
+
+    Example:
+
+    ```python
+    char_range("a", "d")
+    # Output: ('a', 'b', 'c', 'd')
+
+    char_range("d", "a")
+    # Output: ('d', 'c', 'b', 'a')
+    ```
 
     Args:
         first_char (str): Starting (first) character.

@@ -220,6 +220,13 @@ Normalize a Unicode string to NFC form C.
 
 Form C favors the use of a fully combined character.
 
+**Example**:
+
+```python
+to_nfc("e\\u0301") == "é"
+# Output: True
+```
+
 **Arguments**:
 
 - `text` _str_ - String to normalize.
@@ -239,6 +246,16 @@ def iter_char_range(first_char: str,
 
 Iterate all characters within a range of characters (inclusive).
 
+**Example**:
+
+```python
+char_range("a", "c")
+# Output: ('a', 'b', 'c')
+
+char_range("c", "a")
+# Output: ('c', 'b', 'a')
+```
+
 **Arguments**:
 
 - `first_char` _str_ - Starting (first) character.
@@ -257,6 +274,16 @@ def char_range(first_char: str, last_char: str) -> tuple[str, ...]
 ```
 
 Tuple of all characters within a range of characters (inclusive).
+
+**Example**:
+
+```python
+char_range("a", "d")
+# Output: ('a', 'b', 'c', 'd')
+
+char_range("d", "a")
+# Output: ('d', 'c', 'b', 'a')
+```
 
 **Arguments**:
 
@@ -395,6 +422,9 @@ def make_exp(chars: Iterable[str], flavor: int = 1) -> str
 ```
 
 Create a regex expression that exactly matches a list of characters.
+
+The characters are sorted and grouped into ranges where possible.
+The expression is not anchored, so it can be used as part of a larger expression.
 
 **Example**:
 

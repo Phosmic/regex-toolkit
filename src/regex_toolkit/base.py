@@ -151,6 +151,9 @@ _MAKE_GROUP_EXP_FUNC_MAP: Final[dict[int, Callable]] = {
 def make_exp(chars: Iterable[str], flavor: int = 1) -> str:
     """Create a regex expression that exactly matches a list of characters.
 
+    The characters are sorted and grouped into ranges where possible.
+    The expression is not anchored, so it can be used as part of a larger expression.
+
     Example:
 
     ```python
