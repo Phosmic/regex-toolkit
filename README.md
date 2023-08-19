@@ -36,7 +36,7 @@ Most stable version from [**PyPi**](https://pypi.org/project/regex-toolkit/):
 [![PyPI - License](https://img.shields.io/pypi/l/regex-toolkit?style=flat-square)](https://pypi.org/project/regex-toolkit/)
 
 ```bash
-$ python3 -m pip install regex-toolkit
+python3 -m pip install regex-toolkit
 ```
 
 Development version from [**GitHub**](https://github.com/Phosmic/regex-toolkit):
@@ -48,9 +48,9 @@ Development version from [**GitHub**](https://github.com/Phosmic/regex-toolkit):
 
 
 ```bash
-$ git clone git+https://github.com/Phosmic/regex-toolkit.git
-$ cd regex-toolkit
-$ python3 -m pip install -e .
+git clone git+https://github.com/Phosmic/regex-toolkit.git
+cd regex-toolkit
+python3 -m pip install -e .
 ```
 
 ---
