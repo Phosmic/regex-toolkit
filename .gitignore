@@ -8,6 +8,7 @@
 !environment.yml
 !codecov.yml
 !requirements-doc.txt
+!requirements-test.txt
 
 !src/
 !src/*
