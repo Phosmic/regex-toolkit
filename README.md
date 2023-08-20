@@ -82,8 +82,7 @@ import regex_toolkit
 #### `validate_regex_flavor`
 
 ```python
-@lru_cache(maxsize=2)
-def validate_regex_flavor(flavor: int) -> None | NoReturn
+def validate_regex_flavor(flavor: int) -> None
 ```
 
 Validate a regex flavor.

@@ -2,16 +2,20 @@
 
 This module contains constant values used throughout the project.
 """
+from __future__ import annotations
 
-from typing import Final
+from typing import TYPE_CHECKING
 
-from regex_toolkit.enums import RegexFlavor
+if TYPE_CHECKING:
+    from typing import Final
 
 __all__ = [
     "ALWAYS_ESCAPE",
     "ALWAYS_SAFE",
     "ASCIILETTERS",
+    # "DEFAULT_REGEX_FLAVOR",
     "DIGITS",
+    "RESERVED_EXPRESSIONS",
 ]
 
 DIGITS: Final[frozenset[str]] = frozenset(map(chr, b"0123456789"))
@@ -22,7 +26,8 @@ ALWAYS_SAFE: Final[frozenset[str]] = DIGITS | ASCIILETTERS
 ALWAYS_ESCAPE: Final[frozenset[str]] = frozenset(
     map(chr, b"()[]{}?*+-|^$\\.&~# \t\n\r\v\f")
 )
-
-REGEX_FLAVORS: Final[frozenset[RegexFlavor]] = frozenset(
-    {RegexFlavor.RE, RegexFlavor.RE2}
+RESERVED_EXPRESSIONS: Final[frozenset[str]] = frozenset(
+    {"\\A", "\\b", "\\B", "\\d", "\\D", "\\s", "\\S", "\\w", "\\W", "\\Z", "\\1"}
 )
+
+# DEFAULT_REGEX_FLAVOR: Final[RegexFlavor] = RegexFlavor.RE

@@ -1,28 +1,26 @@
 import unicodedata
 from collections.abc import Generator, Iterable
-from functools import lru_cache
-from typing import NoReturn
 
 from regex_toolkit.enums import RegexFlavor
 
 __all__ = [
-    "validate_regex_flavor",
-    "iter_sort_by_len",
-    "sort_by_len",
-    "ord_to_cpoint",
-    "cpoint_to_ord",
-    "char_to_cpoint",
-    "to_utf8",
-    "to_nfc",
-    "iter_char_range",
     "char_range",
+    "char_to_cpoint",
+    "cpoint_to_ord",
+    "iter_char_range",
+    "iter_sort_by_len",
     "mask_span",
     "mask_spans",
+    "ord_to_cpoint",
+    "sort_by_len",
+    "to_nfc",
+    "to_utf8",
+    "validate_regex_flavor",
 ]
 
 
-@lru_cache(maxsize=2)
-def validate_regex_flavor(flavor: int) -> None | NoReturn:
+# TODO: Could optimize speed with caching through lru_cache or mapping
+def validate_regex_flavor(flavor: int) -> None:
     """Validate a regex flavor.
 
     Args:

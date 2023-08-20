@@ -7,7 +7,14 @@ import regex_toolkit
 
 
 @pytest.mark.parametrize("flavor", (1, 2))
-def test_validate_regex_flavor(flavor):
+def test_validate_regex_flavor_when_int(flavor):
+    regex_toolkit.validate_regex_flavor(flavor)
+
+
+@pytest.mark.parametrize(
+    "flavor", (1, 2, regex_toolkit.RegexFlavor.RE, regex_toolkit.RegexFlavor.RE2)
+)
+def test_validate_regex(flavor):
     regex_toolkit.validate_regex_flavor(flavor)
 
 
@@ -32,81 +39,118 @@ def is_sorted_by_len(texts: Iterable[str], reverse: bool = False) -> bool:
     return True
 
 
-class TestSortByLength(unittest.TestCase):
-    def setUp(self) -> None:
-        self.texts = {
-            "apple",
-            "orange",
-            "banana",
-            "grape",
-            "apricot",
-            "cherry",
-            "plum",
-            "blueberry",
-            "strawberry",
-            "blackberry",
-        }
-        self.texts_by_type = (
-            (set, self.texts),
-            (frozenset, frozenset(self.texts)),
-            (tuple, tuple(self.texts)),
-            (list, list(self.texts)),
-            (dict, dict.fromkeys(self.texts, None)),
-        )
-
-    def test_iter_sort_by_len(self):
-        for try_type, typed_texts in self.texts_by_type:
-            for reverse in (False, True):
-                with self.subTest(
-                    try_type=try_type,
-                    typed_texts=typed_texts,
-                    reverse=reverse,
-                ):
-                    result = regex_toolkit.iter_sort_by_len(
-                        typed_texts,
-                        reverse=reverse,
-                    )
-                    self.assertIsInstance(result, Generator)
-                    result_tuple = tuple(result)
-                    self.assertTrue(is_sorted_by_len(result_tuple, reverse=reverse))
-                    self.assertEqual(
-                        result_tuple,
-                        tuple(sorted(typed_texts, key=len, reverse=reverse)),
-                    )
-
-    def test_sort_by_len(self):
-        for try_type, typed_texts in self.texts_by_type:
-            for reverse in (False, True):
-                with self.subTest(
-                    try_type=try_type,
-                    typed_texts=typed_texts,
-                    reverse=reverse,
-                ):
-                    result = regex_toolkit.sort_by_len(typed_texts, reverse=reverse)
-                    self.assertIsInstance(result, tuple)
-                    self.assertTrue(is_sorted_by_len(result, reverse=reverse))
-                    self.assertEqual(
-                        result,
-                        tuple(sorted(typed_texts, key=len, reverse=reverse)),
-                    )
+SORT_BY_LEN_TEXTS = [
+    "apple",
+    "orange",
+    "banana",
+    "grape",
+    "apricot",
+    "cherry",
+    "plum",
+    "blueberry",
+    "strawberry",
+    "blackberry",
+]
+SORT_BY_LEN_TEXTS_BY_TYPE = {
+    set: set(SORT_BY_LEN_TEXTS),
+    frozenset: frozenset(SORT_BY_LEN_TEXTS),
+    tuple: tuple(SORT_BY_LEN_TEXTS),
+    list: list(SORT_BY_LEN_TEXTS),
+    dict: dict.fromkeys(SORT_BY_LEN_TEXTS, None),
+}
 
 
-class TestIterCharRange(unittest.TestCase):
-    def test_iter_char_range(self):
-        result = regex_toolkit.iter_char_range("a", "z")
-        self.assertIsInstance(result, Generator)
-        self.assertTupleEqual(
-            tuple(result),
-            tuple("abcdefghijklmnopqrstuvwxyz"),
-        )
+@pytest.mark.parametrize("try_type, typed_texts", SORT_BY_LEN_TEXTS_BY_TYPE.items())
+@pytest.mark.parametrize("reverse", (False, True))
+def test_iter_sort_by_len(try_type, typed_texts, reverse):
+    expected_tuple = tuple(sorted(typed_texts, key=len, reverse=reverse))
+    assert is_sorted_by_len(expected_tuple, reverse=reverse)
 
-    def test_char_range(self):
-        result = regex_toolkit.char_range("a", "z")
-        self.assertIsInstance(result, tuple)
-        self.assertTupleEqual(
-            result,
-            tuple("abcdefghijklmnopqrstuvwxyz"),
-        )
+    actual = regex_toolkit.iter_sort_by_len(typed_texts, reverse=reverse)
+    actual_tuple = tuple(actual)
+    assert isinstance(actual, Generator) and (actual_tuple == expected_tuple), {
+        "try_type": try_type,
+        "typed_texts": typed_texts,
+        "reverse": reverse,
+        "actual_tuple": actual_tuple,
+        "expected_tuple": expected_tuple,
+    }
+
+
+@pytest.mark.parametrize("try_type, typed_texts", SORT_BY_LEN_TEXTS_BY_TYPE.items())
+@pytest.mark.parametrize("reverse", (False, True))
+def test_sort_by_len(try_type, typed_texts, reverse):
+    expected = tuple(sorted(typed_texts, key=len, reverse=reverse))
+    assert is_sorted_by_len(expected, reverse=reverse)
+
+    actual = regex_toolkit.sort_by_len(typed_texts, reverse=reverse)
+    assert isinstance(actual, tuple) and (actual == expected), {
+        "try_type": try_type,
+        "typed_texts": typed_texts,
+        "reverse": reverse,
+        "actual": actual,
+        "expected": expected,
+    }
+
+
+ITER_CHAR_RANGE_CASES = [
+    # Single char
+    (("a", "a"), ("a",)),
+    # Basic range
+    (("a", "d"), ("a", "b", "c", "d")),
+    # Reverse range
+    (("d", "a"), ("d", "c", "b", "a")),
+    # Single char (non-ASCII)
+    (("🐶", "🐺"), ("🐶", "🐷", "🐸", "🐹", "🐺")),
+]
+
+
+@pytest.mark.parametrize("char_range, expected", ITER_CHAR_RANGE_CASES)
+def test_char_range(char_range, expected):
+    actual = regex_toolkit.char_range(*char_range)
+    assert isinstance(actual, tuple)
+    assert actual == expected, {
+        "char_range": char_range,
+        "actual": actual,
+        "expected": expected,
+    }
+
+
+@pytest.mark.parametrize("char_range, expected", ITER_CHAR_RANGE_CASES)
+def test_iter_char_range(char_range, expected):
+    actual = regex_toolkit.iter_char_range(*char_range)
+    assert isinstance(actual, Generator)
+    actual_tuple = tuple(actual)
+    assert actual_tuple == expected, {
+        "char_range": char_range,
+        "actual_tuple": actual_tuple,
+        "expected": expected,
+    }
+
+
+@pytest.mark.parametrize(
+    "text, expected",
+    (
+        # Empty string
+        ("", ""),
+        # Already NFC
+        ("a", "a"),
+        # Already NFC (non-ASCII)
+        ("🐶🐾", "🐶🐾"),
+        # Basic combining char (acute accent)
+        ("a\u0301", "á"),
+        # Multiple combining chars (diaeresis and acute accent)
+        ("o\u0308\u0301", "ö́"),
+    ),
+)
+def test_to_nfc(text, expected):
+    actual = regex_toolkit.to_nfc(text)
+    assert isinstance(actual, str)
+    assert actual == expected, {
+        "text": text,
+        "actual": actual,
+        "expected": expected,
+    }
 
 
 class TestMasking(unittest.TestCase):
