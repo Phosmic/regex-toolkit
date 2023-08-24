@@ -19,9 +19,9 @@ NON_ASCII_CHARS = "🅰🅱🅾🅿🆎🆑🆒🆓🆔🆕🆖🆗🆘🆙🆚�
 
 def _exp_will_match(exp: str, text: str, flavor: int) -> bool:
     if flavor == 1:
-        return bool(re.search(exp, text))
+        return bool(re.fullmatch(exp, text))
     if flavor == 2:
-        return bool(re2.search(exp, text))
+        return bool(re2.fullmatch(exp, text))
     raise ValueError(f"Invalid regex flavor: {flavor}")
 
 
