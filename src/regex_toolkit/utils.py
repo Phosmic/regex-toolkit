@@ -7,32 +7,55 @@ __all__ = [
     "char_range",
     "char_to_cpoint",
     "cpoint_to_ord",
+    "default_flavor",
     "iter_char_range",
     "iter_sort_by_len",
     "mask_span",
     "mask_spans",
     "ord_to_cpoint",
+    "resolve_flavor",
     "sort_by_len",
     "to_nfc",
     "to_utf8",
-    "validate_regex_flavor",
 ]
 
+default_flavor: int | RegexFlavor | None = RegexFlavor.RE
 
-# TODO: Could optimize speed with caching through lru_cache or mapping
-def validate_regex_flavor(flavor: int) -> None:
-    """Validate a regex flavor.
+
+def resolve_flavor(potential_flavor: int | RegexFlavor | None) -> RegexFlavor:
+    """Resolve a regex flavor.
+
+    If the flavor is an integer, it is validated and returned.
+    If the flavor is a RegexFlavor, it is returned.
+    If the flavor is None, the default flavor is returned. To change the default flavor, set `default_flavor`.
+
+    ```python
+    import regex_toolkit as rtk
+
+    rtk.utils.default_flavor = rtk.enums.RegexFlavor.RE2
+    assert rtk.utils.resolve_flavor(None) == rtk.enums.RegexFlavor.RE2
+    ```
 
     Args:
-        flavor (int): Regex flavor (1 for RE, 2 for RE2).
+        potential_flavor (int | RegexFlavor | None): Potential regex flavor.
+
+    Returns:
+        RegexFlavor: Resolved regex flavor.
 
     Raises:
         ValueError: Invalid regex flavor.
     """
     try:
-        flavor = RegexFlavor(flavor)
-    except ValueError:
-        raise ValueError(f"Invalid regex flavor: {flavor}")
+        return RegexFlavor(potential_flavor)
+    except ValueError as err:
+        global default_flavor
+        if default_flavor is not None:
+            try:
+                return RegexFlavor(default_flavor)
+            except ValueError as err:
+                raise ValueError(f"Invalid regex flavor: {potential_flavor}") from err
+        else:
+            raise ValueError(f"Invalid regex flavor: {potential_flavor}") from err
 
 
 def iter_sort_by_len(

@@ -17,7 +17,6 @@ from .utils import (
     sort_by_len,
     to_nfc,
     to_utf8,
-    validate_regex_flavor,
 )
 
 __version__ = "0.0.5"
@@ -39,5 +38,4 @@ __all__ = [
     "strings_as_exp",
     "to_nfc",
     "to_utf8",
-    "validate_regex_flavor",
 ]

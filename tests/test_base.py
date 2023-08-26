@@ -1,5 +1,5 @@
+# import random
 import re
-import unittest
 from collections.abc import Iterable
 from itertools import product
 
@@ -12,8 +12,13 @@ from regex_toolkit.constants import (
     ALWAYS_SAFE,
     RESERVED_EXPRESSIONS,
 )
-from regex_toolkit.enums import RegexFlavor
+from regex_toolkit.enums import ALL_REGEX_FLAVORS, RegexFlavor
 
+# TODO: Change to cover a more diverse set of non-ASCII characters?
+# RANDOM_SAMPLE_SIZE = 50
+# NON_ASCII_CHARS = [chr(i) for i in range(0x0000, 0xFFFF) if not chr(i).isascii()]
+# random.shuffle(NON_ASCII_CHARS)
+# NON_ASCII_CHARS = NON_ASCII_CHARS[:RANDOM_SAMPLE_SIZE]
 NON_ASCII_CHARS = "🅰🅱🅾🅿🆎🆑🆒🆓🆔🆕🆖🆗🆘🆙🆚🇦🇧🇨🈁🈂🈚🈯🈲🈳🈴🈵🈶🈷🈸🈹🈺🉐🉑🌀🌁🌂🌃🌄🌅"
 
 
@@ -22,7 +27,7 @@ def _exp_will_match(exp: str, text: str, flavor: int) -> bool:
         return bool(re.fullmatch(exp, text))
     if flavor == 2:
         return bool(re2.fullmatch(exp, text))
-    raise ValueError(f"Invalid regex flavor: {flavor}")
+    raise ValueError(f"Invalid regex flavor: {flavor!r}")
 
 
 def assert_exp_will_match(exp: str, text: str, flavor: int) -> bool:
@@ -40,7 +45,7 @@ def assert_exp_will_match_all(exp: str, texts: Iterable[str], flavor: int) -> bo
 
 
 @pytest.mark.parametrize("char, expected", [(char, char) for char in ALWAYS_SAFE])
-@pytest.mark.parametrize("flavor", [RegexFlavor.RE, RegexFlavor.RE2])
+@pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
 def test_escape_and_escape2_safe(char, expected, flavor):
     actual = regex_toolkit.escape(char, flavor)
     assert actual == expected
@@ -50,7 +55,7 @@ def test_escape_and_escape2_safe(char, expected, flavor):
 @pytest.mark.parametrize(
     "char, expected_exp", [(char, f"\\{char}") for char in ALWAYS_ESCAPE]
 )
-@pytest.mark.parametrize("flavor", [RegexFlavor.RE, RegexFlavor.RE2])
+@pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
 def test_escape_and_escape2_escapable(char, expected_exp, flavor):
     actual = regex_toolkit.escape(char, flavor)
     assert actual == expected_exp
@@ -106,14 +111,14 @@ def test_escape2_untrimmed():
 
 
 @pytest.mark.parametrize("text, expected", [(text, text) for text in ALWAYS_SAFE])
-@pytest.mark.parametrize("flavor", [RegexFlavor.RE, RegexFlavor.RE2])
+@pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
 def test_string_as_exp_and_exp2_safe_individual_char(text, expected, flavor):
     actual = regex_toolkit.string_as_exp(text, flavor)
     assert actual == expected
     assert_exp_will_match(actual, text, flavor)
 
 
-@pytest.mark.parametrize("flavor", [RegexFlavor.RE, RegexFlavor.RE2])
+@pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
 def test_string_as_exp_and_exp2_safe_joined_as_one(flavor):
     text = "".join(ALWAYS_SAFE)
     expected = "".join(ALWAYS_SAFE)
@@ -125,14 +130,14 @@ def test_string_as_exp_and_exp2_safe_joined_as_one(flavor):
 @pytest.mark.parametrize(
     "text, expected", [(char, f"\\{char}") for char in ALWAYS_ESCAPE]
 )
-@pytest.mark.parametrize("flavor", [RegexFlavor.RE, RegexFlavor.RE2])
+@pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
 def test_string_as_exp_and_exp2_escapable_individual_char(text, expected, flavor):
     actual = regex_toolkit.string_as_exp(text, flavor)
     assert actual == expected
     assert_exp_will_match(actual, text, flavor)
 
 
-@pytest.mark.parametrize("flavor", [RegexFlavor.RE, RegexFlavor.RE2])
+@pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
 def test_string_as_exp_and_exp2_escapable_joined_as_one(flavor):
     text = "".join(ALWAYS_ESCAPE)
     expected = "".join(f"\\{char}" for char in ALWAYS_ESCAPE)
@@ -155,7 +160,7 @@ def test_string_as_exp_unsafe_individual_char(text, expected):
 
 
 def test_string_as_exp_unsafe_joined_as_one():
-    text = NON_ASCII_CHARS
+    text = "".join(NON_ASCII_CHARS)
     expected = "".join(f"\\{char}" for char in text)
     actual = regex_toolkit.string_as_exp(text, RegexFlavor.RE)
     assert actual == expected
@@ -179,7 +184,7 @@ def test_string_as_exp2_unknown_individual_char(text, expected):
 
 
 def test_string_as_exp2_unknown_joined_as_one():
-    text = NON_ASCII_CHARS
+    text = "".join(NON_ASCII_CHARS)
     expected = "".join(
         "\\x{" + format(ord(char), "x").zfill(8).removeprefix("0000") + "}"
         for char in text
@@ -196,7 +201,7 @@ def test_string_as_exp2_unknown_joined_as_one():
     "texts, expected",
     [(texts, r"|".join(texts)) for texts in product(ALWAYS_SAFE, repeat=2)],
 )
-@pytest.mark.parametrize("flavor", [RegexFlavor.RE, RegexFlavor.RE2])
+@pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
 def test_strings_as_exp_and_exp2_safe_of_various_lengths(texts, expected, flavor):
     actual = regex_toolkit.strings_as_exp(texts, flavor)
     assert actual == expected
@@ -210,7 +215,7 @@ def test_strings_as_exp_and_exp2_safe_of_various_lengths(texts, expected, flavor
         for texts in product(ALWAYS_ESCAPE, repeat=2)
     ],
 )
-@pytest.mark.parametrize("flavor", [RegexFlavor.RE, RegexFlavor.RE2])
+@pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
 def test_strings_as_exp_and_exp2_escapable_of_various_lengths(texts, expected, flavor):
     actual = regex_toolkit.strings_as_exp(texts, flavor)
     assert actual == expected
@@ -224,7 +229,7 @@ def test_strings_as_exp_and_exp2_escapable_of_various_lengths(texts, expected, f
         for texts in product(RESERVED_EXPRESSIONS, repeat=2)
     ],
 )
-@pytest.mark.parametrize("flavor", [RegexFlavor.RE, RegexFlavor.RE2])
+@pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
 def test_strings_as_exp_and_exp2_reserved_of_various_lengths(texts, expected, flavor):
     actual = regex_toolkit.strings_as_exp(texts, flavor)
     assert actual == expected
@@ -241,7 +246,7 @@ def test_strings_as_exp_and_exp2_reserved_of_various_lengths(texts, expected, fl
         for texts in product(ALWAYS_SAFE | ALWAYS_ESCAPE, repeat=2)
     ],
 )
-@pytest.mark.parametrize("flavor", [RegexFlavor.RE, RegexFlavor.RE2])
+@pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
 def test_strings_as_exp_and_exp2_safe_and_escapable_of_various_lengths(
     texts, expected, flavor
 ):
@@ -279,7 +284,7 @@ def test_strings_as_exp_unsafe_of_various_lengths(texts, expected):
                 for char in texts
             ),
         )
-        for texts in product(NON_ASCII_CHARS, repeat=2)
+        for texts in product(*NON_ASCII_CHARS, repeat=2)
     ],
 )
 def test_strings_as_exp2_unsafe_of_various_lengths(texts, expected):
@@ -315,4 +320,4 @@ def test_strings_as_exp2_unsafe_of_various_lengths(texts, expected):
     ),
 )
 def test_make_exp(chars, expected):
-    assert regex_toolkit.make_exp(chars) == expected
+    assert regex_toolkit.make_exp(chars, RegexFlavor.RE) == expected
