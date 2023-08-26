@@ -57,17 +57,54 @@ python3 -m pip install -e .
 
 ## Usage
 
-Import packages:
+To harness the toolkit's capabilities, you should import the necessary packages:
 
 ```python
 import re
 # and/or
 import re2
+import regex_toolkit as rtk
 ```
 
+For instance, if you wish to create a regex pattern that matches all unicode letters and marks, and supplement it with additional code points consistent with Objective-C, you can do it as follows:
+
 ```python
-import regex_toolkit
+unicode_letters_and_marks = r"\p{L}\p{M}" + rtk.make_exp(
+    [
+        *rtk.char_range("\uf870", "\uf87f"),
+        "\uf882",
+        *rtk.char_range("\uf884", "\uf89f"),
+        "\uf8b8",
+        *rtk.char_range("\uf8c1", "\uf8d6"),
+    ],
+    flavor=2,
+)
+# Output: r'\p{L}\p{M}\x{f870}-\x{f87f}\x{f882}\x{f884}-\x{f89f}\x{f8b8}\x{f8c1}-\x{f8d6}'
 ```
+
+This representation is more intuitive and maintainable than conventional methods.
+
+### Why Use `regex_toolkit`?
+
+Standard unicode regex groups (like `\p{L}` and `\p{M}`) have definitions that vary across languages and versions. By using the toolkit, you can achieve a more consistent and comprehensive representation of unicode support. It is especially useful to supplement base unicode sets with the latest definitions from other languages and standards.
+
+### RE2 Overview
+
+RE2 focuses on safely processing regular expressions, particularly from untrusted inputs. It ensures both linear match time and efficient memory usage. Although it might not always surpass other engines in speed, it intentionally omits features that depend solely on backtracking, like backreferences and look-around assertions.
+
+A brief rundown of RE2 terminology:
+
+- **BitState**: An execution engine that uses backtracking search.
+- **bytecode**: The set of instructions that form an automaton.
+- **DFA**: The engine for Deterministic Finite Automaton searches.
+- **NFA**: Implements the Nondeterministic Finite Automaton search method.
+- **OnePass**: A one-pass search execution engine.
+- **pattern**: The textual form of a regex.
+- **Prog**: The compiled version of a regex.
+- **Regexp**: The parsed version of a regex.
+- **Rune**: A character in terms of encoding, essentially a code point.
+
+For an in-depth exploration, please refer to the [RE2 documentation](https://github.com/google/re2/wiki/Glossary).
 
 ---
 
@@ -77,19 +114,34 @@ import regex_toolkit
 
 # `regex_toolkit.utils`
 
-<a id="regex_toolkit.utils.validate_regex_flavor"></a>
+<a id="regex_toolkit.utils.resolve_flavor"></a>
 
-#### `validate_regex_flavor`
+#### `resolve_flavor`
 
 ```python
-def validate_regex_flavor(flavor: int) -> None
+def resolve_flavor(potential_flavor: int | RegexFlavor | None) -> RegexFlavor
 ```
 
-Validate a regex flavor.
+Resolve a regex flavor.
+
+If the flavor is an integer, it is validated and returned.
+If the flavor is a RegexFlavor, it is returned.
+If the flavor is None, the default flavor is returned. To change the default flavor, set `default_flavor`.
+
+```python
+import regex_toolkit as rtk
+
+rtk.utils.default_flavor = rtk.enums.RegexFlavor.RE2
+assert rtk.utils.resolve_flavor(None) == rtk.enums.RegexFlavor.RE2
+```
 
 **Arguments**:
 
-- `flavor` _int_ - Regex flavor (1 for RE, 2 for RE2).
+- `potential_flavor` _int | RegexFlavor | None_ - Potential regex flavor.
+
+**Returns**:
+
+- _RegexFlavor_ - Resolved regex flavor.
 
 **Raises**:
 
@@ -348,7 +400,7 @@ Todo: Add support for overlapping (and unordered?) spans.
 #### `escape`
 
 ```python
-def escape(char: str, flavor: int = 1) -> str
+def escape(char: str, flavor: int | None = None) -> str
 ```
 
 Create a regex expression that exactly matches a character.
@@ -356,7 +408,7 @@ Create a regex expression that exactly matches a character.
 **Arguments**:
 
 - `char` _str_ - Character to match.
-- `flavor` _int, optional_ - Regex flavor (1 for RE, 2 for RE2). Defaults to 1.
+- `flavor` _int | None, optional_ - Regex flavor (1 for RE, 2 for RE2). Defaults to None.
 
 **Returns**:
 
@@ -371,7 +423,7 @@ Create a regex expression that exactly matches a character.
 #### `string_as_exp`
 
 ```python
-def string_as_exp(text: str, flavor: int = 1) -> str
+def string_as_exp(text: str, flavor: int | None = None) -> str
 ```
 
 Create a regex expression that exactly matches a string.
@@ -379,7 +431,7 @@ Create a regex expression that exactly matches a string.
 **Arguments**:
 
 - `text` _str_ - String to match.
-- `flavor` _int, optional_ - Regex flavor (1 for RE, 2 for RE2). Defaults to 1.
+- `flavor` _int | None, optional_ - Regex flavor (1 for RE, 2 for RE2). Defaults to None.
 
 **Returns**:
 
@@ -394,7 +446,7 @@ Create a regex expression that exactly matches a string.
 #### `strings_as_exp`
 
 ```python
-def strings_as_exp(texts: Iterable[str], flavor: int = 1) -> str
+def strings_as_exp(texts: Iterable[str], flavor: int | None = None) -> str
 ```
 
 Create a regex expression that exactly matches any one string.
@@ -402,7 +454,7 @@ Create a regex expression that exactly matches any one string.
 **Arguments**:
 
 - `texts` _Iterable[str]_ - Strings to match.
-- `flavor` _int, optional_ - Regex flavor (1 for RE, 2 for RE2). Defaults to 1.
+- `flavor` _int | None, optional_ - Regex flavor (1 for RE, 2 for RE2). Defaults to None.
 
 **Returns**:
 
@@ -417,7 +469,7 @@ Create a regex expression that exactly matches any one string.
 #### `make_exp`
 
 ```python
-def make_exp(chars: Iterable[str], flavor: int = 1) -> str
+def make_exp(chars: Iterable[str], flavor: int | None = None) -> str
 ```
 
 Create a regex expression that exactly matches a list of characters.
@@ -435,7 +487,7 @@ exp = "[" + make_exp(["a", "b", "c", "z", "y", "x"]) + "]"
 **Arguments**:
 
 - `chars` _Iterable[str]_ - Characters to match.
-- `flavor` _int, optional_ - Regex flavor (1 for RE, 2 for RE2). Defaults to 1.
+- `flavor` _int | None, optional_ - Regex flavor (1 for RE, 2 for RE2). Defaults to None.
 
 **Returns**:
 
