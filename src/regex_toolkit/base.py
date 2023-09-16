@@ -1,4 +1,5 @@
 __all__ = [
+    "default_flavor",
     "escape",
     "string_as_exp",
     "strings_as_exp",
@@ -13,6 +14,8 @@ from regex_toolkit.utils import (
     iter_sort_by_len,
     resolve_flavor,
 )
+
+default_flavor: int | RegexFlavor | None = RegexFlavor.RE
 
 
 def _escape(char: str) -> str:

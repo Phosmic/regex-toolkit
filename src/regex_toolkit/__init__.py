@@ -22,10 +22,10 @@ from .utils import (
 __version__ = "0.0.5"
 
 __all__ = [
-    "escape",
     "char_range",
     "char_to_cpoint",
     "cpoint_to_ord",
+    "escape",
     "iter_char_range",
     "iter_sort_by_len",
     "make_exp",

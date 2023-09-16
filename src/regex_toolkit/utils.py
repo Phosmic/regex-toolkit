@@ -1,13 +1,13 @@
 import unicodedata
 from collections.abc import Generator, Iterable
 
+import regex_toolkit.base
 from regex_toolkit.enums import RegexFlavor
 
 __all__ = [
     "char_range",
     "char_to_cpoint",
     "cpoint_to_ord",
-    "default_flavor",
     "iter_char_range",
     "iter_sort_by_len",
     "mask_span",
@@ -18,8 +18,6 @@ __all__ = [
     "to_nfc",
     "to_utf8",
 ]
-
-default_flavor: int | RegexFlavor | None = RegexFlavor.RE
 
 
 def resolve_flavor(potential_flavor: int | RegexFlavor | None) -> RegexFlavor:
@@ -32,7 +30,7 @@ def resolve_flavor(potential_flavor: int | RegexFlavor | None) -> RegexFlavor:
     ```python
     import regex_toolkit as rtk
 
-    rtk.utils.default_flavor = rtk.enums.RegexFlavor.RE2
+    rtk.base.default_flavor = 2
     assert rtk.utils.resolve_flavor(None) == rtk.enums.RegexFlavor.RE2
     ```
 
@@ -48,10 +46,9 @@ def resolve_flavor(potential_flavor: int | RegexFlavor | None) -> RegexFlavor:
     try:
         return RegexFlavor(potential_flavor)
     except ValueError as err:
-        global default_flavor
-        if default_flavor is not None:
+        if regex_toolkit.base.default_flavor is not None:
             try:
-                return RegexFlavor(default_flavor)
+                return RegexFlavor(regex_toolkit.base.default_flavor)
             except ValueError as err:
                 raise ValueError(f"Invalid regex flavor: {potential_flavor}") from err
         else:

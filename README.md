@@ -131,7 +131,7 @@ If the flavor is None, the default flavor is returned. To change the default fla
 ```python
 import regex_toolkit as rtk
 
-rtk.utils.default_flavor = rtk.enums.RegexFlavor.RE2
+rtk.base.default_flavor = 2
 assert rtk.utils.resolve_flavor(None) == rtk.enums.RegexFlavor.RE2
 ```
 

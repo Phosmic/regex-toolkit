@@ -14,11 +14,6 @@ from regex_toolkit.constants import (
 )
 from regex_toolkit.enums import ALL_REGEX_FLAVORS, RegexFlavor
 
-# TODO: Change to cover a more diverse set of non-ASCII characters?
-# RANDOM_SAMPLE_SIZE = 50
-# NON_ASCII_CHARS = [chr(i) for i in range(0x0000, 0xFFFF) if not chr(i).isascii()]
-# random.shuffle(NON_ASCII_CHARS)
-# NON_ASCII_CHARS = NON_ASCII_CHARS[:RANDOM_SAMPLE_SIZE]
 NON_ASCII_CHARS = "🅰🅱🅾🅿🆎🆑🆒🆓🆔🆕🆖🆗🆘🆙🆚🇦🇧🇨🈁🈂🈚🈯🈲🈳🈴🈵🈶🈷🈸🈹🈺🉐🉑🌀🌁🌂🌃🌄🌅"
 
 

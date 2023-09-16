@@ -23,23 +23,29 @@ def test_resolve_flavor_with_valid(potential_flavor, expected):
     assert regex_toolkit.base.resolve_flavor(potential_flavor) == expected
 
 
-@mock.patch("regex_toolkit.utils.default_flavor", None)
+@mock.patch("regex_toolkit.base.default_flavor", None)
 def test_resolve_flavor_with_invalid_and_with_no_default_raises_value_error():
     with pytest.raises(ValueError, match=r"^Invalid regex flavor: None$"):
         regex_toolkit.base.resolve_flavor(None)
 
 
 @pytest.mark.parametrize("potential_flavor", [None, 0, 3, "1", "2"])
-@mock.patch("regex_toolkit.utils.default_flavor", RegexFlavor.RE)
+@mock.patch("regex_toolkit.base.default_flavor", RegexFlavor.RE)
 def test_resolve_flavor_falls_back_to_default(potential_flavor):
     regex_toolkit.base.resolve_flavor(potential_flavor) == RegexFlavor.RE
 
 
 @pytest.mark.parametrize("potential_flavor", [None, 0, 3, "1", "2"])
-@mock.patch("regex_toolkit.utils.default_flavor", None)
+@mock.patch("regex_toolkit.base.default_flavor", None)
 def test_resolve_flavor_invalid_int_without_default_raises(potential_flavor):
     with pytest.raises(ValueError, match=r"^Invalid regex flavor: (None|'?\d'?)$"):
         regex_toolkit.base.resolve_flavor(potential_flavor)
+
+
+@mock.patch("regex_toolkit.base.default_flavor", None)
+def test_default_flavor_can_be_set():
+    regex_toolkit.base.default_flavor = 2
+    assert regex_toolkit.base.resolve_flavor(None) == RegexFlavor.RE2
 
 
 def is_sorted_by_len(texts: Iterable[str], reverse: bool = False) -> bool:

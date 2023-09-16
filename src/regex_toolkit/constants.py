@@ -13,7 +13,6 @@ __all__ = [
     "ALWAYS_ESCAPE",
     "ALWAYS_SAFE",
     "ASCIILETTERS",
-    # "DEFAULT_REGEX_FLAVOR",
     "DIGITS",
     "RESERVED_EXPRESSIONS",
 ]
@@ -29,5 +28,3 @@ ALWAYS_ESCAPE: Final[frozenset[str]] = frozenset(
 RESERVED_EXPRESSIONS: Final[frozenset[str]] = frozenset(
     {"\\A", "\\b", "\\B", "\\d", "\\D", "\\s", "\\S", "\\w", "\\W", "\\Z", "\\1"}
 )
-
-# DEFAULT_REGEX_FLAVOR: Final[RegexFlavor] = RegexFlavor.RE
