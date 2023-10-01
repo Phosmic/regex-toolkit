@@ -1,11 +1,34 @@
-Import packages:
+To harness the toolkit's capabilities, you should import the necessary packages:
 
 ```python
 import re
 # and/or
 import re2
+import regex_toolkit as rtk
 ```
 
-```python
-import regex_toolkit
-```
+### Why Use `regex_toolkit`?
+
+Regex definitions vary across languages and versions.
+By using the toolkit, you can achieve a more consistent and comprehensive representation of unicode support.
+It is especially useful to supplement base unicode sets with the latest definitions from other languages and standards.
+
+### RE2 Overview
+
+RE2 focuses on safely processing regular expressions, particularly from untrusted inputs.
+It ensures both linear match time and efficient memory usage.
+Although it might not always surpass other engines in speed, it intentionally omits features that depend solely on backtracking, like backreferences and look-around assertions.
+
+A brief rundown of RE2 terminology:
+
+- **BitState**: An execution engine that uses backtracking search.
+- **bytecode**: The set of instructions that form an automaton.
+- **DFA**: The engine for Deterministic Finite Automaton searches.
+- **NFA**: Implements the Nondeterministic Finite Automaton search method.
+- **OnePass**: A one-pass search execution engine.
+- **pattern**: The textual form of a regex.
+- **Prog**: The compiled version of a regex.
+- **Regexp**: The parsed version of a regex.
+- **Rune**: A character in terms of encoding, essentially a code point.
+
+For an in-depth exploration, please refer to the [RE2 documentation](https://github.com/google/re2/wiki/Glossary).

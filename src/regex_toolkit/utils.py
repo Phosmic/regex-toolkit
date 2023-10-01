@@ -1,19 +1,58 @@
 import unicodedata
 from collections.abc import Generator, Iterable
 
+import regex_toolkit.base
+from regex_toolkit.enums import RegexFlavor
+
 __all__ = [
-    "iter_sort_by_len",
-    "sort_by_len",
-    "ord_to_cpoint",
-    "cpoint_to_ord",
-    "char_to_cpoint",
-    "to_utf8",
-    "to_nfc",
-    "iter_char_range",
     "char_range",
+    "char_to_cpoint",
+    "cpoint_to_ord",
+    "iter_char_range",
+    "iter_sort_by_len",
     "mask_span",
     "mask_spans",
+    "ord_to_cpoint",
+    "resolve_flavor",
+    "sort_by_len",
+    "to_nfc",
+    "to_utf8",
 ]
+
+
+def resolve_flavor(potential_flavor: int | RegexFlavor | None) -> RegexFlavor:
+    """Resolve a regex flavor.
+
+    If the flavor is an integer, it is validated and returned.
+    If the flavor is a RegexFlavor, it is returned.
+    If the flavor is None, the default flavor is returned. To change the default flavor, set `default_flavor`.
+
+    ```python
+    import regex_toolkit as rtk
+
+    rtk.base.default_flavor = 2
+    assert rtk.utils.resolve_flavor(None) == rtk.enums.RegexFlavor.RE2
+    ```
+
+    Args:
+        potential_flavor (int | RegexFlavor | None): Potential regex flavor.
+
+    Returns:
+        RegexFlavor: Resolved regex flavor.
+
+    Raises:
+        ValueError: Invalid regex flavor.
+    """
+    try:
+        return RegexFlavor(potential_flavor)
+    except ValueError as err:
+        if regex_toolkit.base.default_flavor is not None:
+            try:
+                return RegexFlavor(regex_toolkit.base.default_flavor)
+            except ValueError as err:
+                raise ValueError(f"Invalid regex flavor: {potential_flavor}") from err
+        else:
+            raise ValueError(f"Invalid regex flavor: {potential_flavor}") from err
 
 
 def iter_sort_by_len(
@@ -59,8 +98,8 @@ def ord_to_cpoint(ordinal: int) -> str:
     Example:
 
     ```python
-    # Output: '00000061'
     ord_to_cpoint(97)
+    # Output: '00000061'
     ```
 
     Args:
@@ -90,8 +129,8 @@ def char_to_cpoint(char: str) -> str:
     Example:
 
     ```python
-    # Output: '00000061'
     char_to_cpoint("a")
+    # Output: '00000061'
     ```
 
     Args:
@@ -112,6 +151,13 @@ def to_nfc(text: str) -> str:
 
     Form C favors the use of a fully combined character.
 
+    Example:
+
+    ```python
+    to_nfc("e\\u0301") == "é"
+    # Output: True
+    ```
+
     Args:
         text (str): String to normalize.
 
@@ -121,31 +167,57 @@ def to_nfc(text: str) -> str:
     return unicodedata.normalize("NFC", text)
 
 
-def iter_char_range(first_cpoint: int, last_cpoint: int) -> Generator[str, None, None]:
-    """Iterate all characters within a range of codepoints (inclusive).
+def iter_char_range(first_char: str, last_char: str) -> Generator[str, None, None]:
+    """Iterate all characters within a range of characters (inclusive).
+
+    Example:
+
+    ```python
+    char_range("a", "c")
+    # Output: ('a', 'b', 'c')
+
+    char_range("c", "a")
+    # Output: ('c', 'b', 'a')
+    ```
 
     Args:
-        first_cpoint (int): Starting (first) codepoint.
-        last_cpoint (int): Ending (last) codepoint.
+        first_char (str): Starting (first) character.
+        last_char (str): Ending (last) character.
 
     Yields:
-        str: Characters within a range of codepoints.
+        str: Characters within a range of characters.
     """
-    for i in range(ord(first_cpoint), ord(last_cpoint) + 1):
-        yield chr(i)
+    first_ord = ord(first_char)
+    last_ord = ord(last_char)
+    if first_ord > last_ord:
+        ord_range = range(first_ord, last_ord - 1, -1)
+    else:
+        ord_range = range(first_ord, last_ord + 1)
+    for ordinal in ord_range:
+        yield chr(ordinal)
 
 
-def char_range(first_cpoint: int, last_cpoint: int) -> tuple[str, ...]:
-    """Tuple of all characters within a range of codepoints (inclusive).
+def char_range(first_char: str, last_char: str) -> tuple[str, ...]:
+    """Tuple of all characters within a range of characters (inclusive).
+
+    Example:
+
+    ```python
+    char_range("a", "d")
+    # Output: ('a', 'b', 'c', 'd')
+
+    char_range("d", "a")
+    # Output: ('d', 'c', 'b', 'a')
+    ```
 
     Args:
-        first_cpoint (int): Starting (first) codepoint.
-        last_cpoint (int): Ending (last) codepoint.
+        first_char (str): Starting (first) character.
+        last_char (str): Ending (last) character.
 
     Returns:
-        tuple[str, ...]: Characters within a range of codepoints.
+        tuple[str, ...]: Characters within a range of characters.
     """
-    return tuple(iter_char_range(first_cpoint, last_cpoint))
+    return tuple(iter_char_range(first_char, last_char))
 
 
 def mask_span(

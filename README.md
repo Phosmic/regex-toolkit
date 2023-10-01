@@ -36,7 +36,7 @@ Most stable version from [**PyPi**](https://pypi.org/project/regex-toolkit/):
 [![PyPI - License](https://img.shields.io/pypi/l/regex-toolkit?style=flat-square)](https://pypi.org/project/regex-toolkit/)
 
 ```bash
-$ python3 -m pip install regex-toolkit
+python3 -m pip install regex-toolkit
 ```
 
 Development version from [**GitHub**](https://github.com/Phosmic/regex-toolkit):
@@ -48,26 +48,49 @@ Development version from [**GitHub**](https://github.com/Phosmic/regex-toolkit):
 
 
 ```bash
-$ git clone git+https://github.com/Phosmic/regex-toolkit.git
-$ cd regex-toolkit
-$ python3 -m pip install -e .
+git clone git+https://github.com/Phosmic/regex-toolkit.git
+cd regex-toolkit
+python3 -m pip install -e .
 ```
 
 ---
 
 ## Usage
 
-Import packages:
+To harness the toolkit's capabilities, you should import the necessary packages:
 
 ```python
 import re
 # and/or
 import re2
+import regex_toolkit as rtk
 ```
 
-```python
-import regex_toolkit
-```
+### Why Use `regex_toolkit`?
+
+Regex definitions vary across languages and versions.
+By using the toolkit, you can achieve a more consistent and comprehensive representation of unicode support.
+It is especially useful to supplement base unicode sets with the latest definitions from other languages and standards.
+
+### RE2 Overview
+
+RE2 focuses on safely processing regular expressions, particularly from untrusted inputs.
+It ensures both linear match time and efficient memory usage.
+Although it might not always surpass other engines in speed, it intentionally omits features that depend solely on backtracking, like backreferences and look-around assertions.
+
+A brief rundown of RE2 terminology:
+
+- **BitState**: An execution engine that uses backtracking search.
+- **bytecode**: The set of instructions that form an automaton.
+- **DFA**: The engine for Deterministic Finite Automaton searches.
+- **NFA**: Implements the Nondeterministic Finite Automaton search method.
+- **OnePass**: A one-pass search execution engine.
+- **pattern**: The textual form of a regex.
+- **Prog**: The compiled version of a regex.
+- **Regexp**: The parsed version of a regex.
+- **Rune**: A character in terms of encoding, essentially a code point.
+
+For an in-depth exploration, please refer to the [RE2 documentation](https://github.com/google/re2/wiki/Glossary).
 
 ---
 
@@ -76,6 +99,39 @@ import regex_toolkit
 <a id="regex_toolkit.utils"></a>
 
 # `regex_toolkit.utils`
+
+<a id="regex_toolkit.utils.resolve_flavor"></a>
+
+#### `resolve_flavor`
+
+```python
+def resolve_flavor(potential_flavor: int | RegexFlavor | None) -> RegexFlavor
+```
+
+Resolve a regex flavor.
+
+If the flavor is an integer, it is validated and returned.
+If the flavor is a RegexFlavor, it is returned.
+If the flavor is None, the default flavor is returned. To change the default flavor, set `default_flavor`.
+
+```python
+import regex_toolkit as rtk
+
+rtk.base.default_flavor = 2
+assert rtk.utils.resolve_flavor(None) == rtk.enums.RegexFlavor.RE2
+```
+
+**Arguments**:
+
+- `potential_flavor` _int | RegexFlavor | None_ - Potential regex flavor.
+
+**Returns**:
+
+- _RegexFlavor_ - Resolved regex flavor.
+
+**Raises**:
+
+- `ValueError` - Invalid regex flavor.
 
 <a id="regex_toolkit.utils.iter_sort_by_len"></a>
 
@@ -134,8 +190,8 @@ The codepoint is always 8 characters long (zero-padded).
 **Example**:
 
 ```python
-# Output: '00000061'
 ord_to_cpoint(97)
+# Output: '00000061'
 ```
 
 **Arguments**:
@@ -177,8 +233,8 @@ Character to character codepoint.
 **Example**:
 
 ```python
-# Output: '00000061'
 char_to_cpoint("a")
+# Output: '00000061'
 ```
 
 **Arguments**:
@@ -201,6 +257,13 @@ Normalize a Unicode string to NFC form C.
 
 Form C favors the use of a fully combined character.
 
+**Example**:
+
+```python
+to_nfc("e\\u0301") == "é"
+# Output: True
+```
+
 **Arguments**:
 
 - `text` _str_ - String to normalize.
@@ -214,39 +277,59 @@ Form C favors the use of a fully combined character.
 #### `iter_char_range`
 
 ```python
-def iter_char_range(first_cpoint: int,
-                    last_cpoint: int) -> Generator[str, None, None]
+def iter_char_range(first_char: str,
+                    last_char: str) -> Generator[str, None, None]
 ```
 
-Iterate all characters within a range of codepoints (inclusive).
+Iterate all characters within a range of characters (inclusive).
+
+**Example**:
+
+```python
+char_range("a", "c")
+# Output: ('a', 'b', 'c')
+
+char_range("c", "a")
+# Output: ('c', 'b', 'a')
+```
 
 **Arguments**:
 
-- `first_cpoint` _int_ - Starting (first) codepoint.
-- `last_cpoint` _int_ - Ending (last) codepoint.
+- `first_char` _str_ - Starting (first) character.
+- `last_char` _str_ - Ending (last) character.
 
 **Yields**:
 
-- _str_ - Characters within a range of codepoints.
+- _str_ - Characters within a range of characters.
 
 <a id="regex_toolkit.utils.char_range"></a>
 
 #### `char_range`
 
 ```python
-def char_range(first_cpoint: int, last_cpoint: int) -> tuple[str, ...]
+def char_range(first_char: str, last_char: str) -> tuple[str, ...]
 ```
 
-Tuple of all characters within a range of codepoints (inclusive).
+Tuple of all characters within a range of characters (inclusive).
+
+**Example**:
+
+```python
+char_range("a", "d")
+# Output: ('a', 'b', 'c', 'd')
+
+char_range("d", "a")
+# Output: ('d', 'c', 'b', 'a')
+```
 
 **Arguments**:
 
-- `first_cpoint` _int_ - Starting (first) codepoint.
-- `last_cpoint` _int_ - Ending (last) codepoint.
+- `first_char` _str_ - Starting (first) character.
+- `last_char` _str_ - Ending (last) character.
 
 **Returns**:
 
-- _tuple[str, ...]_ - Characters within a range of codepoints.
+- _tuple[str, ...]_ - Characters within a range of characters.
 
 <a id="regex_toolkit.utils.mask_span"></a>
 
@@ -303,7 +386,7 @@ Todo: Add support for overlapping (and unordered?) spans.
 #### `escape`
 
 ```python
-def escape(char: str, flavor: int = 1) -> str
+def escape(char: str, flavor: int | None = None) -> str
 ```
 
 Create a regex expression that exactly matches a character.
@@ -311,7 +394,7 @@ Create a regex expression that exactly matches a character.
 **Arguments**:
 
 - `char` _str_ - Character to match.
-- `flavor` _int, optional_ - Regex flavor (1 for RE, 2 for RE2). Defaults to 1.
+- `flavor` _int | None, optional_ - Regex flavor (1 for RE, 2 for RE2). Defaults to None.
 
 **Returns**:
 
@@ -326,7 +409,7 @@ Create a regex expression that exactly matches a character.
 #### `string_as_exp`
 
 ```python
-def string_as_exp(text: str, flavor: int = 1) -> str
+def string_as_exp(text: str, flavor: int | None = None) -> str
 ```
 
 Create a regex expression that exactly matches a string.
@@ -334,7 +417,7 @@ Create a regex expression that exactly matches a string.
 **Arguments**:
 
 - `text` _str_ - String to match.
-- `flavor` _int, optional_ - Regex flavor (1 for RE, 2 for RE2). Defaults to 1.
+- `flavor` _int | None, optional_ - Regex flavor (1 for RE, 2 for RE2). Defaults to None.
 
 **Returns**:
 
@@ -349,7 +432,7 @@ Create a regex expression that exactly matches a string.
 #### `strings_as_exp`
 
 ```python
-def strings_as_exp(texts: Iterable[str], flavor: int = 1) -> str
+def strings_as_exp(texts: Iterable[str], flavor: int | None = None) -> str
 ```
 
 Create a regex expression that exactly matches any one string.
@@ -357,11 +440,44 @@ Create a regex expression that exactly matches any one string.
 **Arguments**:
 
 - `texts` _Iterable[str]_ - Strings to match.
-- `flavor` _int, optional_ - Regex flavor (1 for RE, 2 for RE2). Defaults to 1.
+- `flavor` _int | None, optional_ - Regex flavor (1 for RE, 2 for RE2). Defaults to None.
 
 **Returns**:
 
 - _str_ - Expression that exactly matches any one of the original strings.
+
+**Raises**:
+
+- `ValueError` - Invalid regex flavor.
+
+<a id="regex_toolkit.base.make_exp"></a>
+
+#### `make_exp`
+
+```python
+def make_exp(chars: Iterable[str], flavor: int | None = None) -> str
+```
+
+Create a regex expression that exactly matches a list of characters.
+
+The characters are sorted and grouped into ranges where possible.
+The expression is not anchored, so it can be used as part of a larger expression.
+
+**Example**:
+
+```python
+exp = "[" + make_exp(["a", "b", "c", "z", "y", "x"]) + "]"
+# Output: '[a-cx-z]'
+```
+
+**Arguments**:
+
+- `chars` _Iterable[str]_ - Characters to match.
+- `flavor` _int | None, optional_ - Regex flavor (1 for RE, 2 for RE2). Defaults to None.
+
+**Returns**:
+
+- _str_ - Expression that exactly matches the original characters.
 
 **Raises**:
 

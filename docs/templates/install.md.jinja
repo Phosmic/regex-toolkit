@@ -5,7 +5,7 @@ Most stable version from [**PyPi**](https://pypi.org/project/{{ pypi.name }}/):
 [![PyPI - License](https://img.shields.io/pypi/l/{{ pypi.name }}?style=flat-square)](https://pypi.org/project/{{ pypi.name }}/)
 
 ```bash
-$ python3 -m pip install {{ pypi.name }}
+python3 -m pip install {{ pypi.name }}
 ```
 
 Development version from [**GitHub**](https://github.com/{{ repo.owner }}/{{ repo.name }}):
@@ -21,7 +21,7 @@ Development version from [**GitHub**](https://github.com/{{ repo.owner }}/{{ rep
 {% endif %}
 
 ```bash
-$ git clone git+https://github.com/{{ repo.owner }}/{{ repo.name }}.git
-$ cd {{ repo.name }}
-$ python3 -m pip install -e .
+git clone git+https://github.com/{{ repo.owner }}/{{ repo.name }}.git
+cd {{ repo.name }}
+python3 -m pip install -e .
 ```
