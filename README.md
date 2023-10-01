@@ -66,31 +66,17 @@ import re2
 import regex_toolkit as rtk
 ```
 
-For instance, if you wish to create a regex pattern that matches all unicode letters and marks, and supplement it with additional code points consistent with Objective-C, you can do it as follows:
-
-```python
-unicode_letters_and_marks = r"\p{L}\p{M}" + rtk.make_exp(
-    [
-        *rtk.char_range("\uf870", "\uf87f"),
-        "\uf882",
-        *rtk.char_range("\uf884", "\uf89f"),
-        "\uf8b8",
-        *rtk.char_range("\uf8c1", "\uf8d6"),
-    ],
-    flavor=2,
-)
-# Output: r'\p{L}\p{M}\x{f870}-\x{f87f}\x{f882}\x{f884}-\x{f89f}\x{f8b8}\x{f8c1}-\x{f8d6}'
-```
-
-This representation is more intuitive and maintainable than conventional methods.
-
 ### Why Use `regex_toolkit`?
 
-Standard unicode regex groups (like `\p{L}` and `\p{M}`) have definitions that vary across languages and versions. By using the toolkit, you can achieve a more consistent and comprehensive representation of unicode support. It is especially useful to supplement base unicode sets with the latest definitions from other languages and standards.
+Regex definitions vary across languages and versions.
+By using the toolkit, you can achieve a more consistent and comprehensive representation of unicode support.
+It is especially useful to supplement base unicode sets with the latest definitions from other languages and standards.
 
 ### RE2 Overview
 
-RE2 focuses on safely processing regular expressions, particularly from untrusted inputs. It ensures both linear match time and efficient memory usage. Although it might not always surpass other engines in speed, it intentionally omits features that depend solely on backtracking, like backreferences and look-around assertions.
+RE2 focuses on safely processing regular expressions, particularly from untrusted inputs.
+It ensures both linear match time and efficient memory usage.
+Although it might not always surpass other engines in speed, it intentionally omits features that depend solely on backtracking, like backreferences and look-around assertions.
 
 A brief rundown of RE2 terminology:
 
