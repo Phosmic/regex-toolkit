@@ -2,6 +2,7 @@
 import re
 from collections.abc import Iterable
 from itertools import product
+from unittest import mock
 
 import pytest
 import re2
@@ -55,6 +56,29 @@ def test_escape_and_escape2_escapable(char, expected_exp, flavor):
     actual = regex_toolkit.escape(char, flavor)
     assert actual == expected_exp
     assert_exp_will_match(actual, char, flavor)
+
+
+@mock.patch("regex_toolkit.base._escape")
+@mock.patch("regex_toolkit.base._escape2")
+def test_escape_calls_expected_inner_func(mock__escape, mock__escape2):
+    char = "a"
+
+    flavor = RegexFlavor.RE
+    mock__escape.return_value = regex_toolkit.escape(char, flavor)
+    mock__escape2.return_value = regex_toolkit.escape(char, flavor)
+    regex_toolkit.escape(char, flavor)
+    assert mock__escape.called_once_with(char)
+    assert mock__escape2.not_called()
+
+    mock__escape.reset_mock()
+    mock__escape2.reset_mock()
+
+    flavor = RegexFlavor.RE2
+    mock__escape.return_value = regex_toolkit.escape(char, flavor)
+    mock__escape2.return_value = regex_toolkit.escape(char, flavor)
+    regex_toolkit.escape(char, flavor)
+    assert mock__escape.not_called()
+    assert mock__escape2.called_once_with(char)
 
 
 # RE - Escape
@@ -126,19 +150,44 @@ def test_string_as_exp_and_exp2_safe_joined_as_one(flavor):
     "text, expected", [(char, f"\\{char}") for char in ALWAYS_ESCAPE]
 )
 @pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
-def test_string_as_exp_and_exp2_escapable_individual_char(text, expected, flavor):
+def test_string_as_exp_escapable_individual_char(text, expected, flavor):
     actual = regex_toolkit.string_as_exp(text, flavor)
     assert actual == expected
     assert_exp_will_match(actual, text, flavor)
 
 
 @pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
-def test_string_as_exp_and_exp2_escapable_joined_as_one(flavor):
+def test_string_as_exp_escapable_joined_as_one(flavor):
     text = "".join(ALWAYS_ESCAPE)
     expected = "".join(f"\\{char}" for char in ALWAYS_ESCAPE)
     actual = regex_toolkit.string_as_exp(text, flavor)
     assert actual == expected
     assert_exp_will_match(actual, text, flavor)
+
+
+@mock.patch("regex_toolkit.base._string_as_exp")
+@mock.patch("regex_toolkit.base._string_as_exp2")
+def test_string_as_exp_calls_expected_inner_func(
+    mock__string_as_exp, mock__string_as_exp2
+):
+    text = "foo"
+
+    flavor = RegexFlavor.RE
+    mock__string_as_exp.return_value = regex_toolkit.string_as_exp(text, flavor)
+    mock__string_as_exp2.return_value = regex_toolkit.string_as_exp(text, flavor)
+    regex_toolkit.string_as_exp(text, flavor)
+    assert mock__string_as_exp.called_once_with(text)
+    assert mock__string_as_exp2.not_called()
+
+    mock__string_as_exp.reset_mock()
+    mock__string_as_exp2.reset_mock()
+
+    flavor = RegexFlavor.RE2
+    mock__string_as_exp.return_value = regex_toolkit.string_as_exp(text, flavor)
+    mock__string_as_exp2.return_value = regex_toolkit.string_as_exp(text, flavor)
+    regex_toolkit.string_as_exp(text, flavor)
+    assert mock__string_as_exp.not_called()
+    assert mock__string_as_exp2.called_once_with(text)
 
 
 # RE - String as expression
@@ -248,6 +297,31 @@ def test_strings_as_exp_and_exp2_safe_and_escapable_of_various_lengths(
     actual = regex_toolkit.strings_as_exp(texts, flavor)
     assert actual == expected
     assert_exp_will_match_all(actual, texts, flavor)
+
+
+@mock.patch("regex_toolkit.base._strings_as_exp")
+@mock.patch("regex_toolkit.base._strings_as_exp2")
+def test_strings_as_exp_calls_expected_inner_func(
+    mock__strings_as_exp, mock__strings_as_exp2
+):
+    texts = ["foo", "bar"]
+
+    flavor = RegexFlavor.RE
+    mock__strings_as_exp.return_value = regex_toolkit.strings_as_exp(texts, flavor)
+    mock__strings_as_exp2.return_value = regex_toolkit.strings_as_exp(texts, flavor)
+    regex_toolkit.strings_as_exp(texts, flavor)
+    assert mock__strings_as_exp.called_once_with(texts)
+    assert mock__strings_as_exp2.not_called()
+
+    mock__strings_as_exp.reset_mock()
+    mock__strings_as_exp2.reset_mock()
+
+    flavor = RegexFlavor.RE2
+    mock__strings_as_exp.return_value = regex_toolkit.strings_as_exp(texts, flavor)
+    mock__strings_as_exp2.return_value = regex_toolkit.strings_as_exp(texts, flavor)
+    regex_toolkit.strings_as_exp(texts, flavor)
+    assert mock__strings_as_exp.not_called()
+    assert mock__strings_as_exp2.called_once_with(texts)
 
 
 # RE - Strings as expression
