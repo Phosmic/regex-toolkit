@@ -30,7 +30,7 @@ def render_library_contents(
     templates_dir: str,
     rendered_filename: str,
 ) -> None:
-    """Render the Documentation for Python Modules to a File
+    """Render the documentation for Python modules to a file.
 
     Args:
         packages_dir (str): Base directory to search for modules.
