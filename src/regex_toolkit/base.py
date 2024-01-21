@@ -11,7 +11,7 @@ from regex_toolkit.constants import ALWAYS_ESCAPE, ALWAYS_SAFE
 from regex_toolkit.enums import RegexFlavor
 from regex_toolkit.utils import (
     char_to_cpoint,
-    iter_sort_by_len,
+    iter_sort_by_len_and_alpha,
     resolve_flavor,
 )
 
@@ -52,9 +52,7 @@ def escape(char: str, flavor: int | None = None) -> str:
     Raises:
         ValueError: Invalid regex flavor.
     """
-    if (flavor := resolve_flavor(flavor)) == RegexFlavor.RE:
-        return _escape(char)
-    return _escape2(char)
+    return _escape(char) if resolve_flavor(flavor) == RegexFlavor.RE else _escape2(char)
 
 
 def _string_as_exp(text: str) -> str:
@@ -78,17 +76,19 @@ def string_as_exp(text: str, flavor: int | None = None) -> str:
     Raises:
         ValueError: Invalid regex flavor.
     """
-    if (flavor := resolve_flavor(flavor)) == RegexFlavor.RE:
-        return _string_as_exp(text)
-    return _string_as_exp2(text)
+    return (
+        _string_as_exp(text)
+        if resolve_flavor(flavor) == RegexFlavor.RE
+        else _string_as_exp2(text)
+    )
 
 
 def _strings_as_exp(texts: Iterable[str]) -> str:
-    return r"|".join(map(_string_as_exp, iter_sort_by_len(texts, reverse=True)))
+    return r"|".join(map(_string_as_exp, iter_sort_by_len_and_alpha(texts)))
 
 
 def _strings_as_exp2(texts: Iterable[str]) -> str:
-    return r"|".join(map(_string_as_exp2, iter_sort_by_len(texts, reverse=True)))
+    return r"|".join(map(_string_as_exp2, iter_sort_by_len_and_alpha(texts)))
 
 
 def strings_as_exp(texts: Iterable[str], flavor: int | None = None) -> str:
@@ -104,9 +104,11 @@ def strings_as_exp(texts: Iterable[str], flavor: int | None = None) -> str:
     Raises:
         ValueError: Invalid regex flavor.
     """
-    if (flavor := resolve_flavor(flavor)) == RegexFlavor.RE:
-        return _strings_as_exp(texts)
-    return _strings_as_exp2(texts)
+    return (
+        _strings_as_exp(texts)
+        if resolve_flavor(flavor) == RegexFlavor.RE
+        else _strings_as_exp2(texts)
+    )
 
 
 def _make_group_exp(group: list[int]) -> str:
@@ -150,9 +152,11 @@ def make_exp(chars: Iterable[str], flavor: int | None = None) -> str:
     Raises:
         ValueError: Invalid regex flavor.
     """
-    if (flavor := resolve_flavor(flavor)) == RegexFlavor.RE:
-        func = _make_group_exp
-    func = _make_group_exp2
+    func = (
+        _make_group_exp
+        if resolve_flavor(flavor) == RegexFlavor.RE
+        else _make_group_exp2
+    )
 
     exp = ""
     group = []

@@ -48,18 +48,25 @@ def test_default_flavor_can_be_set():
     assert regex_toolkit.base.resolve_flavor(None) == RegexFlavor.RE2
 
 
-def is_sorted_by_len(texts: Iterable[str], reverse: bool = False) -> bool:
-    prev_len = None
+def is_sorted_by_length_and_alphabetically(
+    texts: Iterable[str],
+    reverse: bool = False,
+) -> bool:
+    prev_len, prev_text = None, None
     for text in texts:
         if prev_len is None:
-            prev_len = len(text)
+            prev_len, prev_text = len(text), text
         if reverse:
-            if len(text) > prev_len:
-                return False
-        else:
             if len(text) < prev_len:
                 return False
-        prev_len = len(text)
+            elif (len(text) == prev_len) and (text > prev_text):
+                return False
+        else:
+            if len(text) > prev_len:
+                return False
+            elif (len(text) == prev_len) and (text < prev_text):
+                return False
+        prev_len, prev_text = len(text), text
     return True
 
 
@@ -86,11 +93,17 @@ SORT_BY_LEN_TEXTS_BY_TYPE = {
 
 @pytest.mark.parametrize("try_type, typed_texts", SORT_BY_LEN_TEXTS_BY_TYPE.items())
 @pytest.mark.parametrize("reverse", (False, True))
-def test_iter_sort_by_len(try_type, typed_texts, reverse):
-    expected_tuple = tuple(sorted(typed_texts, key=len, reverse=reverse))
-    assert is_sorted_by_len(expected_tuple, reverse=reverse)
+def test_iter_sort_by_len_and_alpha(try_type, typed_texts, reverse):
+    expected_tuple = tuple(
+        sorted(
+            typed_texts,
+            key=regex_toolkit.utils.SORT_BY_LEN_AND_ALPHA_KEY,
+            reverse=reverse,
+        )
+    )
+    assert is_sorted_by_length_and_alphabetically(expected_tuple, reverse=reverse)
 
-    actual = regex_toolkit.iter_sort_by_len(typed_texts, reverse=reverse)
+    actual = regex_toolkit.iter_sort_by_len_and_alpha(typed_texts, reverse=reverse)
     actual_tuple = tuple(actual)
     assert isinstance(actual, Generator) and (actual_tuple == expected_tuple), {
         "try_type": try_type,
@@ -103,11 +116,17 @@ def test_iter_sort_by_len(try_type, typed_texts, reverse):
 
 @pytest.mark.parametrize("try_type, typed_texts", SORT_BY_LEN_TEXTS_BY_TYPE.items())
 @pytest.mark.parametrize("reverse", (False, True))
-def test_sort_by_len(try_type, typed_texts, reverse):
-    expected = tuple(sorted(typed_texts, key=len, reverse=reverse))
-    assert is_sorted_by_len(expected, reverse=reverse)
+def test_sort_by_len_and_alpha(try_type, typed_texts, reverse):
+    expected = tuple(
+        sorted(
+            typed_texts,
+            key=regex_toolkit.utils.SORT_BY_LEN_AND_ALPHA_KEY,
+            reverse=reverse,
+        )
+    )
+    assert is_sorted_by_length_and_alphabetically(expected, reverse=reverse)
 
-    actual = regex_toolkit.sort_by_len(typed_texts, reverse=reverse)
+    actual = regex_toolkit.sort_by_len_and_alpha(typed_texts, reverse=reverse)
     assert isinstance(actual, tuple) and (actual == expected), {
         "try_type": try_type,
         "typed_texts": typed_texts,

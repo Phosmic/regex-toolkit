@@ -1,5 +1,11 @@
+from __future__ import annotations
+
 import unicodedata
 from collections.abc import Generator, Iterable
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 import regex_toolkit.base
 from regex_toolkit.enums import RegexFlavor
@@ -9,15 +15,17 @@ __all__ = [
     "char_to_cpoint",
     "cpoint_to_ord",
     "iter_char_range",
-    "iter_sort_by_len",
+    "iter_sort_by_len_and_alpha",
     "mask_span",
     "mask_spans",
     "ord_to_cpoint",
     "resolve_flavor",
-    "sort_by_len",
+    "sort_by_len_and_alpha",
     "to_nfc",
     "to_utf8",
 ]
+
+SORT_BY_LEN_AND_ALPHA_KEY: Callable[[str], tuple[int, str]] = lambda x: (-len(x), x)
 
 
 def resolve_flavor(potential_flavor: int | RegexFlavor | None) -> RegexFlavor:
@@ -55,39 +63,39 @@ def resolve_flavor(potential_flavor: int | RegexFlavor | None) -> RegexFlavor:
             raise ValueError(f"Invalid regex flavor: {potential_flavor}") from err
 
 
-def iter_sort_by_len(
+def iter_sort_by_len_and_alpha(
     texts: Iterable[str],
     *,
     reverse: bool = False,
 ) -> Generator[str, None, None]:
-    """Iterate strings sorted by length.
+    """Iterate strings sorted first by length (longest to shortest), then alphabetically.
 
     Args:
         texts (Iterable[str]): Strings to sort.
-        reverse (bool, optional): Sort in descending order (longest to shortest). Defaults to False.
+        reverse (bool, optional): Sort in descending order (shortest to longest, then reverse alphabetically). Defaults to False.
 
     Yields:
-        str: Strings sorted by length.
+        str: Strings sorted first by length, then alphabetically.
     """
-    for text in sorted(texts, key=len, reverse=reverse):
+    for text in sorted(texts, key=SORT_BY_LEN_AND_ALPHA_KEY, reverse=reverse):
         yield text
 
 
-def sort_by_len(
+def sort_by_len_and_alpha(
     texts: Iterable[str],
     *,
     reverse: bool = False,
 ) -> tuple[str, ...]:
-    """Sort strings by length.
+    """Sort strings by first by length (longest to shortest), then alphabetically.
 
     Args:
         texts (Iterable[str]): Strings to sort.
-        reverse (bool, optional): Sort in descending order (longest to shortest). Defaults to False.
+        reverse (bool, optional): Sort in descending order (shortest to longest, then reverse alphabetically). Defaults to False.
 
     Returns:
-        tuple[str, ...]: Strings sorted by length.
+        tuple[str, ...]: Strings sorted first by length, then alphabetically.
     """
-    return tuple(iter_sort_by_len(texts, reverse=reverse))
+    return tuple(iter_sort_by_len_and_alpha(texts, reverse=reverse))
 
 
 def ord_to_cpoint(ordinal: int) -> str:
