@@ -133,70 +133,109 @@ assert rtk.utils.resolve_flavor(None) == rtk.enums.RegexFlavor.RE2
 
 - `ValueError` - Invalid regex flavor.
 
-<a id="regex_toolkit.utils.iter_sort_by_len"></a>
+<a id="regex_toolkit.utils.iter_sort_by_len_and_alpha"></a>
 
-#### `iter_sort_by_len`
+#### `iter_sort_by_len_and_alpha`
 
 ```python
-def iter_sort_by_len(texts: Iterable[str],
-                     *,
-                     reverse: bool = False) -> Generator[str, None, None]
+def iter_sort_by_len_and_alpha(
+        texts: Iterable[str],
+        *,
+        reverse: bool = False) -> Generator[str, None, None]
 ```
 
-Iterate strings sorted by length.
+Iterate strings sorted first by length (longest to shortest), then alphabetically.
+
+**Example**:
+
+```python
+import regex_toolkit as rtk
+
+tuple(rtk.utils.iter_sort_by_len_and_alpha(["a", "aa", "aaa"]))
+# Output: ('aaa', 'aa', 'a')
+
+tuple(rtk.utils.iter_sort_by_len_and_alpha(["a", "b", "c"]))
+# Output: ('a', 'b', 'c')
+
+tuple(rtk.utils.iter_sort_by_len_and_alpha(["z", "a", "zz", "aa", "zzz", "aaa"]))
+# Output: ('aaa', 'zzz', 'aa', 'zz', 'a', 'z')
+```
 
 **Arguments**:
 
 - `texts` _Iterable[str]_ - Strings to sort.
-- `reverse` _bool, optional_ - Sort in descending order (longest to shortest). Defaults to False.
+- `reverse` _bool, optional_ - Sort in descending order (shortest to longest, then reverse alphabetically). Defaults to False.
 
 **Yields**:
 
-- _str_ - Strings sorted by length.
+- _str_ - Strings sorted first by length, then alphabetically.
 
-<a id="regex_toolkit.utils.sort_by_len"></a>
+<a id="regex_toolkit.utils.sort_by_len_and_alpha"></a>
 
-#### `sort_by_len`
+#### `sort_by_len_and_alpha`
 
 ```python
-def sort_by_len(texts: Iterable[str],
-                *,
-                reverse: bool = False) -> tuple[str, ...]
+def sort_by_len_and_alpha(texts: Iterable[str],
+                          *,
+                          reverse: bool = False) -> tuple[str, ...]
 ```
 
-Sort strings by length.
+Sort strings by first by length (longest to shortest), then alphabetically.
+
+**Example**:
+
+```python
+import regex_toolkit as rtk
+
+rtk.utils.sort_by_len_and_alpha(["a", "aa", "aaa"])
+# Output: ('aaa', 'aa', 'a')
+
+rtk.utils.sort_by_len_and_alpha(["a", "b", "c"])
+# Output: ('a', 'b', 'c')
+
+rtk.utils.sort_by_len_and_alpha(["z", "a", "zz", "aa", "zzz", "aaa"])
+# Output: ('aaa', 'zzz', 'aa', 'zz', 'a', 'z')
+```
 
 **Arguments**:
 
 - `texts` _Iterable[str]_ - Strings to sort.
-- `reverse` _bool, optional_ - Sort in descending order (longest to shortest). Defaults to False.
+- `reverse` _bool, optional_ - Sort in descending order (shortest to longest, then reverse alphabetically). Defaults to False.
 
 **Returns**:
 
-- _tuple[str, ...]_ - Strings sorted by length.
+- _tuple[str, ...]_ - Strings sorted first by length, then alphabetically.
 
 <a id="regex_toolkit.utils.ord_to_cpoint"></a>
 
 #### `ord_to_cpoint`
 
 ```python
-def ord_to_cpoint(ordinal: int) -> str
+def ord_to_cpoint(ordinal: int, *, zfill: int | None = 8) -> str
 ```
 
 Character ordinal to character codepoint.
 
-The codepoint is always 8 characters long (zero-padded).
+Produces a hexadecimal (`[0-9A-F]`) representation of the ordinal.
+The default zero-padding is 8 characters, which is the maximum amount of characters in a codepoint.
 
 **Example**:
 
 ```python
-ord_to_cpoint(97)
-# Output: '00000061'
+import regex_toolkit as rtk
+
+rtk.ord_to_cpoint(128054)
+# Output: '0001F436'
+
+# Disable zero-padding by setting `zfill` to `0` or `None`.
+rtk.ord_to_cpoint(128054, zfill=0)
+# Output: '1F436'
 ```
 
 **Arguments**:
 
 - `ordinal` _int_ - Character ordinal.
+- `zfill` _int | None, optional_ - Amount of characters to zero-pad the codepoint to. Defaults to 8.
 
 **Returns**:
 
@@ -212,6 +251,18 @@ def cpoint_to_ord(cpoint: str) -> int
 
 Character codepoint to character ordinal.
 
+**Example**:
+
+```python
+import regex_toolkit as rtk
+
+rtk.cpoint_to_ord("0001F436")
+# Output: 128054
+
+rtk.cpoint_to_ord("1F436")
+# Output: 128054
+```
+
 **Arguments**:
 
 - `cpoint` _str_ - Character codepoint.
@@ -225,21 +276,31 @@ Character codepoint to character ordinal.
 #### `char_to_cpoint`
 
 ```python
-def char_to_cpoint(char: str) -> str
+def char_to_cpoint(char: str, *, zfill: int | None = 8) -> str
 ```
 
 Character to character codepoint.
 
+Produces a hexadecimal (`[0-9A-F]`) representation of the character.
+The default zero-padding is 8 characters, which is the maximum amount of characters in a codepoint.
+
 **Example**:
 
 ```python
-char_to_cpoint("a")
-# Output: '00000061'
+import regex_toolkit as rtk
+
+rtk.char_to_cpoint("🐶")
+# Output: '0001F436'
+
+# Disable zero-padding by setting `zfill` to `0` or `None`.
+rtk.char_to_cpoint("🐶", zfill=0)
+# Output: '1F436'
 ```
 
 **Arguments**:
 
 - `char` _str_ - Character.
+- `zfill` _int | None, optional_ - Amount of characters to zero-pad the codepoint to. Defaults to 8.
 
 **Returns**:
 
@@ -260,8 +321,10 @@ Form C favors the use of a fully combined character.
 **Example**:
 
 ```python
-to_nfc("e\\u0301") == "é"
-# Output: True
+import regex_toolkit as rtk
+
+rtk.to_nfc("e\\u0301")
+# Output: 'é'
 ```
 
 **Arguments**:
@@ -286,11 +349,16 @@ Iterate all characters within a range of characters (inclusive).
 **Example**:
 
 ```python
-char_range("a", "c")
+import regex_toolkit as rtk
+
+tuple(rtk.iter_char_range("a", "c"))
 # Output: ('a', 'b', 'c')
 
-char_range("c", "a")
+tuple(rtk.iter_char_range("c", "a"))
 # Output: ('c', 'b', 'a')
+
+tuple(rtk.iter_char_range("🐶", "🐺"))
+# Output: ("🐶", "🐷", "🐸", "🐹", "🐺")
 ```
 
 **Arguments**:
@@ -315,17 +383,22 @@ Tuple of all characters within a range of characters (inclusive).
 **Example**:
 
 ```python
-char_range("a", "d")
+import regex_toolkit as rtk
+
+rtk.char_range("a", "d")
 # Output: ('a', 'b', 'c', 'd')
 
-char_range("d", "a")
+rtk.char_range("d", "a")
 # Output: ('d', 'c', 'b', 'a')
+
+rtk.char_range("🐶", "🐺")
+# Output: ("🐶", "🐷", "🐸", "🐹", "🐺")
 ```
 
 **Arguments**:
 
-- `first_char` _str_ - Starting (first) character.
-- `last_char` _str_ - Ending (last) character.
+- `first_char` _str_ - First character (inclusive).
+- `last_char` _str_ - Last character (inclusive).
 
 **Returns**:
 
@@ -342,6 +415,18 @@ def mask_span(text: str,
 ```
 
 Slice and mask a string using a single span.
+
+**Example**:
+
+```python
+import regex_toolkit as rtk
+
+rtk.mask_span("This is a example", (10, 10), "insert ")
+# Output: 'This is a insert example'
+
+rtk.mask_span("This is a example", (5, 7), "replaces part of")
+# Output: 'This replaces part of a example'
+```
 
 **Arguments**:
 
@@ -365,7 +450,20 @@ def mask_spans(text: str,
 
 Slice and mask a string using multiple spans.
 
-Todo: Add support for overlapping (and unordered?) spans.
+**Example**:
+
+```python
+import regex_toolkit as rtk
+
+rtk.mask_spans(
+    text="This is a example",
+    masks=["replaces part of", "insert "],
+    spans=[(5, 7), (10, 10)],
+)
+# Output: 'This replaces part of a insert example'
+```
+
+- `Todo` - Add support for overlapping (and unordered?) spans.
 
 **Arguments**:
 
@@ -391,6 +489,26 @@ def escape(char: str, flavor: int | None = None) -> str
 
 Create a regex expression that exactly matches a character.
 
+**Example**:
+
+```python
+import regex_toolkit as rtk
+
+rtk.escape("a")
+# Output: 'a'
+rtk.escape(".")
+# Output: '\\.'
+rtk.escape("/")
+# Output: '/'
+
+rtk.escape(".", flavor=2)
+# Output: '\\.'
+rtk.escape("a", flavor=2)
+# Output: 'a'
+rtk.escape("/", flavor=2)
+# Output: '\\x{002f}'
+```
+
 **Arguments**:
 
 - `char` _str_ - Character to match.
@@ -403,6 +521,7 @@ Create a regex expression that exactly matches a character.
 **Raises**:
 
 - `ValueError` - Invalid regex flavor.
+- `TypeError` - Invalid type for `char`.
 
 <a id="regex_toolkit.base.string_as_exp"></a>
 
@@ -413,6 +532,18 @@ def string_as_exp(text: str, flavor: int | None = None) -> str
 ```
 
 Create a regex expression that exactly matches a string.
+
+**Example**:
+
+```python
+import regex_toolkit as rtk
+
+rtk.string_as_exp("http://www.example.com")
+# Output: 'https\\:\\/\\/example\\.com'
+
+rtk.string_as_exp("http://www.example.com", flavor=2)
+# Output: 'https\\x{003a}\\x{002f}\\x{002f}example\\.com'
+```
 
 **Arguments**:
 
@@ -436,6 +567,18 @@ def strings_as_exp(texts: Iterable[str], flavor: int | None = None) -> str
 ```
 
 Create a regex expression that exactly matches any one string.
+
+**Example**:
+
+```python
+import regex_toolkit as rtk
+
+rtk.strings_as_exp(["apple", "banana", "cherry"])
+# Output: 'banana|cherry|apple'
+
+rtk.strings_as_exp(["apple", "banana", "cherry"], flavor=2)
+# Output: 'banana|cherry|apple'
+```
 
 **Arguments**:
 
@@ -466,7 +609,12 @@ The expression is not anchored, so it can be used as part of a larger expression
 **Example**:
 
 ```python
-exp = "[" + make_exp(["a", "b", "c", "z", "y", "x"]) + "]"
+import regex_toolkit as rtk
+
+"[" + rtk.make_exp(["a", "b", "c", "z", "y", "x"]) + "]"
+# Output: '[a-cx-z]'
+
+"[" + rtk.make_exp(["a", "b", "c", "z", "y", "x"], flavor=2) + "]"
 # Output: '[a-cx-z]'
 ```
 

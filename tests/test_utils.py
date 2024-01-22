@@ -103,7 +103,9 @@ def test_iter_sort_by_len_and_alpha(try_type, typed_texts, reverse):
     )
     assert is_sorted_by_length_and_alphabetically(expected_tuple, reverse=reverse)
 
-    actual = regex_toolkit.iter_sort_by_len_and_alpha(typed_texts, reverse=reverse)
+    actual = regex_toolkit.utils.iter_sort_by_len_and_alpha(
+        typed_texts, reverse=reverse
+    )
     actual_tuple = tuple(actual)
     assert isinstance(actual, Generator) and (actual_tuple == expected_tuple), {
         "try_type": try_type,
@@ -126,11 +128,107 @@ def test_sort_by_len_and_alpha(try_type, typed_texts, reverse):
     )
     assert is_sorted_by_length_and_alphabetically(expected, reverse=reverse)
 
-    actual = regex_toolkit.sort_by_len_and_alpha(typed_texts, reverse=reverse)
+    actual = regex_toolkit.utils.sort_by_len_and_alpha(typed_texts, reverse=reverse)
     assert isinstance(actual, tuple) and (actual == expected), {
         "try_type": try_type,
         "typed_texts": typed_texts,
         "reverse": reverse,
+        "actual": actual,
+        "expected": expected,
+    }
+
+
+@pytest.mark.parametrize(
+    "ordinal, zfill, expected",
+    [
+        # ASCII, numeric hexadecimal, various zfill values
+        (97, None, "61"),
+        (97, 0, "61"),
+        (97, 1, "61"),
+        (97, 2, "61"),
+        (97, 3, "061"),
+        (97, 4, "0061"),
+        (97, 5, "00061"),
+        (97, 6, "000061"),
+        (97, 7, "0000061"),
+        (97, 8, "00000061"),
+        # Non-ASCII, alphanumeric hexadecimal, various zfill values
+        (128054, None, "1F436"),
+        (128054, 0, "1F436"),
+        (128054, 1, "1F436"),
+        (128054, 2, "1F436"),
+        (128054, 3, "1F436"),
+        (128054, 4, "1F436"),
+        (128054, 5, "1F436"),
+        (128054, 6, "01F436"),
+        (128054, 7, "001F436"),
+        (128054, 8, "0001F436"),
+    ],
+)
+def test_ord_to_cpoint(ordinal, zfill, expected):
+    actual = regex_toolkit.ord_to_cpoint(ordinal, zfill=zfill)
+    assert actual == expected, {
+        "ordinal": ordinal,
+        "zfill": zfill,
+        "actual": actual,
+        "expected": expected,
+    }
+
+
+@pytest.mark.parametrize(
+    "codepoint, expected",
+    [
+        # ASCII, numeric hexadecimal
+        ("61", 97),
+        ("0061", 97),
+        ("00000061", 97),
+        # Non-ASCII, alphanumeric hexadecimal, various hexadecimal capitalization
+        ("1F436", 128054),
+        ("1f436", 128054),
+        ("0001F436", 128054),
+        ("0001f436", 128054),
+    ],
+)
+def test_cpoint_to_ord(codepoint, expected):
+    actual = regex_toolkit.cpoint_to_ord(codepoint)
+    assert actual == expected, {
+        "codepoint": codepoint,
+        "actual": actual,
+        "expected": expected,
+    }
+
+
+@pytest.mark.parametrize(
+    "char, zfill, expected",
+    [
+        # ASCII, numeric hexadecimal
+        ("a", None, "61"),
+        ("a", 0, "61"),
+        ("a", 1, "61"),
+        ("a", 2, "61"),
+        ("a", 3, "061"),
+        ("a", 4, "0061"),
+        ("a", 5, "00061"),
+        ("a", 6, "000061"),
+        ("a", 7, "0000061"),
+        ("a", 8, "00000061"),
+        # Non-ASCII, alphanumeric hexadecimal
+        ("🐶", None, "1F436"),
+        ("🐶", 0, "1F436"),
+        ("🐶", 1, "1F436"),
+        ("🐶", 2, "1F436"),
+        ("🐶", 3, "1F436"),
+        ("🐶", 4, "1F436"),
+        ("🐶", 5, "1F436"),
+        ("🐶", 6, "01F436"),
+        ("🐶", 7, "001F436"),
+        ("🐶", 8, "0001F436"),
+    ],
+)
+def test_char_to_cpoint(char, zfill, expected):
+    actual = regex_toolkit.char_to_cpoint(char, zfill=zfill)
+    assert actual == expected, {
+        "char": char,
         "actual": actual,
         "expected": expected,
     }
@@ -144,7 +242,11 @@ ITER_CHAR_RANGE_CASES = [
     # Reverse range
     (("d", "a"), ("d", "c", "b", "a")),
     # Single char (non-ASCII)
+    (("🐶", "🐶"), ("🐶",)),
+    # Basic range (non-ASCII)
     (("🐶", "🐺"), ("🐶", "🐷", "🐸", "🐹", "🐺")),
+    # Reverse range (non-ASCII)
+    (("🐺", "🐶"), ("🐺", "🐹", "🐸", "🐷", "🐶")),
 ]
 
 

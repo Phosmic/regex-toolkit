@@ -70,6 +70,21 @@ def iter_sort_by_len_and_alpha(
 ) -> Generator[str, None, None]:
     """Iterate strings sorted first by length (longest to shortest), then alphabetically.
 
+    Example:
+
+    ```python
+    import regex_toolkit as rtk
+
+    tuple(rtk.utils.iter_sort_by_len_and_alpha(["a", "aa", "aaa"]))
+    # Output: ('aaa', 'aa', 'a')
+
+    tuple(rtk.utils.iter_sort_by_len_and_alpha(["a", "b", "c"]))
+    # Output: ('a', 'b', 'c')
+
+    tuple(rtk.utils.iter_sort_by_len_and_alpha(["z", "a", "zz", "aa", "zzz", "aaa"]))
+    # Output: ('aaa', 'zzz', 'aa', 'zz', 'a', 'z')
+    ```
+
     Args:
         texts (Iterable[str]): Strings to sort.
         reverse (bool, optional): Sort in descending order (shortest to longest, then reverse alphabetically). Defaults to False.
@@ -88,6 +103,21 @@ def sort_by_len_and_alpha(
 ) -> tuple[str, ...]:
     """Sort strings by first by length (longest to shortest), then alphabetically.
 
+    Example:
+
+    ```python
+    import regex_toolkit as rtk
+
+    rtk.utils.sort_by_len_and_alpha(["a", "aa", "aaa"])
+    # Output: ('aaa', 'aa', 'a')
+
+    rtk.utils.sort_by_len_and_alpha(["a", "b", "c"])
+    # Output: ('a', 'b', 'c')
+
+    rtk.utils.sort_by_len_and_alpha(["z", "a", "zz", "aa", "zzz", "aaa"])
+    # Output: ('aaa', 'zzz', 'aa', 'zz', 'a', 'z')
+    ```
+
     Args:
         texts (Iterable[str]): Strings to sort.
         reverse (bool, optional): Sort in descending order (shortest to longest, then reverse alphabetically). Defaults to False.
@@ -98,29 +128,50 @@ def sort_by_len_and_alpha(
     return tuple(iter_sort_by_len_and_alpha(texts, reverse=reverse))
 
 
-def ord_to_cpoint(ordinal: int) -> str:
+def ord_to_cpoint(ordinal: int, *, zfill: int | None = 8) -> str:
     """Character ordinal to character codepoint.
 
-    The codepoint is always 8 characters long (zero-padded).
+    Produces a hexadecimal (`[0-9A-F]`) representation of the ordinal.
+    The default zero-padding is 8 characters, which is the maximum amount of characters in a codepoint.
 
     Example:
 
     ```python
-    ord_to_cpoint(97)
-    # Output: '00000061'
+    import regex_toolkit as rtk
+
+    rtk.ord_to_cpoint(128054)
+    # Output: '0001F436'
+
+    # Disable zero-padding by setting `zfill` to `0` or `None`.
+    rtk.ord_to_cpoint(128054, zfill=0)
+    # Output: '1F436'
     ```
 
     Args:
         ordinal (int): Character ordinal.
+        zfill (int | None, optional): Amount of characters to zero-pad the codepoint to. Defaults to 8.
 
     Returns:
         str: Character codepoint.
     """
-    return format(ordinal, "x").zfill(8)
+    nonpadded_cpoint = format(ordinal, "x").upper()
+    return nonpadded_cpoint.zfill(zfill) if zfill else nonpadded_cpoint
 
 
 def cpoint_to_ord(cpoint: str) -> int:
     """Character codepoint to character ordinal.
+
+    Example:
+
+    ```python
+    import regex_toolkit as rtk
+
+    rtk.cpoint_to_ord("0001F436")
+    # Output: 128054
+
+    rtk.cpoint_to_ord("1F436")
+    # Output: 128054
+    ```
 
     Args:
         cpoint (str): Character codepoint.
@@ -131,23 +182,33 @@ def cpoint_to_ord(cpoint: str) -> int:
     return int(cpoint, 16)
 
 
-def char_to_cpoint(char: str) -> str:
+def char_to_cpoint(char: str, *, zfill: int | None = 8) -> str:
     """Character to character codepoint.
+
+    Produces a hexadecimal (`[0-9A-F]`) representation of the character.
+    The default zero-padding is 8 characters, which is the maximum amount of characters in a codepoint.
 
     Example:
 
     ```python
-    char_to_cpoint("a")
-    # Output: '00000061'
+    import regex_toolkit as rtk
+
+    rtk.char_to_cpoint("🐶")
+    # Output: '0001F436'
+
+    # Disable zero-padding by setting `zfill` to `0` or `None`.
+    rtk.char_to_cpoint("🐶", zfill=0)
+    # Output: '1F436'
     ```
 
     Args:
         char (str): Character.
+        zfill (int | None, optional): Amount of characters to zero-pad the codepoint to. Defaults to 8.
 
     Returns:
         str: Character codepoint.
     """
-    return ord_to_cpoint(ord(char))
+    return ord_to_cpoint(ord(char), zfill=zfill)
 
 
 def to_utf8(text):
@@ -162,8 +223,10 @@ def to_nfc(text: str) -> str:
     Example:
 
     ```python
-    to_nfc("e\\u0301") == "é"
-    # Output: True
+    import regex_toolkit as rtk
+
+    rtk.to_nfc("e\\u0301")
+    # Output: 'é'
     ```
 
     Args:
@@ -181,11 +244,16 @@ def iter_char_range(first_char: str, last_char: str) -> Generator[str, None, Non
     Example:
 
     ```python
-    char_range("a", "c")
+    import regex_toolkit as rtk
+
+    tuple(rtk.iter_char_range("a", "c"))
     # Output: ('a', 'b', 'c')
 
-    char_range("c", "a")
+    tuple(rtk.iter_char_range("c", "a"))
     # Output: ('c', 'b', 'a')
+
+    tuple(rtk.iter_char_range("🐶", "🐺"))
+    # Output: ("🐶", "🐷", "🐸", "🐹", "🐺")
     ```
 
     Args:
@@ -211,16 +279,21 @@ def char_range(first_char: str, last_char: str) -> tuple[str, ...]:
     Example:
 
     ```python
-    char_range("a", "d")
+    import regex_toolkit as rtk
+
+    rtk.char_range("a", "d")
     # Output: ('a', 'b', 'c', 'd')
 
-    char_range("d", "a")
+    rtk.char_range("d", "a")
     # Output: ('d', 'c', 'b', 'a')
+
+    rtk.char_range("🐶", "🐺")
+    # Output: ("🐶", "🐷", "🐸", "🐹", "🐺")
     ```
 
     Args:
-        first_char (str): Starting (first) character.
-        last_char (str): Ending (last) character.
+        first_char (str): First character (inclusive).
+        last_char (str): Last character (inclusive).
 
     Returns:
         tuple[str, ...]: Characters within a range of characters.
@@ -234,6 +307,18 @@ def mask_span(
     mask: str | None = None,
 ) -> str:
     """Slice and mask a string using a single span.
+
+    Example:
+
+    ```python
+    import regex_toolkit as rtk
+
+    rtk.mask_span("This is a example", (10, 10), "insert ")
+    # Output: 'This is a insert example'
+
+    rtk.mask_span("This is a example", (5, 7), "replaces part of")
+    # Output: 'This replaces part of a example'
+    ```
 
     Args:
         text (str): String to slice.
@@ -257,6 +342,19 @@ def mask_spans(
     masks: Iterable[str] | None = None,
 ) -> str:
     """Slice and mask a string using multiple spans.
+
+    Example:
+
+    ```python
+    import regex_toolkit as rtk
+
+    rtk.mask_spans(
+        text="This is a example",
+        masks=["replaces part of", "insert "],
+        spans=[(5, 7), (10, 10)],
+    )
+    # Output: 'This replaces part of a insert example'
+    ```
 
     Todo: Add support for overlapping (and unordered?) spans.
 
