@@ -274,7 +274,7 @@ def iter_char_range(first_char: str, last_char: str) -> Generator[str, None, Non
 
 
 def char_range(first_char: str, last_char: str) -> tuple[str, ...]:
-    """Tuple of all characters within a range of characters (inclusive).
+    """Get all characters within a range of characters (inclusive).
 
     Example:
 

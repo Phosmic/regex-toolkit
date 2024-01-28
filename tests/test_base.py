@@ -565,7 +565,7 @@ def test_strings_as_exp2_unsafe_of_various_lengths(texts, expected):
     (
         # 1 char does not make a range
         (["a"], "a"),
-        # 2 chars should not make a range
+        # 2 sequential chars should not make a range
         (["a", "b"], "ab"),
         # 3+ sequential chars make a range
         (["a", "b", "c"], "a-c"),
@@ -579,7 +579,7 @@ def test_strings_as_exp2_unsafe_of_various_lengths(texts, expected):
         (["e", "c", "a"], "ace"),
         # Chars should always be ordered by ordinal
         (["z", "c", "b", "a"], "a-cz"),
-        # Duplicates should be removed
+        # Duplicates should have no effect
         (["d", "a", "b", "c", "a"], "a-d"),
     ),
 )
