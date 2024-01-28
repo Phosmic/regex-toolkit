@@ -378,7 +378,7 @@ tuple(rtk.iter_char_range("🐶", "🐺"))
 def char_range(first_char: str, last_char: str) -> tuple[str, ...]
 ```
 
-Tuple of all characters within a range of characters (inclusive).
+Get all characters within a range of characters (inclusive).
 
 **Example**:
 
