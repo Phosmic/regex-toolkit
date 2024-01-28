@@ -409,9 +409,7 @@ rtk.char_range("🐶", "🐺")
 #### `mask_span`
 
 ```python
-def mask_span(text: str,
-              span: list[int] | tuple[int, int],
-              mask: str | None = None) -> str
+def mask_span(text: str, span: Sequence[int], mask: str | None = None) -> str
 ```
 
 Slice and mask a string using a single span.
@@ -421,6 +419,9 @@ Slice and mask a string using a single span.
 ```python
 import regex_toolkit as rtk
 
+rtk.mask_span("example", (0, 2))
+# Output: 'ample'
+
 rtk.mask_span("This is a example", (10, 10), "insert ")
 # Output: 'This is a insert example'
 
@@ -428,11 +429,15 @@ rtk.mask_span("This is a example", (5, 7), "replaces part of")
 # Output: 'This replaces part of a example'
 ```
 
+**Todo**:
+
+  * Consider alternate behavior for a span that is out of bounds.
+
 **Arguments**:
 
 - `text` _str_ - String to slice.
-- `span` _list[int] | tuple[int, int]_ - Domain of index positions (start, end) to mask.
-- `mask` _str, optional_ - Mask to insert after slicing. Defaults to None.
+- `span` _Sequence[int]_ - Span to slice (start is inclusive, end is exclusive).
+- `mask` _str, optional_ - String to replace the span with. Defaults to None.
 
 **Returns**:
 
@@ -444,8 +449,8 @@ rtk.mask_span("This is a example", (5, 7), "replaces part of")
 
 ```python
 def mask_spans(text: str,
-               spans: Iterable[list[int] | tuple[int, int]],
-               masks: Iterable[str] | None = None) -> str
+               spans: Sequence[Sequence[int]],
+               masks: Sequence[str] | None = None) -> str
 ```
 
 Slice and mask a string using multiple spans.
@@ -463,13 +468,17 @@ rtk.mask_spans(
 # Output: 'This replaces part of a insert example'
 ```
 
-- `Todo` - Add support for overlapping (and unordered?) spans.
+**Todo**:
+
+  * Consider alternate behavior for spans that overlap.
+  * Consider alternate behavior for spans that are out of order.
+  * Consider alternate behavior for spans that are out of bounds.
 
 **Arguments**:
 
 - `text` _str_ - String to slice.
-- `spans` _Iterable[list[int] | tuple[int, int]]_ - Domains of index positions (x1, x2) to mask within the text.
-- `masks` _Iterable[str], optional_ - Masks to insert when slicing. Defaults to None.
+- `spans` _Sequence[Sequence[int]]_ - Spans to slice (start is inclusive, end is exclusive).
+- `masks` _Sequence[str], optional_ - Strings to replace the spans with. Defaults to None.
 
 **Returns**:
 
