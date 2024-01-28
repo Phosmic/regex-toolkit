@@ -476,6 +476,18 @@ def test_strings_as_exp_and_exp2_with_duplicates(flavor):
     assert actual == expected
 
 
+@pytest.mark.parametrize("seq", ["abc", tuple("abc"), list("abc")])
+@pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
+def test_strings_as_exp_and_exp2_various_sequence_types(seq, flavor):
+    assert regex_toolkit.strings_as_exp(seq, flavor) == "a|b|c"
+
+
+@pytest.mark.parametrize("seq", ["", tuple(), list()])
+@pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
+def test_strings_as_exp_and_exp2_empty_of_various_sequence_types(seq, flavor):
+    assert regex_toolkit.strings_as_exp(seq, flavor) == ""
+
+
 @mock.patch("regex_toolkit.base._strings_as_exp")
 @mock.patch("regex_toolkit.base._strings_as_exp2")
 def test_strings_as_exp_calls_expected_inner_func(

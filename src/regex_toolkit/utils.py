@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 import unicodedata
-from collections.abc import Generator, Iterable
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from collections.abc import Callable, Sequence, Generator, Iterable
 
 import regex_toolkit.base
 from regex_toolkit.enums import RegexFlavor
@@ -303,7 +302,7 @@ def char_range(first_char: str, last_char: str) -> tuple[str, ...]:
 
 def mask_span(
     text: str,
-    span: list[int] | tuple[int, int],
+    span: Sequence[int],
     mask: str | None = None,
 ) -> str:
     """Slice and mask a string using a single span.
@@ -313,6 +312,9 @@ def mask_span(
     ```python
     import regex_toolkit as rtk
 
+    rtk.mask_span("example", (0, 2))
+    # Output: 'ample'
+
     rtk.mask_span("This is a example", (10, 10), "insert ")
     # Output: 'This is a insert example'
 
@@ -320,26 +322,28 @@ def mask_span(
     # Output: 'This replaces part of a example'
     ```
 
+    Todo:
+
+    * Consider alternate behavior for a span that is out of bounds.
+
     Args:
         text (str): String to slice.
-        span (list[int] | tuple[int, int]): Domain of index positions (start, end) to mask.
-        mask (str, optional): Mask to insert after slicing. Defaults to None.
+        span (Sequence[int]): Span to slice (start is inclusive, end is exclusive).
+        mask (str, optional): String to replace the span with. Defaults to None.
 
     Returns:
         str: String with span replaced with the mask text.
     """
     if mask is None:
-        # No mask
         return text[: span[0]] + text[span[1] :]
     else:
-        # Has mask
         return text[: span[0]] + mask + text[span[1] :]
 
 
 def mask_spans(
     text: str,
-    spans: Iterable[list[int] | tuple[int, int]],
-    masks: Iterable[str] | None = None,
+    spans: Sequence[Sequence[int]],
+    masks: Sequence[str] | None = None,
 ) -> str:
     """Slice and mask a string using multiple spans.
 
@@ -356,22 +360,20 @@ def mask_spans(
     # Output: 'This replaces part of a insert example'
     ```
 
-    Todo: Add support for overlapping (and unordered?) spans.
+    Todo:
+
+    * Consider alternate behavior for spans that overlap.
+    * Consider alternate behavior for spans that are out of order.
+    * Consider alternate behavior for spans that are out of bounds.
 
     Args:
         text (str): String to slice.
-        spans (Iterable[list[int] | tuple[int, int]]): Domains of index positions (x1, x2) to mask within the text.
-        masks (Iterable[str], optional): Masks to insert when slicing. Defaults to None.
+        spans (Sequence[Sequence[int]]): Spans to slice (start is inclusive, end is exclusive).
+        masks (Sequence[str], optional): Strings to replace the spans with. Defaults to None.
 
     Returns:
         str: String with all spans replaced with the mask text.
     """
-    if masks is None:
-        # No masks
-        for span in reversed(spans):
-            text = mask_span(text, span, mask=None)
-    else:
-        # Has masks
-        for span, mask in zip(reversed(spans), reversed(masks)):
-            text = mask_span(text, span, mask=mask)
+    for idx in range(len(spans) - 1, -1, -1):
+        text = mask_span(text, spans[idx], mask=masks[idx] if masks else None)
     return text
