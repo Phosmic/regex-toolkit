@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable, Sequence, Generator, Iterable
 
 import regex_toolkit.base
-from regex_toolkit.enums import RegexFlavor
+from regex_toolkit.enums import ALL_REGEX_FLAVORS, RegexFlavor
 
 __all__ = [
     "char_range",
@@ -51,30 +51,6 @@ def iter_sort_by_len_and_alpha(
     *,
     reverse: bool = False,
 ) -> Generator[str, None, None]:
-    """Iterate strings sorted first by length (longest to shortest), then alphabetically.
-
-    Example:
-
-    ```python
-    import regex_toolkit as rtk
-
-    tuple(rtk.utils.iter_sort_by_len_and_alpha(["a", "aa", "aaa"]))
-    # Output: ('aaa', 'aa', 'a')
-
-    tuple(rtk.utils.iter_sort_by_len_and_alpha(["a", "b", "c"]))
-    # Output: ('a', 'b', 'c')
-
-    tuple(rtk.utils.iter_sort_by_len_and_alpha(["z", "a", "zz", "aa", "zzz", "aaa"]))
-    # Output: ('aaa', 'zzz', 'aa', 'zz', 'a', 'z')
-    ```
-
-    Args:
-        texts (Iterable[str]): Strings to sort.
-        reverse (bool, optional): Sort in descending order (shortest to longest, then reverse alphabetically). Defaults to False.
-
-    Yields:
-        str: Strings sorted first by length, then alphabetically.
-    """
     for text in sorted(texts, key=SORT_BY_LEN_AND_ALPHA_KEY, reverse=reverse):
         yield text
 
@@ -84,30 +60,6 @@ def sort_by_len_and_alpha(
     *,
     reverse: bool = False,
 ) -> tuple[str, ...]:
-    """Sort strings by first by length (longest to shortest), then alphabetically.
-
-    Example:
-
-    ```python
-    import regex_toolkit as rtk
-
-    rtk.utils.sort_by_len_and_alpha(["a", "aa", "aaa"])
-    # Output: ('aaa', 'aa', 'a')
-
-    rtk.utils.sort_by_len_and_alpha(["a", "b", "c"])
-    # Output: ('a', 'b', 'c')
-
-    rtk.utils.sort_by_len_and_alpha(["z", "a", "zz", "aa", "zzz", "aaa"])
-    # Output: ('aaa', 'zzz', 'aa', 'zz', 'a', 'z')
-    ```
-
-    Args:
-        texts (Iterable[str]): Strings to sort.
-        reverse (bool, optional): Sort in descending order (shortest to longest, then reverse alphabetically). Defaults to False.
-
-    Returns:
-        tuple[str, ...]: Strings sorted first by length, then alphabetically.
-    """
     return tuple(iter_sort_by_len_and_alpha(texts, reverse=reverse))
 
 
