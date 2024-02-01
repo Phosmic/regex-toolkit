@@ -100,112 +100,6 @@ For an in-depth exploration, please refer to the [RE2 documentation](https://git
 
 # `regex_toolkit.utils`
 
-<a id="regex_toolkit.utils.resolve_flavor"></a>
-
-#### `resolve_flavor`
-
-```python
-def resolve_flavor(potential_flavor: int | RegexFlavor | None) -> RegexFlavor
-```
-
-Resolve a regex flavor.
-
-If the flavor is an integer, it is validated and returned.
-If the flavor is a RegexFlavor, it is returned.
-If the flavor is None, the default flavor is returned. To change the default flavor, set `default_flavor`.
-
-```python
-import regex_toolkit as rtk
-
-rtk.base.default_flavor = 2
-assert rtk.utils.resolve_flavor(None) == rtk.enums.RegexFlavor.RE2
-```
-
-**Arguments**:
-
-- `potential_flavor` _int | RegexFlavor | None_ - Potential regex flavor.
-
-**Returns**:
-
-- _RegexFlavor_ - Resolved regex flavor.
-
-**Raises**:
-
-- `ValueError` - Invalid regex flavor.
-
-<a id="regex_toolkit.utils.iter_sort_by_len_and_alpha"></a>
-
-#### `iter_sort_by_len_and_alpha`
-
-```python
-def iter_sort_by_len_and_alpha(
-        texts: Iterable[str],
-        *,
-        reverse: bool = False) -> Generator[str, None, None]
-```
-
-Iterate strings sorted first by length (longest to shortest), then alphabetically.
-
-**Example**:
-
-```python
-import regex_toolkit as rtk
-
-tuple(rtk.utils.iter_sort_by_len_and_alpha(["a", "aa", "aaa"]))
-# Output: ('aaa', 'aa', 'a')
-
-tuple(rtk.utils.iter_sort_by_len_and_alpha(["a", "b", "c"]))
-# Output: ('a', 'b', 'c')
-
-tuple(rtk.utils.iter_sort_by_len_and_alpha(["z", "a", "zz", "aa", "zzz", "aaa"]))
-# Output: ('aaa', 'zzz', 'aa', 'zz', 'a', 'z')
-```
-
-**Arguments**:
-
-- `texts` _Iterable[str]_ - Strings to sort.
-- `reverse` _bool, optional_ - Sort in descending order (shortest to longest, then reverse alphabetically). Defaults to False.
-
-**Yields**:
-
-- _str_ - Strings sorted first by length, then alphabetically.
-
-<a id="regex_toolkit.utils.sort_by_len_and_alpha"></a>
-
-#### `sort_by_len_and_alpha`
-
-```python
-def sort_by_len_and_alpha(texts: Iterable[str],
-                          *,
-                          reverse: bool = False) -> tuple[str, ...]
-```
-
-Sort strings by first by length (longest to shortest), then alphabetically.
-
-**Example**:
-
-```python
-import regex_toolkit as rtk
-
-rtk.utils.sort_by_len_and_alpha(["a", "aa", "aaa"])
-# Output: ('aaa', 'aa', 'a')
-
-rtk.utils.sort_by_len_and_alpha(["a", "b", "c"])
-# Output: ('a', 'b', 'c')
-
-rtk.utils.sort_by_len_and_alpha(["z", "a", "zz", "aa", "zzz", "aaa"])
-# Output: ('aaa', 'zzz', 'aa', 'zz', 'a', 'z')
-```
-
-**Arguments**:
-
-- `texts` _Iterable[str]_ - Strings to sort.
-- `reverse` _bool, optional_ - Sort in descending order (shortest to longest, then reverse alphabetically). Defaults to False.
-
-**Returns**:
-
-- _tuple[str, ...]_ - Strings sorted first by length, then alphabetically.
-
 <a id="regex_toolkit.utils.ord_to_cpoint"></a>
 
 #### `ord_to_cpoint`
@@ -259,7 +153,7 @@ import regex_toolkit as rtk
 rtk.cpoint_to_ord("0001F436")
 # Output: 128054
 
-rtk.cpoint_to_ord("1F436")
+rtk.cpoint_to_ord("1f436")
 # Output: 128054
 ```
 
@@ -323,7 +217,7 @@ Form C favors the use of a fully combined character.
 ```python
 import regex_toolkit as rtk
 
-rtk.to_nfc("e\\u0301")
+rtk.to_nfc("e\u0301")
 # Output: 'é'
 ```
 
@@ -639,27 +533,6 @@ import regex_toolkit as rtk
 **Raises**:
 
 - `ValueError` - Invalid regex flavor.
-
-<a id="regex_toolkit.enums"></a>
-
-# `regex_toolkit.enums`
-
-Enums.
-
-<a id="regex_toolkit.enums.RegexFlavor"></a>
-
-## `RegexFlavor` Objects
-
-```python
-class RegexFlavor(int, Enum)
-```
-
-Regex flavors.
-
-**Attributes**:
-
-- `RE` _int_ - Standard Python regex flavor.
-- `RE2` _int_ - Google RE2 regex flavor.
 
 
 ---
