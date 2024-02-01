@@ -27,39 +27,23 @@ __all__ = [
 SORT_BY_LEN_AND_ALPHA_KEY: Callable[[str], tuple[int, str]] = lambda x: (-len(x), x)
 
 
-def resolve_flavor(potential_flavor: int | RegexFlavor | None) -> RegexFlavor:
-    """Resolve a regex flavor.
-
-    If the flavor is an integer, it is validated and returned.
-    If the flavor is a RegexFlavor, it is returned.
-    If the flavor is None, the default flavor is returned. To change the default flavor, set `default_flavor`.
-
-    ```python
-    import regex_toolkit as rtk
-
-    rtk.base.default_flavor = 2
-    assert rtk.utils.resolve_flavor(None) == rtk.enums.RegexFlavor.RE2
-    ```
-
-    Args:
-        potential_flavor (int | RegexFlavor | None): Potential regex flavor.
-
-    Returns:
-        RegexFlavor: Resolved regex flavor.
-
-    Raises:
-        ValueError: Invalid regex flavor.
-    """
-    try:
-        return RegexFlavor(potential_flavor)
-    except ValueError as err:
-        if regex_toolkit.base.default_flavor is not None:
-            try:
-                return RegexFlavor(regex_toolkit.base.default_flavor)
-            except ValueError as err:
-                raise ValueError(f"Invalid regex flavor: {potential_flavor}") from err
-        else:
-            raise ValueError(f"Invalid regex flavor: {potential_flavor}") from err
+def resolve_flavor(flavor: int | RegexFlavor | None) -> RegexFlavor:
+    if flavor is not None:
+        try:
+            return RegexFlavor(flavor)
+        except ValueError:
+            raise ValueError(
+                f"Invalid regex flavor: {flavor!r}. Valid flavors are: {[f.value for f in ALL_REGEX_FLAVORS]}."
+            )
+    elif regex_toolkit.base.default_flavor is not None:
+        try:
+            return RegexFlavor(regex_toolkit.base.default_flavor)
+        except ValueError:
+            raise ValueError(
+                f"Invalid default regex flavor: {regex_toolkit.base.default_flavor!r}. Valid flavors are: {[f.value for f in ALL_REGEX_FLAVORS]}."
+            )
+    else:
+        raise ValueError("No regex flavor provided and no default is set.")
 
 
 def iter_sort_by_len_and_alpha(
