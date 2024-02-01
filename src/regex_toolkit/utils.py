@@ -104,7 +104,7 @@ def cpoint_to_ord(cpoint: str) -> int:
     rtk.cpoint_to_ord("0001F436")
     # Output: 128054
 
-    rtk.cpoint_to_ord("1F436")
+    rtk.cpoint_to_ord("1f436")
     # Output: 128054
     ```
 
@@ -160,7 +160,7 @@ def to_nfc(text: str) -> str:
     ```python
     import regex_toolkit as rtk
 
-    rtk.to_nfc("e\\u0301")
+    rtk.to_nfc("e\u0301")
     # Output: 'é'
     ```
 

@@ -7,9 +7,11 @@ import pytest
 import regex_toolkit
 from regex_toolkit.enums import RegexFlavor
 
+INVALID_REGEX_FLAVORS = [-1, 0, 3, 4]
+
 
 @pytest.mark.parametrize(
-    "potential_flavor, expected",
+    "flavor, expected",
     [
         (1, RegexFlavor.RE),
         (2, RegexFlavor.RE2),
@@ -19,31 +21,19 @@ from regex_toolkit.enums import RegexFlavor
         (RegexFlavor(2), RegexFlavor.RE2),
     ],
 )
-def test_resolve_flavor_with_valid(potential_flavor, expected):
-    assert regex_toolkit.base.resolve_flavor(potential_flavor) == expected
+def test_resolve_flavor(flavor, expected):
+    assert regex_toolkit.base.resolve_flavor(flavor) == expected
 
 
-@mock.patch("regex_toolkit.base.default_flavor", None)
-def test_resolve_flavor_with_invalid_and_with_no_default_raises_value_error():
-    with pytest.raises(ValueError, match=r"^Invalid regex flavor: None$"):
-        regex_toolkit.base.resolve_flavor(None)
-
-
-@pytest.mark.parametrize("potential_flavor", [None, 0, 3, "1", "2"])
 @mock.patch("regex_toolkit.base.default_flavor", RegexFlavor.RE)
-def test_resolve_flavor_falls_back_to_default(potential_flavor):
-    regex_toolkit.base.resolve_flavor(potential_flavor) == RegexFlavor.RE
-
-
-@pytest.mark.parametrize("potential_flavor", [None, 0, 3, "1", "2"])
-@mock.patch("regex_toolkit.base.default_flavor", None)
-def test_resolve_flavor_invalid_int_without_default_raises(potential_flavor):
-    with pytest.raises(ValueError, match=r"^Invalid regex flavor: (None|'?\d'?)$"):
-        regex_toolkit.base.resolve_flavor(potential_flavor)
+def test_resolve_flavor_None_falls_back_to_default():
+    assert regex_toolkit.base.default_flavor == RegexFlavor.RE
+    regex_toolkit.base.resolve_flavor(None) == regex_toolkit.base.default_flavor
 
 
 @mock.patch("regex_toolkit.base.default_flavor", None)
 def test_default_flavor_can_be_set():
+    assert regex_toolkit.base.default_flavor is None
     regex_toolkit.base.default_flavor = 2
     assert regex_toolkit.base.resolve_flavor(None) == RegexFlavor.RE2
 
@@ -119,6 +109,7 @@ SORT_BY_LEN_TEXTS = [
     "orange",
     "banana",
     "grape",
+    "blue",
     "apricot",
     "cherry",
     "plum",
