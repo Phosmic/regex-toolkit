@@ -28,10 +28,10 @@ jobs:
     env:
       ENV_FILE: ci/deps/actions-${{ matrix.python_version }}.yml
       IS_PYPY: ${{ contains(matrix.python_version, 'pypy') }}
-    concurrency:
-      # https://github.community/t/concurrecy-not-work-for-push/183068/7
-      group: ${{ github.event_name == 'push' && github.run_number || github.ref }}-${{ matrix.env_file }}
-      cancel-in-progress: true
+    # concurrency:
+    #   # https://github.community/t/concurrecy-not-work-for-push/183068/7
+    #   group: ${{ github.event_name == 'push' && github.run_number || github.ref }}-${{ matrix.env_file }}
+    #   cancel-in-progress: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.1
