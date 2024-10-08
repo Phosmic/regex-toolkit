@@ -22,7 +22,7 @@ jobs:
     timeout-minutes: 60
     strategy:
       matrix:
-        env_file: [actions-310.yml, actions-311.yml]
+        env_file: [actions-310.yml, actions-311.yml, actions-312.yml, actions-313.yml]
       fail-fast: false
     # name: ${{ matrix.name || matrix.env_file }}
     name: ${{ matrix.env_file }}

@@ -11,20 +11,22 @@ license = { file = 'LICENSE' }
 keywords = ["re", "re2", "regex", "expression", "pattern", "tool", "toolkit"]
 authors = [{ name = "The Phosmic Development Team", email = "dev@phosmic.com" }]
 classifiers = [
-  "Development Status :: 3 - Alpha",
-  "Intended Audience :: Developers",
-  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
-  "Natural Language :: English",
-  "Operating System :: OS Independent",
-  "Programming Language :: Python",
-  "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11",
-  "Topic :: Utilities",
-  "Topic :: Software Development",
-  "Topic :: Software Development :: Libraries",
-  "Topic :: Software Development :: Libraries :: Python Modules",
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Utilities",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = []
 dynamic = ["version"]
@@ -47,8 +49,8 @@ source = ["src"]
 
 [tool.coverage.paths]
 source = [
-  "src",
-  # "*/site-packages"
+    "src",
+    # "*/site-packages"
 ]
 
 [tool.coverage.report]
@@ -56,20 +58,20 @@ ignore_errors = false
 show_missing = true
 omit = []
 exclude_lines = [
-  # Have to re-enable the standard pragma:
-  "pragma: no cover",
-  # Don't complain about missing debug-only code:
-  "def __repr__",
-  "if self.debug",
-  # Don't complain if tests don't hit defensive assertion code:
-  "raise AssertionError",
-  "raise NotImplementedError",
-  "AbstractMethodError",
-  # Don't complain if non-runnable code isn't run:
-  "if 0:",
-  "if False:",
-  "if __name__ == .__main__.:",
-  "if TYPE_CHECKING:",
+    # Have to re-enable the standard pragma:
+    "pragma: no cover",
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    "if self.debug",
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "AbstractMethodError",
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if False:",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
 ]
 
 [tool.pylint.messages_control]
@@ -142,14 +144,18 @@ empty_parameter_set_mark = "fail_at_collect"
 xfail_strict = true
 testpaths = ["tests"]
 doctest_optionflags = [
-  # Ignores whitespace differences, useful for spanning multiple lines
-  "NORMALIZE_WHITESPACE",
-  # Ignores differences in exception messages
-  "IGNORE_EXCEPTION_DETAIL",
-  # Allows you to use ... in place of a value in an expected output string
-  "ELLIPSIS",
+    # Ignores whitespace differences, useful for spanning multiple lines
+    "NORMALIZE_WHITESPACE",
+    # Ignores differences in exception messages
+    "IGNORE_EXCEPTION_DETAIL",
+    # Allows you to use ... in place of a value in an expected output string
+    "ELLIPSIS",
 ]
 filterwarnings = []
 junit_family = "xunit2"
 markers = []
 # asyncio_mode = "strict"
+
+[tool.codespell]
+ignore-words-list = ""  # "foo, bar, baz"
+ignore-regex = ""  # 'https://([\w/\.])+'

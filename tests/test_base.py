@@ -15,6 +15,8 @@ from regex_toolkit.constants import (
 )
 from regex_toolkit.enums import ALL_REGEX_FLAVORS, RegexFlavor
 
+INVALID_REGEX_FLAVORS = [-1, 0, 3, 4]
+
 NON_ASCII_CHARS = [
     "🅰",
     "🅱",
@@ -98,6 +100,81 @@ def assert_exp_match_all(
 
 def assert_exp_not_match_any(exp: str, texts: Iterable[str], flavor: int) -> bool:
     assert_exp_match_all(exp, texts, flavor, should_match=False)
+
+
+# Resolve flavor
+
+
+@pytest.mark.parametrize(
+    "flavor, expected",
+    [
+        (1, RegexFlavor.RE),
+        (2, RegexFlavor.RE2),
+        (RegexFlavor.RE, RegexFlavor.RE),
+        (RegexFlavor.RE2, RegexFlavor.RE2),
+        (RegexFlavor(1), RegexFlavor.RE),
+        (RegexFlavor(2), RegexFlavor.RE2),
+    ],
+)
+def test_resolve_flavor(flavor, expected):
+    assert regex_toolkit.base.resolve_flavor(flavor) == expected
+
+
+@mock.patch("regex_toolkit.base.default_flavor", RegexFlavor.RE)
+def test_resolve_flavor_None_falls_back_to_default():
+    assert regex_toolkit.base.default_flavor == RegexFlavor.RE
+    regex_toolkit.base.resolve_flavor(None) == regex_toolkit.base.default_flavor
+
+
+@mock.patch("regex_toolkit.base.default_flavor", None)
+def test_default_flavor_can_be_set():
+    assert regex_toolkit.base.default_flavor is None
+    regex_toolkit.base.default_flavor = 2
+    assert regex_toolkit.base.resolve_flavor(None) == RegexFlavor.RE2
+
+
+@pytest.mark.parametrize("flavor", INVALID_REGEX_FLAVORS)
+def test_resolve_flavor_invalid_int_raises(flavor):
+    with pytest.raises(
+        ValueError,
+        match=r"^Invalid regex flavor: .+\. Valid flavors are: \[\-?\d+(, \-?\d+)*\]\.$",
+    ):
+        regex_toolkit.base.resolve_flavor(flavor)
+
+
+def test_resolve_flavor_invalid_type_raises():
+    with pytest.raises(
+        ValueError,
+        match=r"^Invalid regex flavor: .+\. Valid flavors are: \[\-?\d+(, \-?\d+)*\]\.$",
+    ):
+        regex_toolkit.base.resolve_flavor(["not", "a", "flavor"])
+
+
+@pytest.mark.parametrize("flavor", INVALID_REGEX_FLAVORS)
+def test_resolve_flavor_None_with_invalid_int_default_raises(flavor):
+    regex_toolkit.base.default_flavor = flavor
+    with pytest.raises(
+        ValueError,
+        match=r"^Invalid default regex flavor: .+\. Valid flavors are: \[\-?\d+(, \-?\d+)*\]\.$",
+    ):
+        regex_toolkit.base.resolve_flavor(None)
+
+
+@mock.patch("regex_toolkit.base.default_flavor", ["not", "a", "flavor"])
+def test_resolve_flavor_None_with_invalid_type_default_raises():
+    with pytest.raises(
+        ValueError,
+        match=r"^Invalid default regex flavor: .+\. Valid flavors are: \[\-?\d+(, \-?\d+)*\]\.$",
+    ):
+        regex_toolkit.base.resolve_flavor(None)
+
+
+@mock.patch("regex_toolkit.base.default_flavor", None)
+def test_resolve_flavor_None_without_default_raises():
+    with pytest.raises(
+        ValueError, match=r"^No regex flavor provided and no default is set\.$"
+    ):
+        regex_toolkit.base.resolve_flavor(None)
 
 
 # RE and RE2 - Escape

@@ -61,7 +61,6 @@ To harness the toolkit's capabilities, you should import the necessary packages:
 
 ```python
 import re
-# and/or
 import re2
 import regex_toolkit as rtk
 ```
@@ -217,7 +216,7 @@ Form C favors the use of a fully combined character.
 ```python
 import regex_toolkit as rtk
 
-rtk.to_nfc("e\u0301")
+rtk.to_nfc("é")
 # Output: 'é'
 ```
 
@@ -400,16 +399,16 @@ import regex_toolkit as rtk
 rtk.escape("a")
 # Output: 'a'
 rtk.escape(".")
-# Output: '\\.'
+# Output: '\.'
 rtk.escape("/")
 # Output: '/'
 
 rtk.escape(".", flavor=2)
-# Output: '\\.'
+# Output: '\.'
 rtk.escape("a", flavor=2)
 # Output: 'a'
 rtk.escape("/", flavor=2)
-# Output: '\\x{002f}'
+# Output: '\x{002f}'
 ```
 
 **Arguments**:
@@ -442,10 +441,10 @@ Create a regex expression that exactly matches a string.
 import regex_toolkit as rtk
 
 rtk.string_as_exp("http://www.example.com")
-# Output: 'https\\:\\/\\/example\\.com'
+# Output: 'https\:\/\/example\.com'
 
 rtk.string_as_exp("http://www.example.com", flavor=2)
-# Output: 'https\\x{003a}\\x{002f}\\x{002f}example\\.com'
+# Output: 'https\x{003a}\x{002f}\x{002f}example\.com'
 ```
 
 **Arguments**:

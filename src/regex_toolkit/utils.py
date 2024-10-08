@@ -4,10 +4,13 @@ import unicodedata
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Sequence, Generator, Iterable
+    from collections.abc import (
+        Callable,
+        Generator,
+        Iterable,
+        Sequence,
+    )
 
-import regex_toolkit.base
-from regex_toolkit.enums import ALL_REGEX_FLAVORS, RegexFlavor
 
 __all__ = [
     "char_range",
@@ -18,32 +21,12 @@ __all__ = [
     "mask_span",
     "mask_spans",
     "ord_to_cpoint",
-    "resolve_flavor",
     "sort_by_len_and_alpha",
     "to_nfc",
     "to_utf8",
 ]
 
 SORT_BY_LEN_AND_ALPHA_KEY: Callable[[str], tuple[int, str]] = lambda x: (-len(x), x)
-
-
-def resolve_flavor(flavor: int | RegexFlavor | None) -> RegexFlavor:
-    if flavor is not None:
-        try:
-            return RegexFlavor(flavor)
-        except ValueError:
-            raise ValueError(
-                f"Invalid regex flavor: {flavor!r}. Valid flavors are: {[f.value for f in ALL_REGEX_FLAVORS]}."
-            )
-    elif regex_toolkit.base.default_flavor is not None:
-        try:
-            return RegexFlavor(regex_toolkit.base.default_flavor)
-        except ValueError:
-            raise ValueError(
-                f"Invalid default regex flavor: {regex_toolkit.base.default_flavor!r}. Valid flavors are: {[f.value for f in ALL_REGEX_FLAVORS]}."
-            )
-    else:
-        raise ValueError("No regex flavor provided and no default is set.")
 
 
 def iter_sort_by_len_and_alpha(

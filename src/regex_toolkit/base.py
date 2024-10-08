@@ -1,24 +1,41 @@
-__all__ = [
-    "default_flavor",
-    "escape",
-    "string_as_exp",
-    "strings_as_exp",
-    "make_exp",
-]
 # import logging
 from collections.abc import Iterable
 
 from regex_toolkit.constants import ALWAYS_ESCAPE, ALWAYS_SAFE
-from regex_toolkit.enums import RegexFlavor
-from regex_toolkit.utils import (
-    char_to_cpoint,
-    iter_sort_by_len_and_alpha,
-    resolve_flavor,
-)
+from regex_toolkit.enums import ALL_REGEX_FLAVORS, RegexFlavor
+from regex_toolkit.utils import char_to_cpoint, iter_sort_by_len_and_alpha
+
+__all__ = [
+    "default_flavor",
+    "escape",
+    "make_exp",
+    "string_as_exp",
+    "strings_as_exp",
+    "resolve_flavor",
+]
 
 # logger: logging.Logger = logging.getLogger(__name__)
 
-default_flavor: int | RegexFlavor | None = RegexFlavor.RE
+default_flavor: int | RegexFlavor | None = RegexFlavor.RE2
+
+
+def resolve_flavor(flavor: int | RegexFlavor | None) -> RegexFlavor:
+    if flavor is not None:
+        try:
+            return RegexFlavor(flavor)
+        except ValueError:
+            raise ValueError(
+                f"Invalid regex flavor: {flavor!r}. Valid flavors are: {[f.value for f in ALL_REGEX_FLAVORS]}."
+            )
+    elif default_flavor is not None:
+        try:
+            return RegexFlavor(default_flavor)
+        except ValueError:
+            raise ValueError(
+                f"Invalid default regex flavor: {default_flavor!r}. Valid flavors are: {[f.value for f in ALL_REGEX_FLAVORS]}."
+            )
+    else:
+        raise ValueError("No regex flavor provided and no default is set.")
 
 
 def _escape(char: str) -> str:
@@ -30,7 +47,6 @@ def _escape(char: str) -> str:
         return f"\\{char}"
 
 
-# TODO: Add zfill param?
 def _escape2(char: str) -> str:
     if char in ALWAYS_SAFE:
         # Safe as-is
@@ -240,7 +256,8 @@ def make_exp(chars: Iterable[str], flavor: int | None = None) -> str:
         else:
             # Make the group and start a new one
             exp += func(group)
-            group = [char_ord]
+            group.clear()
+            group.append(char_ord)
     if group:
         # Make any remaining group
         exp += func(group)

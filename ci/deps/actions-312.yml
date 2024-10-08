@@ -1,0 +1,12 @@
+name: regex_toolkit
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+
+  # Test dependencies
+  - pytest>=7.0.0
+  - pytest-cov
+  - pytest-xdist>=2.2.0
+  - pip:
+    - google-re2>=1.0
