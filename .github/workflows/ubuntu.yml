@@ -14,29 +14,27 @@ permissions:
   contents: read
 
 jobs:
-  pytest:
-    runs-on: ubuntu-latest
+  run-tests:
+    runs-on: ubuntu-22.04
     defaults:
       run:
         shell: bash -el {0}
     timeout-minutes: 60
     strategy:
       matrix:
-        env_file: [actions-310.yml, actions-311.yml, actions-312.yml]
+        python_version: ['310', '311', '312']
       fail-fast: false
-    # name: ${{ matrix.name || matrix.env_file }}
-    name: ${{ matrix.env_file }}
+    name: Python ${{ matrix.python_version }}
     env:
-      ENV_FILE: ci/deps/${{ matrix.env_file }}
-      IS_PYPY: ${{ contains(matrix.env_file, 'pypy') }}
+      ENV_FILE: ci/deps/actions-${{ matrix.python_version }}.yml
+      IS_PYPY: ${{ contains(matrix.python_version, 'pypy') }}
     concurrency:
       # https://github.community/t/concurrecy-not-work-for-push/183068/7
       group: ${{ github.event_name == 'push' && github.run_number || github.ref }}-${{ matrix.env_file }}
       cancel-in-progress: true
-
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.2.1
         with:
           fetch-depth: 0
 
@@ -50,5 +48,6 @@ jobs:
 
       - name: Test
         uses: ./.github/actions/run-tests
-        # with:
-        #   codecov-token: ${{ secrets.CODECOV_TOKEN }}
+        with:
+          python-version: ${{ matrix.python_version }}
+          codecov-token: ${{ secrets.CODECOV_TOKEN }}

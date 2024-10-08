@@ -1,33 +1,38 @@
 name: Run tests and report results
 description: Run tests and report results
-# inputs:
-#   codecov-token:
-#     description: Codecov token for private repo.
+inputs:
+  python-version:
+    description: Python version being used.
+    required: true
+  codecov-token:
+    description: Codecov token for private repo.
+    required: true
 
 runs:
   using: composite
   steps:
     - name: Test
-      run: ci/run_tests.sh
+      run: |
+        ci/run_tests.sh
+        mv test-data.xml test-data-${{ inputs.python-version }}.xml
+        mv coverage.xml coverage-${{ inputs.python-version }}.xml
       shell: bash -el {0}
 
     - name: Publish Test Results
       uses: actions/upload-artifact@v4.4.1
       with:
         name: Test results
-        path: test-data.xml
+        path: test-data-${{ inputs.python-version }}.xml
 
     - name: Report Coverage
       run: coverage report -m
       shell: bash -el {0}
 
     - name: Upload Coverage to Codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4.6.0
       with:
-        # token: ${{ inputs.codecov-token }}
-        files: ./coverage.xml
+        token: ${{ inputs.codecov-token }}
+        files: ./coverage-${{ inputs.python-version }}.xml
         flags: unittests
         name: regex_toolkit
         fail_ci_if_error: false
-      # env:
-      #   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
