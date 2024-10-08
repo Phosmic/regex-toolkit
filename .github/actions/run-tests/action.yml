@@ -14,6 +14,7 @@ runs:
     - name: Test
       run: |
         ci/run_tests.sh
+        echo "Test data: ${{ inputs.python-version }}"
         mv test-data.xml test-data-${{ inputs.python-version }}.xml
         mv coverage.xml coverage-${{ inputs.python-version }}.xml
       shell: bash -el {0}
