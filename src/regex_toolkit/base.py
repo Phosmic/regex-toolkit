@@ -16,7 +16,7 @@ __all__ = [
 
 # logger: logging.Logger = logging.getLogger(__name__)
 
-default_flavor: int | RegexFlavor | None = RegexFlavor.RE2
+default_flavor: int | RegexFlavor | None = RegexFlavor.RE
 
 
 def resolve_flavor(flavor: int | RegexFlavor | None) -> RegexFlavor:
