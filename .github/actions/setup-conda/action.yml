@@ -12,13 +12,13 @@ runs:
   using: composite
   steps:
     - name: Install ${{ inputs.environment-file }}
-      uses: mamba-org/setup-micromamba@v1
+      uses: mamba-org/setup-micromamba@v2.0.0
       with:
         micromamba-version: '2.0.2-0'
-        channels: conda-forge
         environment-file: ${{ inputs.environment-file }}
         environment-name: ${{ inputs.environment-name }}
         condarc-file: ci/condarc.yml
         init-shell: bash
         cache-environment: true
+        cache-downloads: true
         post-cleanup: 'all'
