@@ -11,19 +11,15 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Test
-      run: |
-        ci/run_tests.sh
-        echo "Test data: ${{ inputs.python-version }}"
-        mv test-data.xml test-data-${{ inputs.python-version }}.xml
-        mv coverage.xml coverage-${{ inputs.python-version }}.xml
+    - name: Test Python ${{ inputs.python-version }}
+      run: ci/run_tests.sh
       shell: bash -el {0}
 
     - name: Publish Test Results
       uses: actions/upload-artifact@v4.4.1
       with:
-        name: Test results
-        path: test-data-${{ inputs.python-version }}.xml
+        name: Test results for Python ${{ inputs.python-version }}
+        path: test-data.xml
 
     - name: Report Coverage
       run: coverage report -m
@@ -33,7 +29,7 @@ runs:
       uses: codecov/codecov-action@v4.6.0
       with:
         token: ${{ inputs.codecov-token }}
-        files: ./coverage-${{ inputs.python-version }}.xml
+        files: ./coverage.xml
         flags: unittests
         name: regex_toolkit
         fail_ci_if_error: false
