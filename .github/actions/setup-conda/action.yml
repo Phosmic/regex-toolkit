@@ -4,9 +4,11 @@ inputs:
   environment-file:
     description: Conda environment file to use.
     default: environment.yml
+    required: true
   environment-name:
     description: Name to use for the Conda environment.
-    default: test
+    default: test-env
+    required: true
 
 runs:
   using: composite
