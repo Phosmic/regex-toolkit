@@ -4,20 +4,23 @@ inputs:
   environment-file:
     description: Conda environment file to use.
     default: environment.yml
+    required: true
   environment-name:
     description: Name to use for the Conda environment.
-    default: test
+    default: test-env
+    required: true
 
 runs:
   using: composite
   steps:
     - name: Install ${{ inputs.environment-file }}
-      uses: mamba-org/provision-with-micromamba@v12
+      uses: mamba-org/setup-micromamba@v2.0.0
       with:
+        micromamba-version: 2.0.2-0
         environment-file: ${{ inputs.environment-file }}
         environment-name: ${{ inputs.environment-name }}
-        channels: conda-forge
-        channel-priority: ${{ runner.os == 'macOS' && 'flexible' || 'strict' }}
         condarc-file: ci/condarc.yml
-        cache-env: true
+        init-shell: bash
+        cache-environment: true
         cache-downloads: true
+        post-cleanup: all

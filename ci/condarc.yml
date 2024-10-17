@@ -1,5 +1,8 @@
 # https://docs.conda.io/projects/conda/en/latest/configuration.html
 
+channels:
+  - conda-forge
+
 # always_yes (NoneType, bool)
 #   aliases: yes
 #   Automatically choose the 'yes' option whenever asked to proceed with a

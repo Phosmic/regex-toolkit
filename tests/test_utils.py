@@ -1,65 +1,30 @@
 import unittest
 from collections.abc import Generator, Iterable
-from unittest import mock
 
 import pytest
 
 import regex_toolkit
-from regex_toolkit.enums import RegexFlavor
 
 
-@pytest.mark.parametrize(
-    "potential_flavor, expected",
-    [
-        (1, RegexFlavor.RE),
-        (2, RegexFlavor.RE2),
-        (RegexFlavor.RE, RegexFlavor.RE),
-        (RegexFlavor.RE2, RegexFlavor.RE2),
-        (RegexFlavor(1), RegexFlavor.RE),
-        (RegexFlavor(2), RegexFlavor.RE2),
-    ],
-)
-def test_resolve_flavor_with_valid(potential_flavor, expected):
-    assert regex_toolkit.base.resolve_flavor(potential_flavor) == expected
-
-
-@mock.patch("regex_toolkit.base.default_flavor", None)
-def test_resolve_flavor_with_invalid_and_with_no_default_raises_value_error():
-    with pytest.raises(ValueError, match=r"^Invalid regex flavor: None$"):
-        regex_toolkit.base.resolve_flavor(None)
-
-
-@pytest.mark.parametrize("potential_flavor", [None, 0, 3, "1", "2"])
-@mock.patch("regex_toolkit.base.default_flavor", RegexFlavor.RE)
-def test_resolve_flavor_falls_back_to_default(potential_flavor):
-    regex_toolkit.base.resolve_flavor(potential_flavor) == RegexFlavor.RE
-
-
-@pytest.mark.parametrize("potential_flavor", [None, 0, 3, "1", "2"])
-@mock.patch("regex_toolkit.base.default_flavor", None)
-def test_resolve_flavor_invalid_int_without_default_raises(potential_flavor):
-    with pytest.raises(ValueError, match=r"^Invalid regex flavor: (None|'?\d'?)$"):
-        regex_toolkit.base.resolve_flavor(potential_flavor)
-
-
-@mock.patch("regex_toolkit.base.default_flavor", None)
-def test_default_flavor_can_be_set():
-    regex_toolkit.base.default_flavor = 2
-    assert regex_toolkit.base.resolve_flavor(None) == RegexFlavor.RE2
-
-
-def is_sorted_by_len(texts: Iterable[str], reverse: bool = False) -> bool:
-    prev_len = None
+def is_sorted_by_length_and_alphabetically(
+    texts: Iterable[str],
+    reverse: bool = False,
+) -> bool:
+    prev_len, prev_text = None, None
     for text in texts:
         if prev_len is None:
-            prev_len = len(text)
+            prev_len, prev_text = len(text), text
         if reverse:
-            if len(text) > prev_len:
-                return False
-        else:
             if len(text) < prev_len:
                 return False
-        prev_len = len(text)
+            elif (len(text) == prev_len) and (text > prev_text):
+                return False
+        else:
+            if len(text) > prev_len:
+                return False
+            elif (len(text) == prev_len) and (text < prev_text):
+                return False
+        prev_len, prev_text = len(text), text
     return True
 
 
@@ -68,6 +33,7 @@ SORT_BY_LEN_TEXTS = [
     "orange",
     "banana",
     "grape",
+    "blue",
     "apricot",
     "cherry",
     "plum",
@@ -86,11 +52,19 @@ SORT_BY_LEN_TEXTS_BY_TYPE = {
 
 @pytest.mark.parametrize("try_type, typed_texts", SORT_BY_LEN_TEXTS_BY_TYPE.items())
 @pytest.mark.parametrize("reverse", (False, True))
-def test_iter_sort_by_len(try_type, typed_texts, reverse):
-    expected_tuple = tuple(sorted(typed_texts, key=len, reverse=reverse))
-    assert is_sorted_by_len(expected_tuple, reverse=reverse)
+def test_iter_sort_by_len_and_alpha(try_type, typed_texts, reverse):
+    expected_tuple = tuple(
+        sorted(
+            typed_texts,
+            key=regex_toolkit.utils.SORT_BY_LEN_AND_ALPHA_KEY,
+            reverse=reverse,
+        )
+    )
+    assert is_sorted_by_length_and_alphabetically(expected_tuple, reverse=reverse)
 
-    actual = regex_toolkit.iter_sort_by_len(typed_texts, reverse=reverse)
+    actual = regex_toolkit.utils.iter_sort_by_len_and_alpha(
+        typed_texts, reverse=reverse
+    )
     actual_tuple = tuple(actual)
     assert isinstance(actual, Generator) and (actual_tuple == expected_tuple), {
         "try_type": try_type,
@@ -103,15 +77,117 @@ def test_iter_sort_by_len(try_type, typed_texts, reverse):
 
 @pytest.mark.parametrize("try_type, typed_texts", SORT_BY_LEN_TEXTS_BY_TYPE.items())
 @pytest.mark.parametrize("reverse", (False, True))
-def test_sort_by_len(try_type, typed_texts, reverse):
-    expected = tuple(sorted(typed_texts, key=len, reverse=reverse))
-    assert is_sorted_by_len(expected, reverse=reverse)
+def test_sort_by_len_and_alpha(try_type, typed_texts, reverse):
+    expected = tuple(
+        sorted(
+            typed_texts,
+            key=regex_toolkit.utils.SORT_BY_LEN_AND_ALPHA_KEY,
+            reverse=reverse,
+        )
+    )
+    assert is_sorted_by_length_and_alphabetically(expected, reverse=reverse)
 
-    actual = regex_toolkit.sort_by_len(typed_texts, reverse=reverse)
+    actual = regex_toolkit.utils.sort_by_len_and_alpha(typed_texts, reverse=reverse)
     assert isinstance(actual, tuple) and (actual == expected), {
         "try_type": try_type,
         "typed_texts": typed_texts,
         "reverse": reverse,
+        "actual": actual,
+        "expected": expected,
+    }
+
+
+@pytest.mark.parametrize(
+    "ordinal, zfill, expected",
+    [
+        # ASCII, numeric hexadecimal, various zfill values
+        (97, None, "61"),
+        (97, 0, "61"),
+        (97, 1, "61"),
+        (97, 2, "61"),
+        (97, 3, "061"),
+        (97, 4, "0061"),
+        (97, 5, "00061"),
+        (97, 6, "000061"),
+        (97, 7, "0000061"),
+        (97, 8, "00000061"),
+        # Non-ASCII, alphanumeric hexadecimal, various zfill values
+        (128054, None, "1F436"),
+        (128054, 0, "1F436"),
+        (128054, 1, "1F436"),
+        (128054, 2, "1F436"),
+        (128054, 3, "1F436"),
+        (128054, 4, "1F436"),
+        (128054, 5, "1F436"),
+        (128054, 6, "01F436"),
+        (128054, 7, "001F436"),
+        (128054, 8, "0001F436"),
+    ],
+)
+def test_ord_to_cpoint(ordinal, zfill, expected):
+    actual = regex_toolkit.ord_to_cpoint(ordinal, zfill=zfill)
+    assert actual == expected, {
+        "ordinal": ordinal,
+        "zfill": zfill,
+        "actual": actual,
+        "expected": expected,
+    }
+
+
+@pytest.mark.parametrize(
+    "codepoint, expected",
+    [
+        # ASCII, numeric hexadecimal
+        ("61", 97),
+        ("0061", 97),
+        ("00000061", 97),
+        # Non-ASCII, alphanumeric hexadecimal, various hexadecimal capitalization
+        ("1F436", 128054),
+        ("1f436", 128054),
+        ("0001F436", 128054),
+        ("0001f436", 128054),
+    ],
+)
+def test_cpoint_to_ord(codepoint, expected):
+    actual = regex_toolkit.cpoint_to_ord(codepoint)
+    assert actual == expected, {
+        "codepoint": codepoint,
+        "actual": actual,
+        "expected": expected,
+    }
+
+
+@pytest.mark.parametrize(
+    "char, zfill, expected",
+    [
+        # ASCII, numeric hexadecimal
+        ("a", None, "61"),
+        ("a", 0, "61"),
+        ("a", 1, "61"),
+        ("a", 2, "61"),
+        ("a", 3, "061"),
+        ("a", 4, "0061"),
+        ("a", 5, "00061"),
+        ("a", 6, "000061"),
+        ("a", 7, "0000061"),
+        ("a", 8, "00000061"),
+        # Non-ASCII, alphanumeric hexadecimal
+        ("🐶", None, "1F436"),
+        ("🐶", 0, "1F436"),
+        ("🐶", 1, "1F436"),
+        ("🐶", 2, "1F436"),
+        ("🐶", 3, "1F436"),
+        ("🐶", 4, "1F436"),
+        ("🐶", 5, "1F436"),
+        ("🐶", 6, "01F436"),
+        ("🐶", 7, "001F436"),
+        ("🐶", 8, "0001F436"),
+    ],
+)
+def test_char_to_cpoint(char, zfill, expected):
+    actual = regex_toolkit.char_to_cpoint(char, zfill=zfill)
+    assert actual == expected, {
+        "char": char,
         "actual": actual,
         "expected": expected,
     }
@@ -125,7 +201,11 @@ ITER_CHAR_RANGE_CASES = [
     # Reverse range
     (("d", "a"), ("d", "c", "b", "a")),
     # Single char (non-ASCII)
+    (("🐶", "🐶"), ("🐶",)),
+    # Basic range (non-ASCII)
     (("🐶", "🐺"), ("🐶", "🐷", "🐸", "🐹", "🐺")),
+    # Reverse range (non-ASCII)
+    (("🐺", "🐶"), ("🐺", "🐹", "🐸", "🐷", "🐶")),
 ]
 
 

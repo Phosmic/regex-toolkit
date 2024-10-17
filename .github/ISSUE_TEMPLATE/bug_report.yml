@@ -19,8 +19,7 @@ body:
       required: true
     attributes:
       label: How to reproduce
-      description: |
-        How to reproduce the problem.
+      description: How to reproduce the problem.
       placeholder: e.g. I can reproduce this issue by...
   - type: textarea
     validations:
@@ -32,14 +31,15 @@ body:
     attributes:
       label: Screenshots and recordings
       description: |
-        If applicable, add screenshots or videos to help explain your problem. (Videos should be as short as possible! Avoid watermarks too.)
+        If applicable, add screenshots or videos to help explain your problem.
+        (Videos should be as short as possible! Avoid watermarks too.)
   - type: input
     validations:
       required: true
     attributes:
       label: OS / Distro
       description: Include the version too, please!
-      placeholder: e.g. Windows 10, Ubuntu 20.04, macOS 10.15...
+      placeholder: e.g. Windows 11, Ubuntu 24.04, macOS 12.7...
   - type: input
     validations:
       required: true

@@ -61,7 +61,6 @@ To harness the toolkit's capabilities, you should import the necessary packages:
 
 ```python
 import re
-# and/or
 import re2
 import regex_toolkit as rtk
 ```
@@ -100,103 +99,36 @@ For an in-depth exploration, please refer to the [RE2 documentation](https://git
 
 # `regex_toolkit.utils`
 
-<a id="regex_toolkit.utils.resolve_flavor"></a>
-
-#### `resolve_flavor`
-
-```python
-def resolve_flavor(potential_flavor: int | RegexFlavor | None) -> RegexFlavor
-```
-
-Resolve a regex flavor.
-
-If the flavor is an integer, it is validated and returned.
-If the flavor is a RegexFlavor, it is returned.
-If the flavor is None, the default flavor is returned. To change the default flavor, set `default_flavor`.
-
-```python
-import regex_toolkit as rtk
-
-rtk.base.default_flavor = 2
-assert rtk.utils.resolve_flavor(None) == rtk.enums.RegexFlavor.RE2
-```
-
-**Arguments**:
-
-- `potential_flavor` _int | RegexFlavor | None_ - Potential regex flavor.
-
-**Returns**:
-
-- _RegexFlavor_ - Resolved regex flavor.
-
-**Raises**:
-
-- `ValueError` - Invalid regex flavor.
-
-<a id="regex_toolkit.utils.iter_sort_by_len"></a>
-
-#### `iter_sort_by_len`
-
-```python
-def iter_sort_by_len(texts: Iterable[str],
-                     *,
-                     reverse: bool = False) -> Generator[str, None, None]
-```
-
-Iterate strings sorted by length.
-
-**Arguments**:
-
-- `texts` _Iterable[str]_ - Strings to sort.
-- `reverse` _bool, optional_ - Sort in descending order (longest to shortest). Defaults to False.
-
-**Yields**:
-
-- _str_ - Strings sorted by length.
-
-<a id="regex_toolkit.utils.sort_by_len"></a>
-
-#### `sort_by_len`
-
-```python
-def sort_by_len(texts: Iterable[str],
-                *,
-                reverse: bool = False) -> tuple[str, ...]
-```
-
-Sort strings by length.
-
-**Arguments**:
-
-- `texts` _Iterable[str]_ - Strings to sort.
-- `reverse` _bool, optional_ - Sort in descending order (longest to shortest). Defaults to False.
-
-**Returns**:
-
-- _tuple[str, ...]_ - Strings sorted by length.
-
 <a id="regex_toolkit.utils.ord_to_cpoint"></a>
 
 #### `ord_to_cpoint`
 
 ```python
-def ord_to_cpoint(ordinal: int) -> str
+def ord_to_cpoint(ordinal: int, *, zfill: int | None = 8) -> str
 ```
 
 Character ordinal to character codepoint.
 
-The codepoint is always 8 characters long (zero-padded).
+Produces a hexadecimal (`[0-9A-F]`) representation of the ordinal.
+The default zero-padding is 8 characters, which is the maximum amount of characters in a codepoint.
 
 **Example**:
 
 ```python
-ord_to_cpoint(97)
-# Output: '00000061'
+import regex_toolkit as rtk
+
+rtk.ord_to_cpoint(128054)
+# Output: '0001F436'
+
+# Disable zero-padding by setting `zfill` to `0` or `None`.
+rtk.ord_to_cpoint(128054, zfill=0)
+# Output: '1F436'
 ```
 
 **Arguments**:
 
 - `ordinal` _int_ - Character ordinal.
+- `zfill` _int | None, optional_ - Amount of characters to zero-pad the codepoint to. Defaults to 8.
 
 **Returns**:
 
@@ -212,6 +144,18 @@ def cpoint_to_ord(cpoint: str) -> int
 
 Character codepoint to character ordinal.
 
+**Example**:
+
+```python
+import regex_toolkit as rtk
+
+rtk.cpoint_to_ord("0001F436")
+# Output: 128054
+
+rtk.cpoint_to_ord("1f436")
+# Output: 128054
+```
+
 **Arguments**:
 
 - `cpoint` _str_ - Character codepoint.
@@ -225,21 +169,31 @@ Character codepoint to character ordinal.
 #### `char_to_cpoint`
 
 ```python
-def char_to_cpoint(char: str) -> str
+def char_to_cpoint(char: str, *, zfill: int | None = 8) -> str
 ```
 
 Character to character codepoint.
 
+Produces a hexadecimal (`[0-9A-F]`) representation of the character.
+The default zero-padding is 8 characters, which is the maximum amount of characters in a codepoint.
+
 **Example**:
 
 ```python
-char_to_cpoint("a")
-# Output: '00000061'
+import regex_toolkit as rtk
+
+rtk.char_to_cpoint("🐶")
+# Output: '0001F436'
+
+# Disable zero-padding by setting `zfill` to `0` or `None`.
+rtk.char_to_cpoint("🐶", zfill=0)
+# Output: '1F436'
 ```
 
 **Arguments**:
 
 - `char` _str_ - Character.
+- `zfill` _int | None, optional_ - Amount of characters to zero-pad the codepoint to. Defaults to 8.
 
 **Returns**:
 
@@ -260,8 +214,10 @@ Form C favors the use of a fully combined character.
 **Example**:
 
 ```python
-to_nfc("e\\u0301") == "é"
-# Output: True
+import regex_toolkit as rtk
+
+rtk.to_nfc("é")
+# Output: 'é'
 ```
 
 **Arguments**:
@@ -286,11 +242,16 @@ Iterate all characters within a range of characters (inclusive).
 **Example**:
 
 ```python
-char_range("a", "c")
+import regex_toolkit as rtk
+
+tuple(rtk.iter_char_range("a", "c"))
 # Output: ('a', 'b', 'c')
 
-char_range("c", "a")
+tuple(rtk.iter_char_range("c", "a"))
 # Output: ('c', 'b', 'a')
+
+tuple(rtk.iter_char_range("🐶", "🐺"))
+# Output: ("🐶", "🐷", "🐸", "🐹", "🐺")
 ```
 
 **Arguments**:
@@ -310,22 +271,27 @@ char_range("c", "a")
 def char_range(first_char: str, last_char: str) -> tuple[str, ...]
 ```
 
-Tuple of all characters within a range of characters (inclusive).
+Get all characters within a range of characters (inclusive).
 
 **Example**:
 
 ```python
-char_range("a", "d")
+import regex_toolkit as rtk
+
+rtk.char_range("a", "d")
 # Output: ('a', 'b', 'c', 'd')
 
-char_range("d", "a")
+rtk.char_range("d", "a")
 # Output: ('d', 'c', 'b', 'a')
+
+rtk.char_range("🐶", "🐺")
+# Output: ("🐶", "🐷", "🐸", "🐹", "🐺")
 ```
 
 **Arguments**:
 
-- `first_char` _str_ - Starting (first) character.
-- `last_char` _str_ - Ending (last) character.
+- `first_char` _str_ - First character (inclusive).
+- `last_char` _str_ - Last character (inclusive).
 
 **Returns**:
 
@@ -336,18 +302,35 @@ char_range("d", "a")
 #### `mask_span`
 
 ```python
-def mask_span(text: str,
-              span: list[int] | tuple[int, int],
-              mask: str | None = None) -> str
+def mask_span(text: str, span: Sequence[int], mask: str | None = None) -> str
 ```
 
 Slice and mask a string using a single span.
 
+**Example**:
+
+```python
+import regex_toolkit as rtk
+
+rtk.mask_span("example", (0, 2))
+# Output: 'ample'
+
+rtk.mask_span("This is a example", (10, 10), "insert ")
+# Output: 'This is a insert example'
+
+rtk.mask_span("This is a example", (5, 7), "replaces part of")
+# Output: 'This replaces part of a example'
+```
+
+**Todo**:
+
+  * Consider alternate behavior for a span that is out of bounds.
+
 **Arguments**:
 
 - `text` _str_ - String to slice.
-- `span` _list[int] | tuple[int, int]_ - Domain of index positions (start, end) to mask.
-- `mask` _str, optional_ - Mask to insert after slicing. Defaults to None.
+- `span` _Sequence[int]_ - Span to slice (start is inclusive, end is exclusive).
+- `mask` _str, optional_ - String to replace the span with. Defaults to None.
 
 **Returns**:
 
@@ -359,19 +342,36 @@ Slice and mask a string using a single span.
 
 ```python
 def mask_spans(text: str,
-               spans: Iterable[list[int] | tuple[int, int]],
-               masks: Iterable[str] | None = None) -> str
+               spans: Sequence[Sequence[int]],
+               masks: Sequence[str] | None = None) -> str
 ```
 
 Slice and mask a string using multiple spans.
 
-Todo: Add support for overlapping (and unordered?) spans.
+**Example**:
+
+```python
+import regex_toolkit as rtk
+
+rtk.mask_spans(
+    text="This is a example",
+    masks=["replaces part of", "insert "],
+    spans=[(5, 7), (10, 10)],
+)
+# Output: 'This replaces part of a insert example'
+```
+
+**Todo**:
+
+  * Consider alternate behavior for spans that overlap.
+  * Consider alternate behavior for spans that are out of order.
+  * Consider alternate behavior for spans that are out of bounds.
 
 **Arguments**:
 
 - `text` _str_ - String to slice.
-- `spans` _Iterable[list[int] | tuple[int, int]]_ - Domains of index positions (x1, x2) to mask within the text.
-- `masks` _Iterable[str], optional_ - Masks to insert when slicing. Defaults to None.
+- `spans` _Sequence[Sequence[int]]_ - Spans to slice (start is inclusive, end is exclusive).
+- `masks` _Sequence[str], optional_ - Strings to replace the spans with. Defaults to None.
 
 **Returns**:
 
@@ -391,6 +391,26 @@ def escape(char: str, flavor: int | None = None) -> str
 
 Create a regex expression that exactly matches a character.
 
+**Example**:
+
+```python
+import regex_toolkit as rtk
+
+rtk.escape("a")
+# Output: 'a'
+rtk.escape(".")
+# Output: '\.'
+rtk.escape("/")
+# Output: '/'
+
+rtk.escape(".", flavor=2)
+# Output: '\.'
+rtk.escape("a", flavor=2)
+# Output: 'a'
+rtk.escape("/", flavor=2)
+# Output: '\x{002f}'
+```
+
 **Arguments**:
 
 - `char` _str_ - Character to match.
@@ -403,6 +423,7 @@ Create a regex expression that exactly matches a character.
 **Raises**:
 
 - `ValueError` - Invalid regex flavor.
+- `TypeError` - Invalid type for `char`.
 
 <a id="regex_toolkit.base.string_as_exp"></a>
 
@@ -413,6 +434,18 @@ def string_as_exp(text: str, flavor: int | None = None) -> str
 ```
 
 Create a regex expression that exactly matches a string.
+
+**Example**:
+
+```python
+import regex_toolkit as rtk
+
+rtk.string_as_exp("http://www.example.com")
+# Output: 'https\:\/\/example\.com'
+
+rtk.string_as_exp("http://www.example.com", flavor=2)
+# Output: 'https\x{003a}\x{002f}\x{002f}example\.com'
+```
 
 **Arguments**:
 
@@ -436,6 +469,18 @@ def strings_as_exp(texts: Iterable[str], flavor: int | None = None) -> str
 ```
 
 Create a regex expression that exactly matches any one string.
+
+**Example**:
+
+```python
+import regex_toolkit as rtk
+
+rtk.strings_as_exp(["apple", "banana", "cherry"])
+# Output: 'banana|cherry|apple'
+
+rtk.strings_as_exp(["apple", "banana", "cherry"], flavor=2)
+# Output: 'banana|cherry|apple'
+```
 
 **Arguments**:
 
@@ -466,7 +511,12 @@ The expression is not anchored, so it can be used as part of a larger expression
 **Example**:
 
 ```python
-exp = "[" + make_exp(["a", "b", "c", "z", "y", "x"]) + "]"
+import regex_toolkit as rtk
+
+"[" + rtk.make_exp(["a", "b", "c", "z", "y", "x"]) + "]"
+# Output: '[a-cx-z]'
+
+"[" + rtk.make_exp(["a", "b", "c", "z", "y", "x"], flavor=2) + "]"
 # Output: '[a-cx-z]'
 ```
 
@@ -482,27 +532,6 @@ exp = "[" + make_exp(["a", "b", "c", "z", "y", "x"]) + "]"
 **Raises**:
 
 - `ValueError` - Invalid regex flavor.
-
-<a id="regex_toolkit.enums"></a>
-
-# `regex_toolkit.enums`
-
-Enums.
-
-<a id="regex_toolkit.enums.RegexFlavor"></a>
-
-## `RegexFlavor` Objects
-
-```python
-class RegexFlavor(int, Enum)
-```
-
-Regex flavors.
-
-**Attributes**:
-
-- `RE` _int_ - Standard Python regex flavor.
-- `RE2` _int_ - Google RE2 regex flavor.
 
 
 ---
