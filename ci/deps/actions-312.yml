@@ -9,4 +9,4 @@ dependencies:
   - pytest-cov
   - pytest-xdist>=2.2.0
   - pip:
-    - google-re2>=1.0
+      - google-re2>=1.0
