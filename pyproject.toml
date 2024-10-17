@@ -156,5 +156,5 @@ markers = []
 # asyncio_mode = "strict"
 
 [tool.codespell]
-ignore-words-list = ""  # "foo, bar, baz"
-ignore-regex = ""  # 'https://([\w/\.])+'
+ignore-words-list = "" # "foo, bar, baz"
+ignore-regex = ""      # 'https://([\w/\.])+'
