@@ -22,7 +22,7 @@ jobs:
     timeout-minutes: 60
     strategy:
       matrix:
-        python_version: ['310', '311', '312']
+        python_version: ["310", "311", "312"]
       fail-fast: false
     name: Python ${{ matrix.python_version }}
     env:

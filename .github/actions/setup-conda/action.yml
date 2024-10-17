@@ -16,11 +16,11 @@ runs:
     - name: Install ${{ inputs.environment-file }}
       uses: mamba-org/setup-micromamba@v2.0.0
       with:
-        micromamba-version: '2.0.2-0'
+        micromamba-version: 2.0.2-0
         environment-file: ${{ inputs.environment-file }}
         environment-name: ${{ inputs.environment-name }}
         condarc-file: ci/condarc.yml
         init-shell: bash
         cache-environment: true
         cache-downloads: true
-        post-cleanup: 'all'
+        post-cleanup: all
