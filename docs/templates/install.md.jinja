@@ -11,7 +11,9 @@ python3 -m pip install {{ pypi.name }}
 Development version from [**GitHub**](https://github.com/{{ repo.owner }}/{{ repo.name }}):
 
 {% if repo.badge_style %}
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/{{ repo.owner }}/{{ repo.name }}/{{ repo.actions_template }}?style={{ repo.badge_style }})
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/{{ repo.owner }}/{{ repo.name }}/{{ repo.ubuntu_actions_template }}?style={{ repo.badge_style }}&label=ubuntu)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/{{ repo.owner }}/{{ repo.name }}/{{ repo.macos_actions_template }}?style={{ repo.badge_style }}&label=macOS)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/{{ repo.owner }}/{{ repo.name }}/{{ repo.windows_actions_template }}?style={{ repo.badge_style }}&label=windows)
 ![Codecov](https://img.shields.io/codecov/c/github/{{ repo.owner }}/{{ repo.name }}/{{ codecov.branch }}?flag=unittests&style={{ repo.badge_style }}&token={{ codecov.graphing_token }})
 ![GitHub](https://img.shields.io/github/license/{{ repo.owner }}/{{ repo.name }}?style={{ repo.badge_style }})
 {% else %}

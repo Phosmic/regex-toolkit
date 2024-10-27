@@ -1,4 +1,4 @@
-name: Ubuntu
+name: macOS
 
 on:
   push:
@@ -26,7 +26,7 @@ jobs:
       fail-fast: false
     name: Python ${{ matrix.python_version }}
     env:
-      OS: ubuntu-latest
+      OS: macos-latest
       ENV_FILE: ci/deps/actions-${{ matrix.python_version }}.yml
       IS_PYPY: ${{ contains(matrix.python_version, 'pypy') }}
     concurrency:

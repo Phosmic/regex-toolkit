@@ -4,6 +4,7 @@
 # Except
 !stale-pr.yml
 !ubuntu.yml
-windows-macos.yml
+!macos.yml
+!windows.yml
 
 !.gitignore
