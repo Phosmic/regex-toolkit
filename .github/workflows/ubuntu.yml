@@ -15,7 +15,6 @@ permissions:
 
 jobs:
   run-tests:
-    runs-on: ubuntu-22.04
     defaults:
       run:
         shell: bash -el {0}
@@ -23,14 +22,16 @@ jobs:
     strategy:
       matrix:
         python_version: ["310", "311", "312"]
+        os: [ubuntu-latest, macos-latest, windows-latest]
       fail-fast: false
+    runs-on: ${{ matrix.os }}
     name: Python ${{ matrix.python_version }}
     env:
       ENV_FILE: ci/deps/actions-${{ matrix.python_version }}.yml
       IS_PYPY: ${{ contains(matrix.python_version, 'pypy') }}
     concurrency:
       # https://github.community/t/concurrecy-not-work-for-push/183068/7
-      group: ${{ github.event_name == 'push' && github.run_number || github.ref }}-${{ matrix.python_version }}
+      group: ${{ github.event_name == 'push' && github.run_number || github.ref }}-${{ matrix.os }}-${{ matrix.python_version }}
       cancel-in-progress: true
     steps:
       - name: Checkout
