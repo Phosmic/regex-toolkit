@@ -15,13 +15,14 @@ permissions:
 
 jobs:
   run-tests:
-    runs-on: ${{ env.OS }}
+    runs-on: ${{ matrix.os }}
     defaults:
       run:
         shell: bash -el {0}
     timeout-minutes: 60
     strategy:
       matrix:
+        os: ["windows-latest"]
         python_version: ["310", "311", "312"]
       fail-fast: false
     name: Python ${{ matrix.python_version }}
@@ -40,7 +41,7 @@ jobs:
       - name: Set up Conda
         uses: ./.github/actions/setup-conda
         with:
-          environment-name: ${{ env.os }}-${{ matrix.python_version }}-env
+          environment-name: ${{ matrix.os }}-${{ matrix.python_version }}-env
           environment-file: ${{ env.ENV_FILE }}
 
       - name: Build Regex-Toolkit
