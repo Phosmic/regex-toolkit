@@ -25,9 +25,8 @@ jobs:
         os: ["ubuntu-latest"]
         python_version: ["310", "311", "312"]
       fail-fast: false
-    name: Python ${{ matrix.python_version }}
+    name: ${{ format('{0} Python {1}', matrix.os, matrix.python_version) }}
     env:
-      OS: ubuntu-latest
       ENV_FILE: ci/deps/actions-${{ matrix.python_version }}.yml
       IS_PYPY: ${{ contains(matrix.python_version, 'pypy') }}
     concurrency:
