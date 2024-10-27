@@ -20,9 +20,7 @@ runs:
         environment-file: ${{ inputs.environment-file }}
         environment-name: ${{ inputs.environment-name }}
         condarc-file: ci/condarc.yml
-        init-shell: >-
-          bash
-          powershell
+        init-shell: bash
         cache-environment: true
         cache-downloads: true
         post-cleanup: all

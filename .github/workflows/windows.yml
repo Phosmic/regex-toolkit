@@ -18,7 +18,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     defaults:
       run:
-        shell: pwsh
+        shell: bash -el {0}
     timeout-minutes: 60
     strategy:
       matrix:
