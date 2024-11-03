@@ -42,9 +42,7 @@ python3 -m pip install regex-toolkit
 Development version from [**GitHub**](https://github.com/Phosmic/regex-toolkit):
 
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/Phosmic/regex-toolkit/ubuntu.yml?style=flat-square&label=ubuntu)
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/Phosmic/regex-toolkit/macos.yml?style=flat-square&label=macOS)
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/Phosmic/regex-toolkit/windows.yml?style=flat-square&label=windows)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/Phosmic/regex-toolkit/ubuntu.yml?style=flat-square)
 ![Codecov](https://img.shields.io/codecov/c/github/Phosmic/regex-toolkit/main?flag=unittests&style=flat-square&token=NOT_YET_CONFIGURED)
 ![GitHub](https://img.shields.io/github/license/Phosmic/regex-toolkit?style=flat-square)
 

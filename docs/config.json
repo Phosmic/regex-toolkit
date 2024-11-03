@@ -20,9 +20,7 @@
             "owner": "Phosmic",
             "badge_style": "flat-square",
             "primary_branch": "main",
-            "ubuntu_actions_template": "ubuntu.yml",
-            "windows_actions_template": "windows.yml",
-            "macos_actions_template": "macos.yml"
+            "actions_template": "ubuntu.yml"
         }
     }
 }
