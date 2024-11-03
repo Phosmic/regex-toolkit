@@ -3,13 +3,14 @@ description: Build regex_toolkit
 runs:
   using: composite
   steps:
-    - name: Environment Detail
-      run: |
-        micromamba info
-        micromamba list
-      shell: pwsh
+    # - name: Environment Detail
+    #   run: |
+    #     micromamba info
+    #     micromamba list
+    #   shell: bash -el {0}
 
     - name: Build Regex-Toolkit
       run: |
         python -m pip install -e . --no-build-isolation --no-index
+      # shell: bash -el {0}
       shell: micromamba-shell {0}

@@ -16,9 +16,9 @@ permissions:
 jobs:
   run-tests:
     runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: pwsh
+    # defaults:
+    #   run:
+    #     shell: bash -el {0}
     timeout-minutes: 60
     strategy:
       matrix:
