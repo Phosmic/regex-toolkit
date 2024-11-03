@@ -1,14 +1,1 @@
-# Ignore everything
-*
-
-# Except
-!body.md.jinja
-!header.md.jinja
-!footer.md.jinja
-!install.md.jinja
-!library.md.jinja
-!requirements.md.jinja
-!usage.md.jinja
-!main.md.jinja
-
-!.gitignore
+rendered_libs.md

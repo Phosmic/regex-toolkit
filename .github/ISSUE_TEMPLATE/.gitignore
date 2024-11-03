@@ -1,9 +1,0 @@
-# Ignore everything
-*
-
-# Except
-!bug_report.yml
-!feature_request.yml
-!question.md
-
-!.gitignore
