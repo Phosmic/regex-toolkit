@@ -7,7 +7,7 @@ runs:
       run: |
         micromamba info
         micromamba list
-      shell: micromamba-shell {0}
+      shell: pwsh
 
     - name: Build Regex-Toolkit
       run: |
