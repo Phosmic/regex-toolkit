@@ -4,7 +4,7 @@ on:
   push:
     branches: ["main"]
   pull_request:
-    branches: ["main"]
+    branches: ["main", "*.*.*-release"]
     paths-ignore: ["docs/**"]
 
 env:
@@ -24,6 +24,7 @@ jobs:
       matrix:
         os: ["ubuntu-latest"]
         python_version: ["310", "311", "312"]
+        # python_version: ["310", "311", "312", "313"]
       fail-fast: false
     name: ${{ format('{0} Python {1}', matrix.os, matrix.python_version) }}
     env:

@@ -1,0 +1,5 @@
+black>=22.10.0
+pylint>=3.0.0
+isort>=5.2.1
+mypy>=1.0
+codespell>=2.0.0
