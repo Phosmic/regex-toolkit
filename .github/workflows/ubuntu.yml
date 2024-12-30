@@ -4,7 +4,7 @@ on:
   push:
     branches: ["main"]
   pull_request:
-    branches: ["main"]
+    branches: ["main", "*.*.*-release"]
     paths-ignore: ["docs/**"]
 
 env:
@@ -15,22 +15,24 @@ permissions:
 
 jobs:
   run-tests:
-    runs-on: ubuntu-22.04
+    runs-on: ${{ matrix.os }}
     defaults:
       run:
         shell: bash -el {0}
     timeout-minutes: 60
     strategy:
       matrix:
+        os: ["ubuntu-latest"]
         python_version: ["310", "311", "312"]
+        # python_version: ["310", "311", "312", "313"]
       fail-fast: false
-    name: Python ${{ matrix.python_version }}
+    name: ${{ format('{0} Python {1}', matrix.os, matrix.python_version) }}
     env:
       ENV_FILE: ci/deps/actions-${{ matrix.python_version }}.yml
       IS_PYPY: ${{ contains(matrix.python_version, 'pypy') }}
     concurrency:
       # https://github.community/t/concurrecy-not-work-for-push/183068/7
-      group: ${{ github.event_name == 'push' && github.run_number || github.ref }}-${{ matrix.python_version }}
+      group: ${{ github.event_name == 'push' && github.run_number || github.ref }}-${{ matrix.os }}-${{ matrix.python_version }}
       cancel-in-progress: true
     steps:
       - name: Checkout
@@ -39,7 +41,7 @@ jobs:
       - name: Set up Conda
         uses: ./.github/actions/setup-conda
         with:
-          environment-name: ${{ matrix.python_version }}-env
+          environment-name: ${{ matrix.os }}-${{ matrix.python_version }}-env
           environment-file: ${{ env.ENV_FILE }}
 
       - name: Build Regex-Toolkit

@@ -19,8 +19,8 @@ lint:
 
 format:
 	@echo 'Formatting code'
-	${PYTHON} -m isort src tests docs/render_readme.py
-	${PYTHON} -m black src tests docs/render_readme.py
+	${PYTHON} -m isort --sp pyproject.toml src tests docs/render_readme.py
+	${PYTHON} -m black --config pyproject.toml src tests docs/render_readme.py
 	@echo 'Done'
 
 build:

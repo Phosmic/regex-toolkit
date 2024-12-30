@@ -22,10 +22,10 @@ You should have received a copy of the GNU General Public License along with thi
 
 ---
 
-[Requirements](#requirements)
-[Installing](#installing)
-[Usage](#usage)
-[Library](#library)
+- [Requirements](#requirements)
+- [Installing](#installing)
+- [Usage](#usage)
+- [Library](#library)
 
 ## Installing
 
@@ -425,12 +425,12 @@ rtk.escape("/", flavor=2)
 - `ValueError` - Invalid regex flavor.
 - `TypeError` - Invalid type for `char`.
 
-<a id="regex_toolkit.base.string_as_exp"></a>
+<a id="regex_toolkit.base.string_as_expr"></a>
 
-#### `string_as_exp`
+#### `string_as_expr`
 
 ```python
-def string_as_exp(text: str, flavor: int | None = None) -> str
+def string_as_expr(text: str, flavor: int | None = None) -> str
 ```
 
 Create a regex expression that exactly matches a string.
@@ -440,10 +440,10 @@ Create a regex expression that exactly matches a string.
 ```python
 import regex_toolkit as rtk
 
-rtk.string_as_exp("http://www.example.com")
+rtk.string_as_expr("http://www.example.com")
 # Output: 'https\:\/\/example\.com'
 
-rtk.string_as_exp("http://www.example.com", flavor=2)
+rtk.string_as_expr("http://www.example.com", flavor=2)
 # Output: 'https\x{003a}\x{002f}\x{002f}example\.com'
 ```
 
@@ -460,12 +460,12 @@ rtk.string_as_exp("http://www.example.com", flavor=2)
 
 - `ValueError` - Invalid regex flavor.
 
-<a id="regex_toolkit.base.strings_as_exp"></a>
+<a id="regex_toolkit.base.strings_as_expr"></a>
 
-#### `strings_as_exp`
+#### `strings_as_expr`
 
 ```python
-def strings_as_exp(texts: Iterable[str], flavor: int | None = None) -> str
+def strings_as_expr(texts: Iterable[str], flavor: int | None = None) -> str
 ```
 
 Create a regex expression that exactly matches any one string.
@@ -475,10 +475,10 @@ Create a regex expression that exactly matches any one string.
 ```python
 import regex_toolkit as rtk
 
-rtk.strings_as_exp(["apple", "banana", "cherry"])
+rtk.strings_as_expr(["apple", "banana", "cherry"])
 # Output: 'banana|cherry|apple'
 
-rtk.strings_as_exp(["apple", "banana", "cherry"], flavor=2)
+rtk.strings_as_expr(["apple", "banana", "cherry"], flavor=2)
 # Output: 'banana|cherry|apple'
 ```
 
@@ -495,12 +495,12 @@ rtk.strings_as_exp(["apple", "banana", "cherry"], flavor=2)
 
 - `ValueError` - Invalid regex flavor.
 
-<a id="regex_toolkit.base.make_exp"></a>
+<a id="regex_toolkit.base.make_expr"></a>
 
-#### `make_exp`
+#### `make_expr`
 
 ```python
-def make_exp(chars: Iterable[str], flavor: int | None = None) -> str
+def make_expr(chars: Iterable[str], flavor: int | None = None) -> str
 ```
 
 Create a regex expression that exactly matches a list of characters.
@@ -513,10 +513,10 @@ The expression is not anchored, so it can be used as part of a larger expression
 ```python
 import regex_toolkit as rtk
 
-"[" + rtk.make_exp(["a", "b", "c", "z", "y", "x"]) + "]"
+"[" + rtk.make_expr(["a", "b", "c", "z", "y", "x"]) + "]"
 # Output: '[a-cx-z]'
 
-"[" + rtk.make_exp(["a", "b", "c", "z", "y", "x"], flavor=2) + "]"
+"[" + rtk.make_expr(["a", "b", "c", "z", "y", "x"], flavor=2) + "]"
 # Output: '[a-cx-z]'
 ```
 

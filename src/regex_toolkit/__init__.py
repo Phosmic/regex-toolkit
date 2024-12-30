@@ -1,8 +1,8 @@
 from .base import (
     escape,
-    make_exp,
-    string_as_exp,
-    strings_as_exp,
+    make_expr,
+    string_as_expr,
+    strings_as_expr,
 )
 from .utils import (
     char_range,
@@ -16,7 +16,7 @@ from .utils import (
     to_utf8,
 )
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 __all__ = [
     "char_range",
@@ -24,12 +24,12 @@ __all__ = [
     "cpoint_to_ord",
     "escape",
     "iter_char_range",
-    "make_exp",
+    "make_expr",
     "mask_span",
     "mask_spans",
     "ord_to_cpoint",
-    "string_as_exp",
-    "strings_as_exp",
+    "string_as_expr",
+    "strings_as_expr",
     "to_nfc",
     "to_utf8",
 ]

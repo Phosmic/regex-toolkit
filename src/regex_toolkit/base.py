@@ -8,9 +8,9 @@ from regex_toolkit.utils import char_to_cpoint, iter_sort_by_len_and_alpha
 __all__ = [
     "default_flavor",
     "escape",
-    "make_exp",
-    "string_as_exp",
-    "strings_as_exp",
+    "make_expr",
+    "string_as_expr",
+    "strings_as_expr",
     "resolve_flavor",
 ]
 
@@ -108,15 +108,15 @@ def escape(char: str, flavor: int | None = None) -> str:
         return _escape2(char)
 
 
-def _string_as_exp(text: str) -> str:
+def _string_as_expr(text: str) -> str:
     return r"".join(map(_escape, text))
 
 
-def _string_as_exp2(text: str) -> str:
+def _string_as_expr2(text: str) -> str:
     return r"".join(map(_escape2, text))
 
 
-def string_as_exp(text: str, flavor: int | None = None) -> str:
+def string_as_expr(text: str, flavor: int | None = None) -> str:
     """Create a regex expression that exactly matches a string.
 
     Example:
@@ -124,10 +124,10 @@ def string_as_exp(text: str, flavor: int | None = None) -> str:
     ```python
     import regex_toolkit as rtk
 
-    rtk.string_as_exp("http://www.example.com")
+    rtk.string_as_expr("http://www.example.com")
     # Output: 'https\\:\\/\\/example\\.com'
 
-    rtk.string_as_exp("http://www.example.com", flavor=2)
+    rtk.string_as_expr("http://www.example.com", flavor=2)
     # Output: 'https\\x{003a}\\x{002f}\\x{002f}example\\.com'
     ```
 
@@ -142,20 +142,20 @@ def string_as_exp(text: str, flavor: int | None = None) -> str:
         ValueError: Invalid regex flavor.
     """
     if resolve_flavor(flavor) == RegexFlavor.RE:
-        return _string_as_exp(text)
+        return _string_as_expr(text)
     else:
-        return _string_as_exp2(text)
+        return _string_as_expr2(text)
 
 
-def _strings_as_exp(texts: Iterable[str]) -> str:
-    return r"|".join(map(_string_as_exp, iter_sort_by_len_and_alpha(texts)))
+def _strings_as_expr(texts: Iterable[str]) -> str:
+    return r"|".join(map(_string_as_expr, iter_sort_by_len_and_alpha(texts)))
 
 
-def _strings_as_exp2(texts: Iterable[str]) -> str:
-    return r"|".join(map(_string_as_exp2, iter_sort_by_len_and_alpha(texts)))
+def _strings_as_expr2(texts: Iterable[str]) -> str:
+    return r"|".join(map(_string_as_expr2, iter_sort_by_len_and_alpha(texts)))
 
 
-def strings_as_exp(texts: Iterable[str], flavor: int | None = None) -> str:
+def strings_as_expr(texts: Iterable[str], flavor: int | None = None) -> str:
     """Create a regex expression that exactly matches any one string.
 
     Example:
@@ -163,10 +163,10 @@ def strings_as_exp(texts: Iterable[str], flavor: int | None = None) -> str:
     ```python
     import regex_toolkit as rtk
 
-    rtk.strings_as_exp(["apple", "banana", "cherry"])
+    rtk.strings_as_expr(["apple", "banana", "cherry"])
     # Output: 'banana|cherry|apple'
 
-    rtk.strings_as_exp(["apple", "banana", "cherry"], flavor=2)
+    rtk.strings_as_expr(["apple", "banana", "cherry"], flavor=2)
     # Output: 'banana|cherry|apple'
     ```
 
@@ -184,15 +184,15 @@ def strings_as_exp(texts: Iterable[str], flavor: int | None = None) -> str:
     unique_texts = set(texts)
     # if all(map(lambda text: len(text) == 1, unique_texts)):
     #     logger.warning(
-    #         "All strings are of length 1. Consider using make_exp() instead."
+    #         "All strings are of length 1. Consider using make_expr() instead."
     #     )
     if flavor == RegexFlavor.RE:
-        return _strings_as_exp(unique_texts)
+        return _strings_as_expr(unique_texts)
     else:
-        return _strings_as_exp2(unique_texts)
+        return _strings_as_expr2(unique_texts)
 
 
-def _make_group_exp(group: list[int]) -> str:
+def _make_group_expr(group: list[int]) -> str:
     if len(group) > 2:
         # Represent as a character range
         return _escape(chr(group[0])) + "-" + _escape(chr(group[-1]))
@@ -201,7 +201,7 @@ def _make_group_exp(group: list[int]) -> str:
         return "".join((_escape(chr(char_ord)) for char_ord in group))
 
 
-def _make_group_exp2(group: list[int]) -> str:
+def _make_group_expr2(group: list[int]) -> str:
     if len(group) > 2:
         # Represent as a character range
         return _escape2(chr(group[0])) + "-" + _escape2(chr(group[-1]))
@@ -210,7 +210,7 @@ def _make_group_exp2(group: list[int]) -> str:
         return "".join((_escape2(chr(char_ord)) for char_ord in group))
 
 
-def make_exp(chars: Iterable[str], flavor: int | None = None) -> str:
+def make_expr(chars: Iterable[str], flavor: int | None = None) -> str:
     """Create a regex expression that exactly matches a list of characters.
 
     The characters are sorted and grouped into ranges where possible.
@@ -221,10 +221,10 @@ def make_exp(chars: Iterable[str], flavor: int | None = None) -> str:
     ```python
     import regex_toolkit as rtk
 
-    "[" + rtk.make_exp(["a", "b", "c", "z", "y", "x"]) + "]"
+    "[" + rtk.make_expr(["a", "b", "c", "z", "y", "x"]) + "]"
     # Output: '[a-cx-z]'
 
-    "[" + rtk.make_exp(["a", "b", "c", "z", "y", "x"], flavor=2) + "]"
+    "[" + rtk.make_expr(["a", "b", "c", "z", "y", "x"], flavor=2) + "]"
     # Output: '[a-cx-z]'
     ```
 
@@ -239,12 +239,12 @@ def make_exp(chars: Iterable[str], flavor: int | None = None) -> str:
         ValueError: Invalid regex flavor.
     """
     func = (
-        _make_group_exp
+        _make_group_expr
         if resolve_flavor(flavor) == RegexFlavor.RE
-        else _make_group_exp2
+        else _make_group_expr2
     )
 
-    exp = ""
+    expr = ""
     group = []
     for char_ord in sorted(set(map(ord, chars))):
         if not group:
@@ -255,10 +255,10 @@ def make_exp(chars: Iterable[str], flavor: int | None = None) -> str:
             group.append(char_ord)
         else:
             # Make the group and start a new one
-            exp += func(group)
+            expr += func(group)
             group.clear()
             group.append(char_ord)
     if group:
         # Make any remaining group
-        exp += func(group)
-    return exp
+        expr += func(group)
+    return expr

@@ -1,4 +1,3 @@
-# import random
 import re
 from collections.abc import Iterable
 from itertools import product
@@ -63,43 +62,23 @@ NON_ASCII_CHARS = [
 # Test helpers
 
 
-def _check_exp_match(exp: str, text: str, flavor: int, *, should_match: bool) -> bool:
-    if flavor == 1:
-        found = bool(re.fullmatch(exp, text))
-        return found if should_match else not found
-    if flavor == 2:
-        found = bool(re2.fullmatch(exp, text))
-        return found if should_match else not found
+def _check_expr_match(expr: str, text: str, flavor: int) -> bool:
+    if flavor == RegexFlavor.RE:
+        return bool(re.fullmatch(expr, text))
+    if flavor == RegexFlavor.RE2:
+        return bool(re2.fullmatch(expr, text))
     raise ValueError(f"Invalid regex flavor: {flavor!r}")
 
 
-def assert_exp_match(
-    exp: str, text: str, flavor: int, *, should_match: bool = True
-) -> bool:
-    assert _check_exp_match(exp, text, flavor, should_match=should_match), (
-        f"RE{flavor} Pattern: {exp!r} should match {text!r}"
-        if should_match
-        else f"RE{flavor} Pattern: {exp!r} should not match {text!r}"
-    )
+def assert_expr_match(expr: str, text: str, flavor: int) -> bool:
+    assert _check_expr_match(
+        expr, text, flavor
+    ), f"RE{flavor} Pattern: {expr!r} should match {text!r}"
 
 
-def assert_exp_not_match(exp: str, text: str, flavor: int) -> bool:
-    assert_exp_match(exp, text, flavor, should_match=False)
-
-
-def assert_exp_match_all(
-    exp: str,
-    texts: Iterable[str],
-    flavor: int,
-    *,
-    should_match: bool = True,
-) -> bool:
+def assert_expr_match_all(expr: str, texts: Iterable[str], flavor: int) -> bool:
     for text in texts:
-        assert_exp_match(exp, text, flavor, should_match=should_match)
-
-
-def assert_exp_not_match_any(exp: str, texts: Iterable[str], flavor: int) -> bool:
-    assert_exp_match_all(exp, texts, flavor, should_match=False)
+        assert_expr_match(expr, text, flavor)
 
 
 # Resolve flavor
@@ -185,31 +164,23 @@ def test_resolve_flavor_None_without_default_raises():
 def test_escape_and_escape2_safe(char, expected, flavor):
     actual = regex_toolkit.escape(char, flavor)
     assert actual == expected
-
-    exp_to_test = r"^" + actual + r"$"
-    assert_exp_match(exp_to_test, char, flavor)
-
-    exp_to_test = r"^[" + actual + r"]$"
-    assert_exp_match(exp_to_test, char, flavor)
+    assert_expr_match(rf"^{actual}$", char, flavor)
+    assert_expr_match(rf"^[{actual}]$", char, flavor)
 
 
 @pytest.mark.parametrize(
-    "char, expected_exp",
+    "char, expected",
     [(char, f"\\{char}") for char in ALWAYS_ESCAPE],
 )
 @pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
-def test_escape_and_escape2_escapable(char, expected_exp, flavor):
+def test_escape_and_escape2_always_safe(char, expected, flavor):
     actual = regex_toolkit.escape(char, flavor)
-    assert actual == expected_exp
-
-    exp_to_test = r"^" + actual + r"$"
-    assert_exp_match(exp_to_test, char, flavor)
-
-    exp_to_test = r"^[" + actual + r"]$"
-    assert_exp_match(exp_to_test, char, flavor)
+    assert actual == expected
+    assert_expr_match(rf"^{actual}$", char, flavor)
+    assert_expr_match(rf"^[{actual}]$", char, flavor)
 
 
-def test_escape_and_escape2_calls_expected_inner_func():
+def test_escape_and_escape2_calls_expected_internal_func():
     char = "a"
 
     flavor = RegexFlavor.RE
@@ -266,18 +237,14 @@ def test_escape_and_escape2_non_str(non_str_char, flavor):
 
 
 @pytest.mark.parametrize(
-    "char, expected_exp",
+    "char, expected",
     [(char, f"\\{char}") for char in NON_ASCII_CHARS],
 )
-def test_escape_unknown(char, expected_exp):
+def test_escape_unknown(char, expected):
     actual = regex_toolkit.escape(char, RegexFlavor.RE)
-    assert actual == expected_exp
-
-    exp_to_test = r"^" + actual + r"$"
-    assert_exp_match(exp_to_test, char, RegexFlavor.RE)
-
-    exp_to_test = r"^[" + actual + r"]$"
-    assert_exp_match(exp_to_test, char, RegexFlavor.RE)
+    assert actual == expected
+    assert_expr_match(rf"^{actual}$", char, RegexFlavor.RE)
+    assert_expr_match(rf"^[{actual}]$", char, RegexFlavor.RE)
 
 
 # RE2 - Escape
@@ -296,35 +263,26 @@ def test_escape_unknown(char, expected_exp):
 def test_escape2_unknown(char, expected):
     actual = regex_toolkit.escape(char, RegexFlavor.RE2)
     assert actual == expected
-
-    exp_to_test = r"^" + actual + r"$"
-    assert_exp_match(exp_to_test, char, RegexFlavor.RE2)
-
-    exp_to_test = r"^[" + actual + r"]$"
-    assert_exp_match(exp_to_test, char, RegexFlavor.RE2)
+    assert_expr_match(rf"^{actual}$", char, RegexFlavor.RE2)
+    assert_expr_match(rf"^[{actual}]$", char, RegexFlavor.RE2)
 
 
 def test_escape2_trimmed():
-    text = "°"
+    char = "°"
     expected = "\\x{00B0}"
-    actual = regex_toolkit.escape(text, RegexFlavor.RE2)
+    actual = regex_toolkit.escape(char, RegexFlavor.RE2)
     assert actual == expected
-
-    exp_to_test = r"^" + actual + r"$"
-    assert_exp_match(exp_to_test, text, RegexFlavor.RE2)
+    assert_expr_match(rf"^{actual}$", char, RegexFlavor.RE2)
+    assert_expr_match(rf"^[{actual}]$", char, RegexFlavor.RE2)
 
 
 def test_escape2_untrimmed():
-    text = "🅰"
+    char = "🅰"
     expected = "\\x{0001F170}"
-    actual = regex_toolkit.escape(text, RegexFlavor.RE2)
+    actual = regex_toolkit.escape(char, RegexFlavor.RE2)
     assert actual == expected
-
-    exp_to_test = r"^" + actual + r"$"
-    assert_exp_match(exp_to_test, text, RegexFlavor.RE2)
-
-    exp_to_test = r"^[" + actual + r"]$"
-    assert_exp_match(exp_to_test, text, RegexFlavor.RE2)
+    assert_expr_match(rf"^{actual}$", char, RegexFlavor.RE2)
+    assert_expr_match(rf"^[{actual}]$", char, RegexFlavor.RE2)
 
 
 # RE and RE2 - String as expression
@@ -332,23 +290,21 @@ def test_escape2_untrimmed():
 
 @pytest.mark.parametrize("text, expected", [(text, text) for text in ALWAYS_SAFE])
 @pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
-def test_string_as_exp_and_exp2_and_exp2_safe_individual_char(text, expected, flavor):
-    actual = regex_toolkit.string_as_exp(text, flavor)
+def test_string_as_expr_and_expr2_and_expr2_safe_individual_char(
+    text, expected, flavor
+):
+    actual = regex_toolkit.string_as_expr(text, flavor)
     assert actual == expected
-
-    exp_to_test = r"^" + actual + r"$"
-    assert_exp_match(exp_to_test, text, flavor)
+    assert_expr_match(rf"^{actual}$", text, flavor)
 
 
 @pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
-def test_string_as_exp_and_exp2_and_exp2_safe_joined_as_one(flavor):
+def test_string_as_expr_and_expr2_and_expr2_safe_joined_as_one(flavor):
     text = "".join(ALWAYS_SAFE)
-    expected = "".join(ALWAYS_SAFE)
-    actual = regex_toolkit.string_as_exp(text, flavor)
+    expected = text
+    actual = regex_toolkit.string_as_expr(text, flavor)
     assert actual == expected
-
-    exp_to_test = actual
-    assert_exp_match(exp_to_test, text, flavor)
+    assert_expr_match(rf"^{actual}$", text, flavor)
 
 
 @pytest.mark.parametrize(
@@ -356,57 +312,51 @@ def test_string_as_exp_and_exp2_and_exp2_safe_joined_as_one(flavor):
     [(char, f"\\{char}") for char in ALWAYS_ESCAPE],
 )
 @pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
-def test_string_as_exp_and_exp2_escapable_individual_char(text, expected, flavor):
-    actual = regex_toolkit.string_as_exp(text, flavor)
+def test_string_as_expr_and_expr2_always_safe_individual_char(text, expected, flavor):
+    actual = regex_toolkit.string_as_expr(text, flavor)
     assert actual == expected
-
-    exp_to_test = r"^" + actual + r"$"
-    assert_exp_match(exp_to_test, text, flavor)
+    assert_expr_match(rf"^{actual}$", text, flavor)
 
 
 @pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
-def test_string_as_exp_and_exp2_escapable_joined_as_one(flavor):
+def test_string_as_expr_and_expr2_always_safe_joined_as_one(flavor):
     text = "".join(ALWAYS_ESCAPE)
     expected = "".join(f"\\{char}" for char in ALWAYS_ESCAPE)
-    actual = regex_toolkit.string_as_exp(text, flavor)
+    actual = regex_toolkit.string_as_expr(text, flavor)
     assert actual == expected
-
-    exp_to_test = actual
-    assert_exp_match(exp_to_test, text, flavor)
+    assert_expr_match(rf"^{actual}$", text, flavor)
 
 
 @pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
-def test_string_as_exp_and_exp2_matches_unicode_chars(flavor):
+def test_string_as_expr_and_expr2_matches_unicode_chars(flavor):
     high_surrogate_pair_ords = set(range(0xD800, 0xDBFF + 1))
     low_surrogate_pair_ords = set(range(0xDC00, 0xDFFF + 1))
-    for i in (
+    for ord in (
         set(range(0x0000, 0x10FFFF + 1))
         - high_surrogate_pair_ords
         - low_surrogate_pair_ords
     ):
-        char = chr(i)
-        actual = regex_toolkit.string_as_exp(char, flavor)
-
-        exp_to_test = r"^" + actual + r"$"
-        assert_exp_match(exp_to_test, char, flavor)
+        char = chr(ord)
+        actual = regex_toolkit.string_as_expr(char, flavor)
+        assert_expr_match(rf"^{actual}$", char, flavor)
 
 
-def test_string_as_exp_and_exp2_calls_expected_inner_func():
+def test_string_as_expr_and_expr2_calls_expected_internal_func():
     text = "foo"
 
     flavor = RegexFlavor.RE
-    with mock.patch("regex_toolkit.base._string_as_exp") as mock__string_as_exp:
-        with mock.patch("regex_toolkit.base._string_as_exp2") as mock__string_as_exp2:
-            regex_toolkit.string_as_exp(text, flavor)
-            mock__string_as_exp.assert_called_once_with(text)
-            mock__string_as_exp2.assert_not_called()
+    with mock.patch("regex_toolkit.base._string_as_expr") as mock__string_as_expr:
+        with mock.patch("regex_toolkit.base._string_as_expr2") as mock__string_as_expr2:
+            regex_toolkit.string_as_expr(text, flavor)
+            mock__string_as_expr.assert_called_once_with(text)
+            mock__string_as_expr2.assert_not_called()
 
     flavor = RegexFlavor.RE2
-    with mock.patch("regex_toolkit.base._string_as_exp") as mock__string_as_exp:
-        with mock.patch("regex_toolkit.base._string_as_exp2") as mock__string_as_exp2:
-            regex_toolkit.string_as_exp(text, flavor)
-            mock__string_as_exp.assert_not_called()
-            mock__string_as_exp2.assert_called_once_with(text)
+    with mock.patch("regex_toolkit.base._string_as_expr") as mock__string_as_expr:
+        with mock.patch("regex_toolkit.base._string_as_expr2") as mock__string_as_expr2:
+            regex_toolkit.string_as_expr(text, flavor)
+            mock__string_as_expr.assert_not_called()
+            mock__string_as_expr2.assert_called_once_with(text)
 
 
 # RE - String as expression
@@ -416,22 +366,18 @@ def test_string_as_exp_and_exp2_calls_expected_inner_func():
     "text, expected",
     [(text, f"\\{text}") for text in NON_ASCII_CHARS],
 )
-def test_string_as_exp_unsafe_individual_char(text, expected):
-    actual = regex_toolkit.string_as_exp(text, RegexFlavor.RE)
+def test_string_as_expr_unsafe_individual_char(text, expected):
+    actual = regex_toolkit.string_as_expr(text, RegexFlavor.RE)
     assert actual == expected
-
-    exp_to_test = actual
-    assert_exp_match(exp_to_test, text, RegexFlavor.RE)
+    assert_expr_match(rf"^{actual}$", text, RegexFlavor.RE)
 
 
-def test_string_as_exp_unsafe_joined_as_one():
+def test_string_as_expr_unsafe_joined_as_one():
     text = "".join(NON_ASCII_CHARS)
     expected = "".join(f"\\{char}" for char in text)
-    actual = regex_toolkit.string_as_exp(text, RegexFlavor.RE)
+    actual = regex_toolkit.string_as_expr(text, RegexFlavor.RE)
     assert actual == expected
-
-    exp_to_test = actual
-    assert_exp_match(exp_to_test, text, RegexFlavor.RE)
+    assert_expr_match(rf"^{actual}$", text, RegexFlavor.RE)
 
 
 # RE2 - String as expression
@@ -447,25 +393,21 @@ def test_string_as_exp_unsafe_joined_as_one():
         for char in NON_ASCII_CHARS
     ],
 )
-def test_string_as_exp2_unknown_individual_char(text, expected):
-    actual = regex_toolkit.string_as_exp(text, RegexFlavor.RE2)
+def test_string_as_expr2_unknown_individual_char(text, expected):
+    actual = regex_toolkit.string_as_expr(text, RegexFlavor.RE2)
     assert actual == expected
-
-    exp_to_test = r"^" + actual + r"$"
-    assert_exp_match(exp_to_test, text, RegexFlavor.RE2)
+    assert_expr_match(rf"^{actual}$", text, RegexFlavor.RE2)
 
 
-def test_string_as_exp2_unknown_joined_as_one():
+def test_string_as_expr2_unknown_joined_as_one():
     text = "".join(NON_ASCII_CHARS)
     expected = "".join(
         "\\x{" + format(ord(char), "x").zfill(8).removeprefix("0000").upper() + "}"
         for char in text
     )
-    actual = regex_toolkit.string_as_exp(text, RegexFlavor.RE2)
+    actual = regex_toolkit.string_as_expr(text, RegexFlavor.RE2)
     assert actual == expected
-
-    exp_to_test = actual
-    assert_exp_match(exp_to_test, text, RegexFlavor.RE2)
+    assert_expr_match(rf"^{actual}$", text, RegexFlavor.RE2)
 
 
 # RE and RE2 - Strings as expression
@@ -487,12 +429,10 @@ def test_string_as_exp2_unknown_joined_as_one():
     ],
 )
 @pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
-def test_strings_as_exp_and_exp2_safe_of_various_lengths(texts, expected, flavor):
-    actual = regex_toolkit.strings_as_exp(texts, flavor)
+def test_strings_as_expr_and_expr2_safe_of_various_lengths(texts, expected, flavor):
+    actual = regex_toolkit.strings_as_expr(texts, flavor)
     assert actual == expected
-
-    exp_to_test = r"^" + actual + r"$"
-    assert_exp_match_all(exp_to_test, texts, flavor)
+    assert_expr_match_all(rf"^{actual}$", texts, flavor)
 
 
 @pytest.mark.parametrize(
@@ -512,12 +452,12 @@ def test_strings_as_exp_and_exp2_safe_of_various_lengths(texts, expected, flavor
     ],
 )
 @pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
-def test_strings_as_exp_and_exp2_escapable_of_various_lengths(texts, expected, flavor):
-    actual = regex_toolkit.strings_as_exp(texts, flavor)
+def test_strings_as_expr_and_expr2_always_safe_of_various_lengths(
+    texts, expected, flavor
+):
+    actual = regex_toolkit.strings_as_expr(texts, flavor)
     assert actual == expected
-
-    exp_to_test = r"^" + actual + r"$"
-    assert_exp_match_all(exp_to_test, texts, flavor)
+    assert_expr_match_all(rf"^{actual}$", texts, flavor)
 
 
 @pytest.mark.parametrize(
@@ -537,12 +477,10 @@ def test_strings_as_exp_and_exp2_escapable_of_various_lengths(texts, expected, f
     ],
 )
 @pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
-def test_strings_as_exp_and_exp2_reserved_of_various_lengths(texts, expected, flavor):
-    actual = regex_toolkit.strings_as_exp(texts, flavor)
+def test_strings_as_expr_and_expr2_reserved_of_various_lengths(texts, expected, flavor):
+    actual = regex_toolkit.strings_as_expr(texts, flavor)
     assert actual == expected
-
-    exp_to_test = r"^" + actual + r"$"
-    assert_exp_match_all(exp_to_test, texts, flavor)
+    assert_expr_match_all(rf"^{actual}$", texts, flavor)
 
 
 @pytest.mark.parametrize(
@@ -562,53 +500,57 @@ def test_strings_as_exp_and_exp2_reserved_of_various_lengths(texts, expected, fl
     ],
 )
 @pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
-def test_strings_as_exp_and_exp2_safe_and_escapable_of_various_lengths(
+def test_strings_as_expr_and_expr2_safe_and_always_safe_of_various_lengths(
     texts, expected, flavor
 ):
-    actual = regex_toolkit.strings_as_exp(texts, flavor)
+    actual = regex_toolkit.strings_as_expr(texts, flavor)
     assert actual == expected
-
-    exp_to_test = r"^" + actual + r"$"
-    assert_exp_match_all(exp_to_test, texts, flavor)
+    assert_expr_match_all(rf"^{actual}$", texts, flavor)
 
 
 @pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
-def test_strings_as_exp_and_exp2_with_duplicates(flavor):
+def test_strings_as_expr_and_expr2_with_duplicates(flavor):
     texts = ["a", "A", "abc", "ABC", "ABC", "abc", "A", "a"]
-
     expected = r"ABC|abc|A|a"
-    actual = regex_toolkit.strings_as_exp(texts, flavor)
+    actual = regex_toolkit.strings_as_expr(texts, flavor)
     assert actual == expected
+    assert_expr_match_all(rf"^{actual}$", texts, flavor)
 
 
 @pytest.mark.parametrize("seq", ["abc", tuple("abc"), list("abc")])
 @pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
-def test_strings_as_exp_and_exp2_various_sequence_types(seq, flavor):
-    assert regex_toolkit.strings_as_exp(seq, flavor) == "a|b|c"
+def test_strings_as_expr_and_expr2_various_sequence_types(seq, flavor):
+    assert regex_toolkit.strings_as_expr(seq, flavor) == "a|b|c"
 
 
-@pytest.mark.parametrize("seq", ["", tuple(), list()])
+@pytest.mark.parametrize("texts", ["", tuple(), list()])
 @pytest.mark.parametrize("flavor", ALL_REGEX_FLAVORS)
-def test_strings_as_exp_and_exp2_empty_of_various_sequence_types(seq, flavor):
-    assert regex_toolkit.strings_as_exp(seq, flavor) == ""
+def test_strings_as_expr_and_expr2_empty_of_various_sequence_types(texts, flavor):
+    expected = ""
+    actual = regex_toolkit.strings_as_expr(texts, flavor)
+    assert actual == expected
 
 
-def test_strings_as_exp_calls_expected_inner_func():
+def test_strings_as_expr_calls_expected_internal_func():
     texts = ["foo", "bar"]
 
     flavor = RegexFlavor.RE
-    with mock.patch("regex_toolkit.base._strings_as_exp") as mock__strings_as_exp:
-        with mock.patch("regex_toolkit.base._strings_as_exp2") as mock__strings_as_exp2:
-            regex_toolkit.base.strings_as_exp(texts, flavor)
-            mock__strings_as_exp.assert_called_once_with(set(texts))
-            mock__strings_as_exp2.assert_not_called()
+    with mock.patch("regex_toolkit.base._strings_as_expr") as mock__strings_as_expr:
+        with mock.patch(
+            "regex_toolkit.base._strings_as_expr2"
+        ) as mock__strings_as_expr2:
+            regex_toolkit.base.strings_as_expr(texts, flavor)
+            mock__strings_as_expr.assert_called_once_with(set(texts))
+            mock__strings_as_expr2.assert_not_called()
 
     flavor = RegexFlavor.RE2
-    with mock.patch("regex_toolkit.base._strings_as_exp") as mock__strings_as_exp:
-        with mock.patch("regex_toolkit.base._strings_as_exp2") as mock__strings_as_exp2:
-            regex_toolkit.base.strings_as_exp(texts, flavor)
-            mock__strings_as_exp.assert_not_called()
-            mock__strings_as_exp2.assert_called_once_with(set(texts))
+    with mock.patch("regex_toolkit.base._strings_as_expr") as mock__strings_as_expr:
+        with mock.patch(
+            "regex_toolkit.base._strings_as_expr2"
+        ) as mock__strings_as_expr2:
+            regex_toolkit.base.strings_as_expr(texts, flavor)
+            mock__strings_as_expr.assert_not_called()
+            mock__strings_as_expr2.assert_called_once_with(set(texts))
 
 
 # RE - Strings as expression
@@ -630,12 +572,10 @@ def test_strings_as_exp_calls_expected_inner_func():
         for texts in product(NON_ASCII_CHARS, repeat=2)
     ],
 )
-def test_strings_as_exp_unsafe_of_various_lengths(texts, expected):
-    actual = regex_toolkit.strings_as_exp(texts, RegexFlavor.RE)
+def test_strings_as_expr_unsafe_of_various_lengths(texts, expected):
+    actual = regex_toolkit.strings_as_expr(texts, RegexFlavor.RE)
     assert actual == expected
-
-    exp_to_test = r"^" + actual + r"$"
-    assert_exp_match_all(exp_to_test, texts, RegexFlavor.RE)
+    assert_expr_match_all(rf"^{actual}$", texts, RegexFlavor.RE)
 
 
 # RE2 - Strings as expression
@@ -659,12 +599,10 @@ def test_strings_as_exp_unsafe_of_various_lengths(texts, expected):
         for texts in product(NON_ASCII_CHARS, repeat=2)
     ],
 )
-def test_strings_as_exp2_unsafe_of_various_lengths(texts, expected):
-    actual = regex_toolkit.strings_as_exp(texts, RegexFlavor.RE2)
+def test_strings_as_expr2_unsafe_of_various_lengths(texts, expected):
+    actual = regex_toolkit.strings_as_expr(texts, RegexFlavor.RE2)
     assert actual == expected
-
-    exp_to_test = r"^" + actual + r"$"
-    assert_exp_match_all(exp_to_test, texts, RegexFlavor.RE2)
+    assert_expr_match_all(rf"^{actual}$", texts, RegexFlavor.RE2)
 
 
 # RE - Make expression
@@ -693,5 +631,7 @@ def test_strings_as_exp2_unsafe_of_various_lengths(texts, expected):
         (["d", "a", "b", "c", "a"], "a-d"),
     ),
 )
-def test_make_exp(chars, expected):
-    assert regex_toolkit.make_exp(chars, RegexFlavor.RE) == expected
+def test_make_expr(chars, expected):
+    actual = regex_toolkit.make_expr(chars, RegexFlavor.RE)
+    assert actual == expected
+    assert_expr_match_all(rf"^[{actual}]$", chars, RegexFlavor.RE)
