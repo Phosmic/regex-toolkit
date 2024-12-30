@@ -1,4 +1,3 @@
-# import random
 import re
 from collections.abc import Iterable
 from itertools import product
@@ -63,43 +62,23 @@ NON_ASCII_CHARS = [
 # Test helpers
 
 
-def _check_expr_match(expr: str, text: str, flavor: int, *, should_match: bool) -> bool:
-    if flavor == 1:
-        found = bool(re.fullmatch(expr, text))
-        return found if should_match else not found
-    if flavor == 2:
-        found = bool(re2.fullmatch(expr, text))
-        return found if should_match else not found
+def _check_expr_match(expr: str, text: str, flavor: int) -> bool:
+    if flavor == RegexFlavor.RE:
+        return bool(re.fullmatch(expr, text))
+    if flavor == RegexFlavor.RE2:
+        return bool(re2.fullmatch(expr, text))
     raise ValueError(f"Invalid regex flavor: {flavor!r}")
 
 
-def assert_expr_match(
-    expr: str, text: str, flavor: int, *, should_match: bool = True
-) -> bool:
-    assert _check_expr_match(expr, text, flavor, should_match=should_match), (
-        f"RE{flavor} Pattern: {expr!r} should match {text!r}"
-        if should_match
-        else f"RE{flavor} Pattern: {expr!r} should not match {text!r}"
-    )
+def assert_expr_match(expr: str, text: str, flavor: int) -> bool:
+    assert _check_expr_match(
+        expr, text, flavor
+    ), f"RE{flavor} Pattern: {expr!r} should match {text!r}"
 
 
-def assert_expr_not_match(expr: str, text: str, flavor: int) -> bool:
-    assert_expr_match(expr, text, flavor, should_match=False)
-
-
-def assert_expr_match_all(
-    expr: str,
-    texts: Iterable[str],
-    flavor: int,
-    *,
-    should_match: bool = True,
-) -> bool:
+def assert_expr_match_all(expr: str, texts: Iterable[str], flavor: int) -> bool:
     for text in texts:
-        assert_expr_match(expr, text, flavor, should_match=should_match)
-
-
-def assert_expr_not_match_any(expr: str, texts: Iterable[str], flavor: int) -> bool:
-    assert_expr_match_all(expr, texts, flavor, should_match=False)
+        assert_expr_match(expr, text, flavor)
 
 
 # Resolve flavor
